@@ -1,0 +1,49 @@
+-------------------------------------------------------
+TODO
+-------------------------------------------------------
+[√] Create github repo
+[ ] Create doc
+[ ] Comments everywhere !!! (docblock http://en.wikipedia.org/wiki/PHPDoc#Tags)
+	[ ] Classes
+	[ ] Methods
+[√] Singleton inside abstract
+[√] Structure
+	[√] Choose name instead of App (BApp ?)
+[ ] Classes (create)
+	[ ] Storyline
+	[ ] Navigation
+	[ ] Scroll
+	[ ] Page
+[ ] Classes (update)
+	[ ] Event_Emitter
+		[ ] Test flags
+		[ ] Test chars ( _, -, ...)
+		[ ] Deffered trigger (can specify event)
+	[ ] Browser
+		[ ] Break points (send leaved area and entered area)
+		[ ] Mobile support
+		[ ] Tablet support
+		[ ] Version detection
+			[ ] Firefox
+			[ ] Chrome
+			[ ] Safari
+	[√] Ticker
+		[√] Do next (kind of raf or set timeout with before and after the normal trigger)
+		[√] Auto run
+	[ ] GA Tags
+		[ ] Support ga (not _gaq)
+		[ ] Dynamically add GA script with method "init( ua_code )"
+			[ ] Trigger event
+		[√] "this" instead of "e.target"
+		[√] Parse method on specified container
+		[√] Parsed class
+		[√] data-tag-true-link "0" or "false"
+	[ ] Images
+		[ ] Rename to dimensions/centring/scaling stuffs
+		[ ] Remove image references
+		[ ] Refactor
+	[ ] Keyboard
+		[√] "bottom" => "down"
+		[ ] Qwerty compatible (switch)
+	[ ] Mouse
+		[ ] Wheel type detection
