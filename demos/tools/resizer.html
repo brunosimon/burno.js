@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Demo - Resizer</title>
+    <style>
+        .container {background:#ddd;margin:20px;}
+        .container.example-1 {width:300px;height:160px;}
+        .container.example-2 {width:300px;height:160px;}
+        .container.example-3 {width:300px;height:160px;}
+        .container.example-4 {width:160px;height:300px;}
+        .container.example-5 {width:50%;height:160px;}
+        .container.example-6 {width:10%;height:300px;}
+        .container.example-7 {width:300px;height:160px;}
+        .container.example-8 {width:300px;height:160px;}
+        .container.example-9 {width:300px;height:160px;}
+        .container.example-10 {width:300px;height:160px;}
+        .container.example-10 .content {background:#eee;}
+        .container.example-11 {width:160px;height:300px;}
+        .container.example-11 .content {background:#eee;}
+    </style>
+</head>
+<body>
+
+    <div class="container example-1 to-resize">
+        <img class="content" src="../src/images/lenna.jpg" alt="" width="512" height="512">
+    </div>
+
+    <div class="container example-2 to-resize">
+        <img class="content" src="../src/images/lenna.jpg" alt="" width="512" height="512" data-align-y="top">
+    </div>
+
+    <div class="container example-3 to-resize">
+        <img class="content" src="../src/images/lenna.jpg" alt="" width="512" height="512" data-align-y="bottom">
+    </div>
+
+    <div class="container example-4 to-resize">
+        <img class="content" src="../src/images/lenna.jpg" alt="" width="512" height="512">
+    </div>
+
+    <div class="container example-5 to-resize">
+        <img class="content" src="../src/images/lenna.jpg" alt="" width="512" height="512">
+    </div>
+
+    <div class="container example-6 to-resize">
+        <img class="content" src="../src/images/lenna.jpg" alt="" width="512" height="512">
+    </div>
+
+    <div class="container example-7 to-resize">
+        <img class="content" src="../src/images/lenna.jpg" alt="" width="512" height="512" data-align-y="top" data-fit-type="fit">
+    </div>
+
+    <div class="container example-8 to-resize">
+        <img class="content" src="../src/images/lenna.jpg" alt="" width="512" height="512" data-align-y="top" data-fit-type="fit" data-align-x="left">
+    </div>
+
+    <div class="container example-9 to-resize">
+        <img class="content" src="../src/images/lenna.jpg" alt="" width="512" height="512" data-align-y="top" data-fit-type="fit" data-align-x="right">
+    </div>
+
+    <div class="container example-10 to-resize">
+        <div class="content" data-width="512" data-height="512" data-fit-type="fit">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque ipsum voluptas voluptates error commodi aut ea obcaecati qui ratione in suscipit rerum numquam iusto.</div>
+    </div>
+
+    <div class="container example-11 to-resize">
+        <div class="content" data-width="512" data-height="512" data-fit-type="fit">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque ipsum voluptas voluptates error commodi aut ea obcaecati qui ratione in suscipit rerum numquam iusto.</div>
+    </div>
+
+    <!-- LIBS -->
+    <script src="../../src/libs/class.js"></script>
+
+    <!-- CORE -->
+    <script src="../../src/app/core/b.class.js"></script>
+    <script src="../../src/app/core/abstract.class.js"></script>
+    <script src="../../src/app/core/event_emitter.class.js"></script>
+
+    <!-- TOOLS -->
+    <script src="../../src/app/tools/ga_tags.class.js"></script>
+    <script src="../../src/app/tools/browser.class.js"></script>
+    <script src="../../src/app/tools/css.class.js"></script>
+    <script src="../../src/app/tools/resizer.class.js"></script>
+    <script src="../../src/app/tools/ticker.class.js"></script>
+    <script src="../../src/app/tools/keyboard.class.js"></script>
+    <script src="../../src/app/tools/mouse.class.js"></script>
+    <script src="../../src/app/tools/colors.class.js"></script>
+
+    <script>
+
+        // Initiate resizer tool
+        var resizer = new B.Tools.Resizer();
+
+        // Get sizes with minimum params
+        console.log( resizer.get_sizes( {
+            content_width    : 200,
+            content_height   : 300,
+            container_width  : 600,
+            container_height : 400
+        } ) );
+
+        // Get sizes with more parameters
+        console.log( resizer.get_sizes( {
+            content_width    : 200.4,
+            content_height   : 300.5,
+            container_width  : 600.6,
+            container_height : 400.7,
+            fit_type         : 'fit',
+            alignment_x      : 'center',
+            alignment_y      : 'center',
+            rounding         : 'floor',
+            coordinates      : 'cartesian'
+        } ) );
+
+        // Directly resize element
+        resizer.resize(
+            document.querySelector( '.example-3' ),
+            document.querySelector( '.example-3 .content' )
+        );
+
+    </script>
+</body>
+</html>

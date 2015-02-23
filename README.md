@@ -84,6 +84,7 @@
 * Options
 * Parser
 * Send
+* Unique
 * Add GA
 * Events
 
@@ -120,10 +121,17 @@
 * Options
 * Apply
 
+### Resizer
+
+* Options
+* Get sizes
+* Resize
+* Parse
+* Auto resize (browser resize event)
 
 ## Todo
 
 
-## Change log
+## ChangeLog
 
 

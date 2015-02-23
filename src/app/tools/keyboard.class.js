@@ -37,8 +37,6 @@
             this.downs   = [];
 
             this.init_events();
-
-            B.Tools.Keyboard.prototype.instance = this;
         },
 
         /**

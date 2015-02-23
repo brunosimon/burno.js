@@ -21,46 +21,42 @@
         /**
          * ON
          */
-        on : function( name, action )
+        on : function( names, action )
         {
+            var that  = this;
+
             // Errors
-            if( typeof name === 'undefined' || name === '' )
+            if( typeof names === 'undefined' || names === '' )
             {
-                console.warn( 'Wrong name' );
+                console.warn( 'wrong names' );
                 return false;
             }
 
             if( typeof action === 'undefined' )
             {
-                console.warn( 'Wrong action' );
+                console.warn( 'wrong action' );
                 return false;
             }
 
-            var that  = this,
-                names = [];
-
-            // Clean
-            name  = name.replace( /[^a-zA-Z0-9 ,\/.]/g,'' );
-            name  = name.replace( /[,\/]+/g,' ' );
-
-            // Split
-            names = name.split( ' ' );
+            // Resolve names
+            names = this.resolve_names( names );
 
             // Each name
             names.forEach( function( name )
             {
+                // Resolve name
                 name = that.resolve_name( name );
 
-                // Create tag if not exist
-                if( !( that.callbacks[ name.tag ] instanceof Object ) )
-                    that.callbacks[ name.tag ] = {};
+                // Create namespace if not exist
+                if( !( that.callbacks[ name.namespace ] instanceof Object ) )
+                    that.callbacks[ name.namespace ] = {};
 
                 // Create action if not exist
-                if( !( that.callbacks[ name.tag ][ name.value ] instanceof Array ) )
-                    that.callbacks[ name.tag ][ name.value ] = [];
+                if( !( that.callbacks[ name.namespace ][ name.value ] instanceof Array ) )
+                    that.callbacks[ name.namespace ][ name.value ] = [];
 
                 // Add action
-                that.callbacks[ name.tag ][ name.value ].push( action );
+                that.callbacks[ name.namespace ][ name.value ].push( action );
             });
 
             return this;
@@ -69,64 +65,60 @@
         /**
          * OFF
          */
-        off : function( name )
+        off : function( names )
         {
+            var that = this;
+
             // Errors
-            if( typeof name === 'undefined' || name === '' )
+            if( typeof names === 'undefined' || names === '' )
             {
-                console.warn( 'Wrong name' );
+                console.warn( 'wrong name' );
                 return false;
             }
 
-            var that  = this,
-                names = [];
-
-            // Clean
-            name  = name.replace( /[^a-zA-Z0-9 ,\/.]/g,'' );
-            name  = name.replace( /[,\/]+/g,' ' );
-
-            // Split
-            names = name.split( ' ' );
+            // Resolve names
+            names = this.resolve_names( names );
 
             // Each name
             names.forEach( function( name )
             {
+                // Resolve name
                 name = that.resolve_name( name );
 
-                // Remove tag
-                if( name.tag !== 'base' && name.value === '' )
+                // Remove namespace
+                if( name.namespace !== 'base' && name.value === '' )
                 {
-                    delete that.callbacks[name.tag];
+                    delete that.callbacks[ name.namespace ];
                 }
 
-                // Remove specific action in tag
+                // Remove specific action in namespace
                 else
                 {
                     // Default
-                    if( name.tag === 'base' )
+                    if( name.namespace === 'base' )
                     {
-                        // Try to remove from each tag
-                        for( var tag in that.callbacks )
+                        // Try to remove from each namespace
+                        for( var namespace in that.callbacks )
                         {
-                            if( that.callbacks[ tag ] instanceof Object && that.callbacks[ tag ][ name.value ] instanceof Array )
+                            if( that.callbacks[ namespace ] instanceof Object && that.callbacks[ namespace ][ name.value ] instanceof Array )
                             {
-                                delete that.callbacks[ tag ][ name.value ];
+                                delete that.callbacks[ namespace ][ name.value ];
 
-                                // Remove tag if empty
-                                if( Object.keys(that.callbacks[ tag ] ).length === 0 )
-                                    delete that.callbacks[ tag ];
+                                // Remove namespace if empty
+                                if( Object.keys(that.callbacks[ namespace ] ).length === 0 )
+                                    delete that.callbacks[ namespace ];
                             }
                         }
                     }
 
-                    // Specified tag
-                    else if( that.callbacks[ name.tag ] instanceof Object && that.callbacks[ name.tag ][ name.value ] instanceof Array )
+                    // Specified namespace
+                    else if( that.callbacks[ name.namespace ] instanceof Object && that.callbacks[ name.namespace ][ name.value ] instanceof Array )
                     {
-                        delete that.callbacks[ name.tag ][ name.value ];
+                        delete that.callbacks[ name.namespace ][ name.value ];
 
-                        // Remove tag if empty
-                        if( Object.keys( that.callbacks[ name.tag ] ).length === 0 )
-                            delete that.callbacks[ name.tag ];
+                        // Remove namespace if empty
+                        if( Object.keys( that.callbacks[ name.namespace ] ).length === 0 )
+                            delete that.callbacks[ name.namespace ];
                     }
                 }
             });
@@ -142,7 +134,7 @@
             // Errors
             if( typeof name === 'undefined' || name === '' )
             {
-                console.warn( 'Wrong name' );
+                console.warn( 'wrong name' );
                 return false;
             }
 
@@ -154,21 +146,21 @@
             if( !( args instanceof Array ) )
                 args = [];
 
-            name = that.resolve_name( name );
+            // Resolve names (should on have one event)
+            name = this.resolve_names( name );
 
-            // Clean (need some work)
-            name.value = name.value.replace( /[^a-zA-Z0-9 ,\/.]/g, '' );
-            name.value = name.value.replace( /[,\/]+/g, ' ' );
+            // Resolve name
+            name = that.resolve_name( name[ 0 ] );
 
-            // Default tag
-            if( name.tag === 'base' )
+            // Default namespace
+            if( name.namespace === 'base' )
             {
-                // Try to find action in each tag
-                for( var tag in that.callbacks )
+                // Try to find action in each namespace
+                for( var namespace in that.callbacks )
                 {
-                    if( that.callbacks[ tag ] instanceof Object && that.callbacks[ tag ][ name.value ] instanceof Array )
+                    if( that.callbacks[ namespace ] instanceof Object && that.callbacks[ namespace ][ name.value ] instanceof Array )
                     {
-                        that.callbacks[ tag ][ name.value ].forEach( function( action )
+                        that.callbacks[ namespace ][ name.value ].forEach( function( action )
                         {
                             result = action.apply( that,args );
 
@@ -179,16 +171,16 @@
                 }
             }
 
-            // Specified tag
-            else if( this.callbacks[ name.tag ] instanceof Object )
+            // Specified namespace
+            else if( this.callbacks[ name.namespace ] instanceof Object )
             {
                 if( name.value === '' )
                 {
-                    console.warn( 'Wrong name' );
+                    console.warn( 'wrong name' );
                     return this;
                 }
 
-                that.callbacks[ name.tag ][ name.value ].forEach( function( action )
+                that.callbacks[ name.namespace ][ name.value ].forEach( function( action )
                 {
                     result = action.apply( that, args );
 
@@ -209,14 +201,15 @@
         },
 
         /**
-         * CLEAN NAME
+         * RESOLVE NAMES
          */
-        clean_name : function( name )
+        resolve_names : function( names )
         {
-            name = name.toLowerCase();
-            name = name.replace( '-', '_' );
+            names = names.replace( /[^a-zA-Z0-9 ,\/.]/g, '' );
+            names = names.replace( /[,\/]+/g, ' ' );
+            names = names.split( ' ' );
 
-            return name;
+            return names;
         },
 
         /**
@@ -228,13 +221,13 @@
 
             parts = name.split( '.' );
 
-            new_name.original = name;
-            new_name.value    = parts[ 0 ];
-            new_name.tag      = 'base'; // Base tag
+            new_name.original  = name;
+            new_name.value     = parts[ 0 ];
+            new_name.namespace = 'base'; // Base namespace
 
-            // Specified tag
+            // Specified namespace
             if( parts.length > 1 && parts[ 1 ] !== '' )
-                new_name.tag = parts[ 1 ];
+                new_name.namespace = parts[ 1 ];
 
             return new_name;
         }

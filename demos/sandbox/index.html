@@ -21,14 +21,91 @@
     <script src="../../src/app/tools/ga_tags.class.js"></script>
     <script src="../../src/app/tools/browser.class.js"></script>
     <script src="../../src/app/tools/css.class.js"></script>
-    <script src="../../src/app/tools/images.class.js"></script>
+    <script src="../../src/app/tools/resizer.class.js"></script>
     <script src="../../src/app/tools/ticker.class.js"></script>
     <script src="../../src/app/tools/keyboard.class.js"></script>
     <script src="../../src/app/tools/mouse.class.js"></script>
     <script src="../../src/app/tools/colors.class.js"></script>
 
     <script>
-        var app = new B.Components.App();
+
+        // Create a custom
+        B.Components.Custom_Tool = B.Core.Event_Emitter.extend(
+        {
+            // Set as static to use as a singleton
+            static  : 'custom_tool',
+
+            // Currently no options
+            options :
+            {
+
+            },
+
+            /**
+             * INIT
+             */
+            init : function( options )
+            {
+                this._super( options );
+
+                // Use ticker
+                this.ticker = new B.Tools.Ticker();
+
+                // Save context
+                var that = this;
+
+                // Do next frame
+                this.ticker.do_next( function()
+                {
+                    // Trigger some events
+                    that.trigger( 'event-1', [ 'test-1' ] );
+                    that.trigger( 'event-2', [ 'test-2' ] );
+                    that.trigger( 'event-3', [ 'test-3' ] );
+                    that.trigger( 'event-4', [ 'test-4' ] );
+                } );
+            }
+        } );
+
+        // Try to instantiate twice but get a common object each time
+        var custom_tool_1 = new B.Components.Custom_Tool(),
+            custom_tool_2 = new B.Components.Custom_Tool();
+
+        // Listen on two events
+        custom_tool_1.on( 'event-1 event-2', function( value )
+        {
+            console.log( '1 - received : ' + value );
+        } );
+
+        // Listen on event
+        custom_tool_1.on( 'event-3', function( value )
+        {
+            console.log( '2 - received : ' + value );
+        } );
+
+        // Stop listening on one event
+        custom_tool_1.off( 'event-3' );
+
+        // Listen to event without namespace
+        custom_tool_1.on( 'event-4', function( value )
+        {
+            console.log( '3 - received : ' + value );
+        } );
+
+        // Listen to event with namespace
+        custom_tool_1.on( 'event-4.tag', function( value )
+        {
+            console.log( '4 - received : ' + value );
+        } );
+
+        // Listen to event with namespace
+        custom_tool_1.on( 'event-2.tag', function( value )
+        {
+            console.log( '5 - received : ' + value );
+        } );
+
+        // Stop listening on one event
+        custom_tool_1.off( '.tag' );
+
     </script>
 </body>
 </html>

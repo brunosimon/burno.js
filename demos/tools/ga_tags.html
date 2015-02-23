@@ -6,6 +6,11 @@
 </head>
 <body>
 
+    <a href="#" class="tag" data-tag-category="category" data-tag-action="action">Link 1</a> (with category and action)<br />
+    <a href="#" class="tag" data-tag-category="category" data-tag-action="action" data-tag-label="label" data-tag-value="value">Link 2</a> (with category, action, label and value)<br />
+    <a href="#" class="tag" data-tag-category="category">Link 3</a> (with category but missing action<br />
+    <a href="#" class="tag" data-tag-category="category" data-tag-action="action" data-tag-unique="foo">Link 4</a> (unique, can be triggered only once)
+
     <!-- LIBS -->
     <script src="../../src/libs/class.js"></script>
 
@@ -14,21 +19,53 @@
     <script src="../../src/app/core/abstract.class.js"></script>
     <script src="../../src/app/core/event_emitter.class.js"></script>
 
-    <!-- COMPONENTS -->
-    <script src="../../src/app/components/app.class.js"></script>
-
     <!-- TOOLS -->
     <script src="../../src/app/tools/ga_tags.class.js"></script>
     <script src="../../src/app/tools/browser.class.js"></script>
     <script src="../../src/app/tools/css.class.js"></script>
-    <script src="../../src/app/tools/images.class.js"></script>
+    <script src="../../src/app/tools/resizer.class.js"></script>
     <script src="../../src/app/tools/ticker.class.js"></script>
     <script src="../../src/app/tools/keyboard.class.js"></script>
     <script src="../../src/app/tools/mouse.class.js"></script>
     <script src="../../src/app/tools/colors.class.js"></script>
 
     <script>
-        var app = new B.Components.App();
+
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-3966601-5', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+    <script>
+
+        var ga_tags = new B.Tools.GA_Tags( {
+            logs :
+            {
+                warnings : true,
+                send     : true
+            }
+        } );
+
+        // Listen to send event
+        ga_tags.on( 'send', function( data )
+        {
+            console.log( data );
+        } );
+
+        // Manualy send
+        ga_tags.send( {
+            category : 'category',
+            action   : 'action',
+            label    : 'label',
+            value    : 'value',
+            unique   : 'bar'
+        } );
+
     </script>
 </body>
 </html>

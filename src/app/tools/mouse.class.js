@@ -24,8 +24,6 @@
             this.wheel.delta      = 0;
 
             this.init_events();
-
-            B.Tools.Mouse.prototype.instance = this;
         },
 
         /**
@@ -42,7 +40,6 @@
 
                 if( that.trigger( 'down', [ that.position, e.target ] ) === false )
                 {
-                    console.log('prevented');
                     e.preventDefault();
                 }
             }

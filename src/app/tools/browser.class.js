@@ -61,8 +61,6 @@
         {
             var that = this;
 
-            console.log('init');
-
             this._super( options );
 
             this.ticker = new B.Tools.Ticker();
@@ -93,8 +91,16 @@
             this.init_breakpoints();
             this.init_disable_hover_on_scroll();
             this.init_events();
+            this.initial_trigger();
+        },
 
-            // Initial trigger
+        /**
+         * INITIAL TRIGGER
+         */
+        initial_trigger : function()
+        {
+            var that = this;
+
             if( this.options.initial_trigger )
             {
                 // Do next frame
@@ -105,8 +111,6 @@
                     that.resize_handle();
                 } );
             }
-
-            // B.Tools.Browser.prototype.instance = this;
         },
 
         /**

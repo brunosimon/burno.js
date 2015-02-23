@@ -17,8 +17,8 @@
             },
             logs :
             {
-                warnings : true,
-                send     : true
+                warnings : false,
+                send     : false
             }
         },
 
@@ -29,21 +29,21 @@
         {
             this._super(options);
 
-            this.tagged = [];
+            this.unique_sent = [];
 
             if( this.options.parse )
                 this.parse();
         },
 
         /**
-         * START
+         * PARSE
          */
-        parse : function( container )
+        parse : function( target )
         {
-            container = container || document;
+            target = target || document;
 
             var that     = this,
-                elements = container.querySelectorAll( '.' + this.options.classes.to_tag + ':not(' + this.options.classes.tagged + ')' );
+                elements = target.querySelectorAll( '.' + this.options.classes.to_tag + ':not(' + this.options.classes.tagged + ')' );
 
             function click_handle( e )
             {
@@ -64,7 +64,6 @@
                 datas.label    = element.getAttribute( 'data-tag-label' );
                 datas.value    = element.getAttribute( 'data-tag-value' );
                 datas.unique   = element.getAttribute( 'data-tag-unique' );
-                datas.name     = element.getAttribute( 'data-tag-name' );
 
                 // Send
                 that.send( datas );
@@ -113,6 +112,8 @@
          */
         send : function( options )
         {
+            var send = [];
+
             // Error
             if( typeof options !== 'object' )
             {
@@ -124,11 +125,11 @@
             }
 
             // Unique
-            if( options.unique && options.name && this.tagged.indexOf( options.name ) !== -1 )
+            if( options.unique && this.unique_sent.indexOf( options.unique ) !== -1 )
             {
                 // Logs
                 if( this.options.logs.warnings )
-                    console.warn( 'tag prevent : ' + options.name );
+                    console.warn( 'tag prevent : ' + options.unique );
 
                 return false;
             }
@@ -136,7 +137,7 @@
             // Send
             if( this.options.send )
             {
-                var send = [ '_trackEvent' ];
+                var sent = false;
 
                 // Category
                 if( typeof options.category !== 'undefined' )
@@ -161,10 +162,22 @@
                         }
 
                         // Send only if category and action set
+                        // _gaq
                         if( typeof _gaq !== 'undefined' )
                         {
-                            _gaq.push( send );
+                            _gaq.push( [ '_trackEvent' ].concat( send ) );
+
+                            sent = true;
                         }
+
+                        // ga
+                        else if( typeof ga !== 'undefined' )
+                        {
+                            ga.apply( ga, [ 'send', 'event' ].concat( send ) );
+
+                            sent = true;
+                        }
+
                         else
                         {
                             // Logs
@@ -191,9 +204,15 @@
                 }
             }
 
-            // Save as tagged
-            if( options.unique )
-                this.tagged.push( options.name );
+            // Well sent
+            if( sent )
+            {
+                // Save in unique_sent array
+                if( options.unique )
+                    this.unique_sent.push( options.unique );
+
+                this.trigger( 'send', [ send ] );
+            }
         }
     } );
 } )();

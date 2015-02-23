@@ -30,8 +30,6 @@
 
             if( this.options.auto_run )
                 this.run();
-
-            B.Tools.Ticker.prototype.instance = this;
         },
 
         /**

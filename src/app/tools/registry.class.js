@@ -13,8 +13,6 @@
             this._super( options );
 
             this.items = {};
-
-            B.Tools.Registry.prototype.instance = this;
         },
 
         /**
