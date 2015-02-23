@@ -1,7 +1,6 @@
 -------------------------------------------------------
 TODO
 -------------------------------------------------------
-[√] Create github repo
 [ ] Create doc
 [ ] Demos
 	[ ] App
@@ -19,9 +18,6 @@ TODO
 [ ] Comments everywhere !!! (DocBlock http://en.wikipedia.org/wiki/PHPDoc#Tags)
 	[ ] Classes
 	[ ] Methods
-[√] Singleton inside abstract
-[√] Structure
-	[√] Choose name instead of App (BApp ?)
 [ ] Classes (create)
 	[ ] Storyline
 	[ ] Navigation
@@ -29,40 +25,16 @@ TODO
 	[ ] Page
 [ ] Classes (update)
 	[ ] Event_Emitter
-		[√] Test namespaces
-		[√] Test chars ( _, -, ...)
-		[√] Test multi listen / multi trigger ("event-1 event-2 ...")
 		[ ] Deffered trigger (can specify event)
 	[ ] Browser
-		[√] Break points (send leaved area and entered area)
 		[ ] Mobile support
 		[ ] Tablet support
 		[ ] Version detection
 			[ ] Firefox
 			[ ] Chrome
 			[ ] Safari
-	[√] Ticker
-		[√] Do next (kind of raf or set timeout with before and after the normal trigger)
-		[√] Auto run
 	[ ] GA Tags
 		[ ] Dynamically add GA script with method "init( ua_code )"
 			[ ] Trigger event
-		[√] Default logs to false
-		[√] Support ga (not _gaq)
-		[√] Trigger sent
-		[√] "this" instead of "e.target"
-		[√] Parse method on specified container
-		[√] Parsed class
-		[√] data-tag-true-link "0" or "false"
-	[√] Resizer
-		[√] Rename to dimensions/centring/scaling stuffs
-		[√] Remove image references
-		[√] Refactor
-		[√] Resize dom element
-			[√] Parser
-			[√] Auto resize (browser)
-	[√] Keyboard
-		[√] "bottom" => "down"
-		[√] Qwerty compatible (switch)
 	[ ] Mouse
 		[ ] Wheel type detection
