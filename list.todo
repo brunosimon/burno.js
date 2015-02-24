@@ -23,6 +23,7 @@ TODO
 	[ ] Navigation
 	[ ] Scroll
 	[ ] Page
+	[√] Offline
 [ ] Classes (update)
 	[ ] Event_Emitter
 		[ ] Deffered trigger (can specify event)

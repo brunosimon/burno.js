@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Demo - Offline</title>
+
+    <style>
+
+        .witness {width:200px;height:200px;color:#fff;text-transform:uppercase;text-align:center;line-height:200px;font-family:Helvetica,Arial;font-size:12px;}
+        body.offline .witness {background:#DA4711;}
+        body.offline .witness:after {content:'offline';}
+        body.online .witness {background:#8DD522;}
+        body.online .witness:after {content:'online';}
+
+    </style>
+</head>
+<body>
+
+    <div class="witness"></div>
+
+    <!-- LIBS -->
+    <script src="../../src/libs/class.js"></script>
+
+    <!-- CORE -->
+    <script src="../../src/app/core/b.class.js"></script>
+    <script src="../../src/app/core/abstract.class.js"></script>
+    <script src="../../src/app/core/event_emitter.class.js"></script>
+
+    <!-- TOOLS -->
+    <script src="../../src/app/tools/ga_tags.class.js"></script>
+    <script src="../../src/app/tools/browser.class.js"></script>
+    <script src="../../src/app/tools/css.class.js"></script>
+    <script src="../../src/app/tools/resizer.class.js"></script>
+    <script src="../../src/app/tools/ticker.class.js"></script>
+    <script src="../../src/app/tools/keyboard.class.js"></script>
+    <script src="../../src/app/tools/mouse.class.js"></script>
+    <script src="../../src/app/tools/colors.class.js"></script>
+    <script src="../../src/app/tools/offline.class.js"></script>
+
+    <script>
+
+        var offline = new B.Tools.Offline();
+
+        // Listen to change
+        offline.on( 'change', function( status )
+        {
+            console.log( 'status : ' + status );
+        } );
+
+    </script>
+</body>
+</html>

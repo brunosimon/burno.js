@@ -5,6 +5,7 @@
     B.Tools.Registry = B.Core.Abstract.extend(
     {
         static  : 'registry',
+
         /**
          * INIT
          */
