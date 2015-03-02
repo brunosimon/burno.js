@@ -3,8 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Burno.js - Demo - Browser</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <style>
+        .element {margin:20px;padding:20px;background:#eee;float:left;clear:both;font-family:Helvetica,Arial;font-size:14px;}
+        .element td.label {min-width:100px;}
+        .element td.value {min-width:100px;}
+        .element td.value.inactive {color:#f00;}
+        .element td.value.active {color:#00BB3B;}
+    </style>
 </head>
 <body>
+
+    <div class="element detect"></div>
+    <div class="element scroll"></div>
+    <div class="element resize"></div>
+    <div class="element breakpoints"></div>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/libs/polyfills/classlist.js"></script>
+    <script src="../../src/libs/polyfills/foreach.js"></script>
+    <script src="../../src/libs/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/libs/polyfills/indexof.js"></script>
+    <script src="../../src/libs/polyfills/object-keys.js"></script>
+    <script src="../../src/libs/polyfills/requestanimationframe.js"></script>
 
     <!-- LIBS -->
     <script src="../../src/libs/class.js"></script>
@@ -23,8 +44,240 @@
     <script src="../../src/app/tools/keyboard.class.js"></script>
     <script src="../../src/app/tools/mouse.class.js"></script>
     <script src="../../src/app/tools/colors.class.js"></script>
+    <script src="../../src/app/tools/offline.class.js"></script>
 
     <script>
+
+        var browser = new B.Tools.Browser( {
+            breakpoints :
+            [
+                {
+                    name     : 'large',
+                    limits   :
+                    {
+                        width :
+                        {
+                            value    : 960,
+                            extreme  : 'min',
+                            included : false
+                        }
+                    }
+                },
+                {
+                    name     : 'medium',
+                    limits   :
+                    {
+                        width :
+                        {
+                            value    : 960,
+                            extreme  : 'max',
+                            included : true
+                        }
+                    }
+                },
+                {
+                    name     : 'small',
+                    limits   :
+                    {
+                        width :
+                        {
+                            value    : 500,
+                            extreme  : 'max',
+                            included : true
+                        }
+                    }
+                }
+            ]
+        } );
+
+        browser.on( 'scroll', function( viewport )
+        {
+            console.log( 'scroll', viewport );
+
+            var text = [];
+            text.push( '<strong>' );
+            text.push( 'scroll' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'x' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( viewport.x );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'y' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( viewport.y );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'delta x' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( viewport.delta.x );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'delta y' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( viewport.delta.y );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'direction y' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( viewport.direction.y );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'direction x' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( viewport.direction.x );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element.scroll' ).innerHTML = text.join('');
+        } );
+
+        browser.on( 'resize', function( viewport )
+        {
+            console.log( 'resize', viewport );
+
+            var text = [];
+            text.push( '<strong>' );
+            text.push( 'resize' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'width' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( viewport.width );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'height' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( viewport.height );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element.resize' ).innerHTML = text.join('');
+        } );
+
+        browser.on( 'breakpoint', function( breakpoint, old_breakpoint )
+        {
+            console.log( 'breakpoint', breakpoint );
+
+            var text = [];
+            text.push( '<strong>' );
+            text.push( 'breakpoints' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'name' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( breakpoint.name );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element.breakpoints' ).innerHTML = text.join('');
+        } );
+
+        console.log( 'detect', browser.detect );
+
+        // Detection
+        var text = [];
+        text.push( '<strong>' );
+        text.push( 'user agent' );
+        text.push( '</strong>' );
+        text.push( '<br>' );
+        text.push( browser.user_agent );
+        text.push( '<br>' );
+        text.push( '<br>' );
+        text.push( '<strong>' );
+        text.push( 'plateform' );
+        text.push( '</strong>' );
+        text.push( '<br>' );
+        text.push( browser.plateform );
+        text.push( '<br>' );
+        text.push( '<br>' );
+        for( var category in browser.detect )
+        {
+            text.push( '<strong>' );
+            text.push( category );
+            text.push( '</strong>' );
+            text.push( '<table>' );
+            // Each property in category
+            for( var property in browser.detect[ category ] )
+            {
+                var value = browser.detect[ category ][ property ];
+
+                text.push( '<tr>' );
+                text.push( '<td class="label">' );
+                text.push( property );
+                text.push( '</td>' );
+                text.push( '<td class="value ' );
+                text.push( value ? 'active' : 'inactive' );
+                text.push( '">' );
+                text.push( value );
+                text.push( '</td>' );
+                text.push( '</tr>' );
+            }
+            text.push( '</table><br>' );
+        }
+
+        // Classes
+        text.push( '<strong>' );
+        text.push( 'classes' );
+        text.push( '</strong>' );
+        for( var _class in browser.classes )
+        {
+            text.push( '<br>' );
+            text.push( browser.classes[ _class ] );
+            text.push( ' ' );
+        }
+
+        // Add to DOM
+        document.querySelector( '.element.detect' ).innerHTML = text.join('');
 
     </script>
 </body>

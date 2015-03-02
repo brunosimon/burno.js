@@ -42,7 +42,7 @@
           for(var key in extended)
           {
               var ext = extended[key];
-              if(typeof (ext) !== 'object' || ext instanceof HTMLElement || ext instanceof Class || (typeof THREE !== 'undefined' && ext instanceof THREE.Object3D) || (typeof ext !== 'undefined' && ( typeof jQuery !== 'undefined' && ext instanceof jQuery)))
+              if(typeof (ext) !== 'object' || (typeof HTMLElement !== 'undefined' && ext instanceof HTMLElement) || ext instanceof Class || (typeof THREE !== 'undefined' && ext instanceof THREE.Object3D) || (typeof ext !== 'undefined' && ( typeof jQuery !== 'undefined' && ext instanceof jQuery)))
               {
                   original[key] = ext;
               }

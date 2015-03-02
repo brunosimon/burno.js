@@ -3,8 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Burno.js - Demo - Mouse</title>
+    <style>
+        .element {margin:20px;padding:20px;background:#eee;float:left;clear:both;font-family:Helvetica,Arial;font-size:14px;}
+        .element td.label {min-width:100px;}
+        .element td.value {min-width:100px;}
+        .element td.value.inactive {color:#f00;}
+        .element td.value.active {color:#00BB3B;}
+    </style>
 </head>
 <body>
+
+    <div class="element move"></div>
+    <div class="element down"></div>
+    <div class="element wheel"></div>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/libs/polyfills/classlist.js"></script>
+    <script src="../../src/libs/polyfills/foreach.js"></script>
+    <script src="../../src/libs/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/libs/polyfills/indexof.js"></script>
+    <script src="../../src/libs/polyfills/object-keys.js"></script>
+    <script src="../../src/libs/polyfills/requestanimationframe.js"></script>
 
     <!-- LIBS -->
     <script src="../../src/libs/class.js"></script>
@@ -23,8 +42,120 @@
     <script src="../../src/app/tools/keyboard.class.js"></script>
     <script src="../../src/app/tools/mouse.class.js"></script>
     <script src="../../src/app/tools/colors.class.js"></script>
+    <script src="../../src/app/tools/offline.class.js"></script>
 
     <script>
+
+        var mouse = new B.Tools.Mouse();
+
+        mouse.on( 'move', function( position, target )
+        {
+            console.log( 'move', position );
+
+            var text = [];
+
+            text.push( '<strong>' );
+            text.push( 'move' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'x' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( position.x );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'y' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( position.y );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'ratio x' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( position.ratio.x );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'ratio y' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( position.ratio.y );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element.move' ).innerHTML = text.join('');
+        } );
+
+        mouse.on( 'down up', function( position, target )
+        {
+            console.log( 'down up', this.down );
+
+            var text = [];
+
+            text.push( '<strong>' );
+            text.push( 'down / up' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'down' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( this.down ? 'true' : 'false' );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element.down' ).innerHTML = text.join('');
+        } );
+        mouse.trigger( 'down' );
+
+        mouse.on( 'wheel', function( wheel )
+        {
+            var text = [];
+
+            console.log( 'wheel', wheel );
+
+            text.push( '<strong>' );
+            text.push( 'wheel' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'delta' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( wheel.delta );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element.wheel' ).innerHTML = text.join('');
+        } );
 
     </script>
 </body>

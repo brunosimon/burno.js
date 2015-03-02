@@ -3,8 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Burno.js - Demo - Ticker</title>
+    <style>
+        .element {margin:20px;padding:20px;background:#eee;float:left;clear:both;font-family:Helvetica,Arial;font-size:14px;}
+        .element td.label {min-width:100px;}
+        .element td.value {min-width:100px;}
+        .element td.value.inactive {color:#f00;}
+        .element td.value.active {color:#00BB3B;}
+    </style>
 </head>
 <body>
+
+    <div class="element"></div>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/libs/polyfills/classlist.js"></script>
+    <script src="../../src/libs/polyfills/foreach.js"></script>
+    <script src="../../src/libs/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/libs/polyfills/indexof.js"></script>
+    <script src="../../src/libs/polyfills/object-keys.js"></script>
+    <script src="../../src/libs/polyfills/requestanimationframe.js"></script>
 
     <!-- LIBS -->
     <script src="../../src/libs/class.js"></script>
@@ -23,8 +40,62 @@
     <script src="../../src/app/tools/keyboard.class.js"></script>
     <script src="../../src/app/tools/mouse.class.js"></script>
     <script src="../../src/app/tools/colors.class.js"></script>
+    <script src="../../src/app/tools/offline.class.js"></script>
 
     <script>
+
+        var ticker = new B.Tools.Ticker();
+
+        ticker.on( 'tick', function( infos )
+        {
+            var text = [];
+            text.push( '<strong>' );
+            text.push( 'tick' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'start' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( infos.start );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'elapsed' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( infos.elapsed );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'delta' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( infos.delta );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'current' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( infos.current );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element' ).innerHTML = text.join('');
+        } );
 
     </script>
 </body>

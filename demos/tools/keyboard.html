@@ -3,8 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Burno.js - Demo - Keyboard</title>
+    <style>
+        .element {margin:20px;padding:20px;background:#eee;float:left;clear:both;font-family:Helvetica,Arial;font-size:14px;}
+        .element td.label {min-width:100px;}
+        .element td.value {min-width:100px;}
+        .element td.value.inactive {color:#f00;}
+        .element td.value.active {color:#00BB3B;}
+    </style>
 </head>
 <body>
+
+    <div class="element"></div>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/libs/polyfills/classlist.js"></script>
+    <script src="../../src/libs/polyfills/foreach.js"></script>
+    <script src="../../src/libs/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/libs/polyfills/indexof.js"></script>
+    <script src="../../src/libs/polyfills/object-keys.js"></script>
+    <script src="../../src/libs/polyfills/requestanimationframe.js"></script>
 
     <!-- LIBS -->
     <script src="../../src/libs/class.js"></script>
@@ -23,14 +40,39 @@
     <script src="../../src/app/tools/keyboard.class.js"></script>
     <script src="../../src/app/tools/mouse.class.js"></script>
     <script src="../../src/app/tools/colors.class.js"></script>
+    <script src="../../src/app/tools/offline.class.js"></script>
 
     <script>
 
         var keyboard = new B.Tools.Keyboard();
 
-        keyboard.on( 'down', function( character, keycode )
+        keyboard.on( 'down up', function( character, keycode )
         {
-            console.log(character, keycode);
+            console.log( 'is space down ', keyboard.is_down( 'space' ) );
+
+            var text = [];
+
+            text.push( '<strong>' );
+            text.push( 'keyboard' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'downs names' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( keyboard.downs );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element' ).innerHTML = text.join('');
+
+            return false;
         } );
 
     </script>

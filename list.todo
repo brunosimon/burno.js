@@ -2,19 +2,21 @@
 TODO
 -------------------------------------------------------
 [ ] Create doc
+[ ] Merging issue with special objects like jQuery or THREE
 [ ] Demos
 	[ ] App
 		[ ] Main App
 		[ ] Custom Tool
 		[ ] Custom Component
-	[ ] Tools
-		[ ] Browser
-		[ ] Colors
-		[ ] GA Tags
-		[ ] Keyboard
-		[ ] Mouse
-		[ ] Resizer
-		[ ] Ticker
+	[√] Tools
+		[√] Colors
+		[√] Keyboard
+		[√] Browser
+		[√] GA Tags
+		[√] Mouse
+		[√] Resizer
+		[√] Ticker
+		[√] Offline
 [ ] Comments everywhere !!! (DocBlock http://en.wikipedia.org/wiki/PHPDoc#Tags)
 	[ ] Classes
 	[ ] Methods
@@ -23,19 +25,17 @@ TODO
 	[ ] Navigation
 	[ ] Scroll
 	[ ] Page
-	[√] Offline
+	[ ] Time / Date
+		[ ] Formater (custom formats (sprinf like))
+		[ ] Local
 [ ] Classes (update)
 	[ ] Event_Emitter
 		[ ] Deffered trigger (can specify event)
-	[ ] Browser
-		[ ] Mobile support
-		[ ] Tablet support
-		[ ] Version detection
-			[ ] Firefox
-			[ ] Chrome
-			[ ] Safari
 	[ ] GA Tags
 		[ ] Dynamically add GA script with method "init( ua_code )"
 			[ ] Trigger event
 	[ ] Mouse
 		[ ] Wheel type detection
+	[ ] Colors
+		[ ] Better gradient (multiple steps)
+		[ ] Only one convertissor method (default any => rgb)

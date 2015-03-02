@@ -8,50 +8,9 @@
         options :
         {
             disable_hover_on_scroll : true,
-            initial_trigger : true,
-            add_classes_to  :
-            [
-                'body'
-            ],
-            breakpoints :
-            [
-                {
-                    name     : 'large',
-                    limits   :
-                    {
-                        width :
-                        {
-                            value    : 960,
-                            extreme  : 'min',
-                            included : false
-                        }
-                    }
-                },
-                {
-                    name     : 'medium',
-                    limits   :
-                    {
-                        width :
-                        {
-                            value    : 960,
-                            extreme  : 'max',
-                            included : true
-                        }
-                    }
-                },
-                {
-                    name     : 'small',
-                    limits   :
-                    {
-                        width :
-                        {
-                            value    : 500,
-                            extreme  : 'max',
-                            included : true
-                        }
-                    }
-                }
-            ]
+            initial_trigger         : true,
+            add_classes_to          : [ 'html' ],
+            breakpoints             : []
         },
 
         /**
@@ -82,15 +41,13 @@
             this.viewport.height      = window.innerHeight;
 
             this.pixel_ratio   = window.devicePixelRatio || 1;
-            this.shall_trigger = {};
-            this.is            = null;
-            this.version       = null;
-            // this.mobile      = this.mobile_detection();
 
-            this.init_browser_version();
+            this.init_detection();
             this.init_breakpoints();
             this.init_disable_hover_on_scroll();
             this.init_events();
+
+            this.add_classes();
             this.initial_trigger();
         },
 
@@ -162,7 +119,6 @@
                 // Width must be tested
                 if( !width )
                 {
-
                     // Min
                     if( breakpoint.limits.width.extreme === 'min' )
                     {
@@ -230,7 +186,7 @@
             {
                 var old_breakpoint            = this.breakpoints.current;
                 this.breakpoints.current      = current_breakpoint;
-                this.shall_trigger.breakpoint = [ this.breakpoints.current, old_breakpoint ];
+                this.trigger( 'breakpoint', [ this.breakpoints.current, old_breakpoint ] );
             }
         },
 
@@ -273,68 +229,200 @@
         },
 
         /**
-         * INIT BROWSER VERSION
+         * INIT DETECTION
          */
-        init_browser_version : function()
+        init_detection : function()
         {
-            var is    = {},
-                agent = navigator.userAgent.toLowerCase();
+            var detect = {};
 
-            // Detect browser
-            is.opera             = !!window.opera || navigator.userAgent.indexOf( ' OPR/' ) >= 0;
-            is.firefox           = typeof InstallTrigger !== 'undefined';
-            is.safari            = Object.prototype.toString.call( window.HTMLElement ).indexOf( 'Constructor' ) > 0;
-            is.chrome            = !!window.chrome && !is.opera;
-            is.internet_explorer = ( ( agent.indexOf( 'msie' ) !== -1 ) && ( agent.indexOf( 'opera' ) === -1 ) );// For use within normal web clients
-            is.ipad              = agent.indexOf( 'ipad' ) !== -1;
+            // Prepare
+            var engine     = {};
+            engine.ie      = 0;
+            engine.gecko   = 0;
+            engine.webkit  = 0;
+            engine.khtml   = 0;
+            engine.opera   = 0;
+            engine.version = 0;
 
-            // // For use within iPad developer UIWebView
-            // // Thanks to Andrew Hedges!
-            // var ua = navigator.userAgent;
-            // var isiPad = /iPad/i.test(ua) || /iPhone OS 3_1_2/i.test(ua) || /iPhone OS 3_2_2/i.test(ua);
+            var browser = {};
+            browser.ie      = 0;
+            browser.firefox = 0;
+            browser.safari  = 0;
+            browser.konq    = 0;
+            browser.opera   = 0;
+            browser.chrome  = 0;
+            browser.safari  = 0;
+            browser.version = 0;
 
-            // Alias
-            is.O    = is.opera;
-            is.FF   = is.firefox;
-            is.SAF  = is.safari;
-            is.CH   = is.chrome;
-            is.IE   = is.internet_explorer;
-            is.MSIE = is.internet_explorer;
-            is.IPAD = is.ipad;
+            var system            = {};
+            system.windows        = false;
+            system.mac            = false;
+            system.osx            = false;
+            system.iphone         = false;
+            system.ipod           = false;
+            system.ipad           = false;
+            system.ios            = false;
+            system.blackberry     = false;
+            system.android        = false;
+            system.opera_mini     = false;
+            system.windows_mobile = false;
+            system.wii            = false;
+            system.ps             = false;
 
-            this.is = is;
+            var features   = {};
+            features.touch = false;
 
-            this.version = false;
-
-            if( this.is.IE )
+            // Detect
+            var user_agent = navigator.userAgent;
+            if( window.opera )
             {
-                var user_agent = navigator.userAgent.toLowerCase();
-                this.version = user_agent.indexOf( 'msie' ) !== -1 ? parseInt( user_agent.split( 'msie' )[ 1 ], 10 ) : false;
+                engine.version = browser.version = window.opera.version();
+                engine.opera   = browser.opera   = parseInt( engine.version );
+            }
+            else if( /AppleWebKit\/(\S+)/.test( user_agent ) || /AppleWebkit\/(\S+)/.test( user_agent ) )
+            {
+                engine.version = RegExp.$1;
+                engine.webkit  = parseInt( engine.version );
 
-                this.is[ 'internet_explorer_' + this.version ] = true;
-                this.is[ 'IE_' + this.version ] = true;
+                // figure out if it's Chrome or Safari
+                if( /Chrome\/(\S+)/.test( user_agent ) )
+                {
+                    browser.version = RegExp.$1;
+                    browser.chrome  = parseInt( browser.version );
+                }
+                else if( /Version\/(\S+)/.test( user_agent ) )
+                {
+                    browser.version = RegExp.$1;
+                    browser.safari  = parseInt( browser.version );
+                }
+                else
+                {
+                    // Approximate version
+                    var safariVersion = 1;
+
+                    if( engine.webkit < 100 )
+                        safariVersion = 1;
+                    else if( engine.webkit < 312 )
+                        safariVersion = 1.2;
+                    else if( engine.webkit < 412 )
+                        safariVersion = 1.3;
+                    else
+                        safariVersion = 2;
+
+                    browser.safari = browser.version = safariVersion;
+                }
+            }
+            else if( /KHTML\/(\S+)/.test( user_agent ) || /Konqueror\/([^;]+)/.test( user_agent ) )
+            {
+                engine.version = browser.version = RegExp.$1;
+                engine.khtml   = browser.konq    = parseInt( engine.version );
+            }
+            else if( /rv:([^\)]+)\) Gecko\/\d{8}/.test( user_agent ) )
+            {
+                engine.version = RegExp.$1;
+                engine.gecko   = parseInt( engine.version );
+
+                // Determine if it's Firefox
+                if ( /Firefox\/(\S+)/.test( user_agent ) )
+                {
+                    browser.version = RegExp.$1;
+                    browser.firefox = parseInt( browser.version );
+                }
+            }
+            else if( /MSIE ([^;]+)/.test( user_agent ) )
+            {
+                engine.version = browser.version = RegExp.$1;
+                engine.ie      = browser.ie      = parseInt( engine.version );
+            }
+            else if( /Trident.*rv[ :]*(11[\.\d]+)/.test( user_agent ) )
+            {
+                engine.version = browser.version = RegExp.$1;
+                engine.ie      = browser.ie      = parseInt( engine.version );
             }
 
-            // Add classes
-            this.add_classes();
+            // Detect browsers
+            browser.ie    = engine.ie;
+            browser.opera = engine.opera;
+
+            // Detect platform (using navigator.plateform)
+            var plateform  = navigator.platform;
+            // system.windows = plateform.indexOf( 'Win' ) === 0;
+            // system.mac     = plateform.indexOf( 'Mac' ) === 0;
+            // system.x11     = ( plateform === 'X11' ) || ( plateform.indexOf( 'Linux' ) === 0);
+
+            // Detect platform (using navigator.userAgent)
+            system.windows = !!user_agent.match( /Win/ );
+            system.mac     = !!user_agent.match( /Mac/ );
+            // system.x11     = ( plateform === 'X11' ) || ( plateform.indexOf( 'Linux' ) === 0);
+
+            // Detect windows operating systems
+            if( system.windows )
+            {
+                if( /Win(?:dows )?([^do]{2})\s?(\d+\.\d+)?/.test( user_agent ) )
+                {
+                    if( RegExp.$1 === 'NT' )
+                    {
+                        switch( RegExp.$2 )
+                        {
+                            case '5.0':
+                                system.windows = '2000';
+                                break;
+
+                            case '5.1':
+                                system.windows = 'XP';
+                                break;
+
+                            case '6.0':
+                                system.windows = 'Vista';
+                                break;
+
+                            default:
+                                system.windows = 'NT';
+                                break;
+                        }
+                    }
+                    else if( RegExp.$1 === '9x' )
+                    {
+                        system.windows = 'ME';
+                    }
+                    else
+                    {
+                        system.windows = RegExp.$1;
+                    }
+                }
+            }
+
+            // Detect mobile (mix between OS and device)
+            system.nokia          = !!user_agent.match( /Nokia/i );
+            system.kindle_fire    = !!user_agent.match( /Silk/ );
+            system.iphone         = !!user_agent.match( /iPhone/ );
+            system.ipod           = !!user_agent.match( /iPod/ );
+            system.ipad           = !!user_agent.match( /iPad/ );
+            system.blackberry     = !!user_agent.match( /BlackBerry/ ) || !!user_agent.match( /BB[0-9]+/ ) || !!user_agent.match( /PlayBook/ );
+            system.android        = !!user_agent.match( /Android/ );
+            system.opera_mini     = !!user_agent.match( /Opera Mini/i );
+            system.windows_mobile = !!user_agent.match( /IEMobile/i );
+
+            // iOS / OS X exception
+            system.ios = system.iphone || system.ipod || system.ipad;
+            system.osx = !system.ios && !!user_agent.match( /OS X/ );
+
+            // Detect gaming systems
+            system.wii         = user_agent.indexOf( 'Wii' ) > -1;
+            system.playstation = /playstation/i.test( user_agent );
+
+            //Detect features (Not as reliable as Modernizr)
+            features.touch       = !!( ( 'ontouchstart' in window ) || window.DocumentTouch && document instanceof DocumentTouch );
+            features.media_query = !!( window.matchMedia || window.msMatchMedia );
+
+            this.user_agent      = user_agent;
+            this.plateform       = plateform;
+            this.detect          = {};
+            this.detect.browser  = browser;
+            this.detect.engine   = engine;
+            this.detect.system   = system;
+            this.detect.features = features;
         },
-
-        // /**
-        //  * GET MOBILE
-        //  */
-        // mobile_detection : function()
-        // {
-        //     var checker = {};
-
-        //     checker.iphone     = navigator.userAgent.match( /(iPhone|iPod|iPad)/ );
-        //     checker.blackberry = navigator.userAgent.match( /BlackBerry/ );
-        //     checker.android    = navigator.userAgent.match( /Android/ );
-        //     checker.opera      = navigator.userAgent.match( /Opera Mini/i );
-        //     checker.windows    = navigator.userAgent.match( /IEMobile/i );
-        //     checker.all        = ( checker.iphone || checker.blackberry || checker.android || checker.opera || checker.windows );
-
-        //     return checker;
-        // },
 
         /**
          * ADD CLASSES
@@ -342,27 +430,57 @@
          */
         add_classes : function()
         {
-            var targets = null;
+            var targets  = null,
+                selector = null;
+
+            // Each element that need to add classes
             for( var i = 0, len = this.options.add_classes_to.length; i < len; i++ )
             {
-                targets = document.querySelectorAll( this.options.add_classes_to[ i ] );
+                // Selector
+                selector = this.options.add_classes_to[ i ];
 
+                // Target
+                switch( selector )
+                {
+                    case 'html' :
+                        targets = [ document.documentElement ];
+                        break;
+
+                    case 'body' :
+                        targets = [ document.body ];
+                        break;
+
+                    default :
+                        targets = document.querySelectorAll( selector );
+                        break;
+                }
+
+                // Targets found
                 if( targets.length )
                 {
-                    for( var key in this.is )
+                    this.classes = [];
+
+                    // Each category
+                    for( var category in this.detect )
                     {
-                        if( this.is[ key ] )
+                        // Each property in category
+                        for( var property in this.detect[ category ] )
                         {
-                            for( var j = 0; j < targets.length; j++ )
+                            var value = this.detect[ category ][ property ];
+
+                            if( value && property !== 'ver' )
                             {
-                                targets[ j ].classList.add( key );
-                                if( this.is.IE && this.version )
-                                {
-                                    targets[ j ].classList.add( key + '-' + this.version );
-                                }
+                                this.classes.push( category + '-' + property );
+
+                                if( category === 'browser'  )
+                                    this.classes.push( category + '-' + property + '-' + value );
                             }
                         }
                     }
+
+                    // Add classes
+                    for( var j = 0; j < targets.length; j++ )
+                        targets[ j ].classList.add.apply( targets[ j ].classList, this.classes );
                 }
             }
         },
@@ -374,12 +492,6 @@
         init_events : function()
         {
             var that = this;
-
-            // Ticker
-            this.ticker.on( 'tick', function()
-            {
-                that.frame();
-            } );
 
             // Resize
             window.onresize = function()
@@ -404,7 +516,7 @@
 
             this.test_breakpoints();
 
-            this.shall_trigger.resize = [ this.viewport ];
+            this.trigger( 'resize', [ this.viewport ] );
         },
 
         /**
@@ -412,17 +524,12 @@
          */
         scroll_handle : function()
         {
-            // e = e || window.event;
-            // if (e.preventDefault)
-            //     e.preventDefault();
-            // e.returnValue = false;
-
             var direction_y = null,
                 direction_x = null,
                 top         = null,
                 left        = null;
 
-            if( this.is.IE && document.compatMode === 'CSS1Compat' )
+            if( this.detect.browser.ie && document.compatMode === 'CSS1Compat' )
             {
                 direction_y = window.document.documentElement.scrollTop  > this.viewport.top  ? 'down'  : 'up';
                 direction_x = window.document.documentElement.scrollLeft > this.viewport.left ? 'right' : 'left';
@@ -448,7 +555,7 @@
             this.viewport.y           = this.viewport.top;
             this.viewport.x           = this.viewport.left;
 
-            this.shall_trigger.scroll = [ this.viewport ];
+            this.trigger( 'scroll', [ this.viewport ] );
         },
 
         /**
@@ -456,25 +563,10 @@
          */
         match_media : function( condition )
         {
-            if( !( 'matchMedia' in window ) || typeof condition !== 'string' || condition === '' )
+            if( this.detect.features.media_query || typeof condition !== 'string' || condition === '' )
                 return false;
 
             return !!window.matchMedia( condition ).matches;
-        },
-
-        /**
-         * FRAME
-         */
-        frame : function()
-        {
-            var keys = Object.keys( this.shall_trigger );
-
-
-            for( var i = 0; i < keys.length; i++ )
-                this.trigger( keys[ i ], this.shall_trigger[ keys[ i ] ] );
-
-            if( keys.length )
-                this.shall_trigger = {};
         }
     } );
 } )();

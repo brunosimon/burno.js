@@ -64,11 +64,11 @@
 
 * Options
 * Viewport
-* Browser detection
-* Device detection
+* Detection (user agent, no plateform (emulation), browser, engine, system (messy), features (touch))
+* Classes
 * Breakpoints
 * Disable hover on scroll
-* Math media
+* Match media
 * Events
 
 ### Colors

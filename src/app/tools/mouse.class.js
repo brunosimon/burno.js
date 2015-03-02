@@ -69,7 +69,7 @@
             {
                 that.wheel.delta = e.wheelDeltaY || e.wheelDelta || - e.detail;
 
-                if( that.trigger( 'wheel', [ that.wheel.delta ] ) === false )
+                if( that.trigger( 'wheel', [ that.wheel ] ) === false )
                 {
                     e.preventDefault();
                     return false;
@@ -92,7 +92,6 @@
                 document.attachEvent( 'onmousemove', mouse_move_handle, false );
                 document.attachEvent( 'onmousewheel', mouse_wheel_handle, false );
             }
-
         }
     } );
 } )();

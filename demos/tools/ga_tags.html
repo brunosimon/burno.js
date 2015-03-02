@@ -3,13 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Burno.js - Demo - GA Tags</title>
+    <style>
+        .element {margin:20px;padding:20px;background:#eee;float:left;clear:both;font-family:Helvetica,Arial;font-size:14px;}
+        .element td.label {min-width:100px;}
+        .element td.value {min-width:100px;}
+        .element td.value.inactive {color:#f00;}
+        .element td.value.active {color:#00BB3B;}
+    </style>
 </head>
 <body>
 
-    <a href="#" class="tag" data-tag-category="category" data-tag-action="action">Link 1</a> (with category and action)<br />
-    <a href="#" class="tag" data-tag-category="category" data-tag-action="action" data-tag-label="label" data-tag-value="value">Link 2</a> (with category, action, label and value)<br />
-    <a href="#" class="tag" data-tag-category="category">Link 3</a> (with category but missing action<br />
-    <a href="#" class="tag" data-tag-category="category" data-tag-action="action" data-tag-unique="foo">Link 4</a> (unique, can be triggered only once)
+    <div>
+        <a href="#" class="tag" data-tag-category="foo" data-tag-action="bar">Link 1</a> (with category and action)<br />
+        <a href="#" class="tag" data-tag-category="foo" data-tag-action="bar" data-tag-label="lorem" data-tag-value="1337">Link 2</a> (with category, action, label and value)<br />
+        <a href="#" class="tag" data-tag-category="foo">Link 3</a> (with category but missing action<br />
+        <a href="#" class="tag" data-tag-category="foo" data-tag-action="bar" data-tag-unique="foo">Link 4</a> (unique, can be triggered only once)
+    </div>
+
+    <div class="element"></div>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/libs/polyfills/classlist.js"></script>
+    <script src="../../src/libs/polyfills/foreach.js"></script>
+    <script src="../../src/libs/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/libs/polyfills/indexof.js"></script>
+    <script src="../../src/libs/polyfills/object-keys.js"></script>
+    <script src="../../src/libs/polyfills/requestanimationframe.js"></script>
 
     <!-- LIBS -->
     <script src="../../src/libs/class.js"></script>
@@ -28,6 +47,7 @@
     <script src="../../src/app/tools/keyboard.class.js"></script>
     <script src="../../src/app/tools/mouse.class.js"></script>
     <script src="../../src/app/tools/colors.class.js"></script>
+    <script src="../../src/app/tools/offline.class.js"></script>
 
     <script>
 
@@ -54,15 +74,63 @@
         // Listen to send event
         ga_tags.on( 'send', function( data )
         {
-            console.log( data );
+
+            var text = [];
+
+            text.push( '<strong>' );
+            text.push( 'last tag sent' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'category' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( data[ 0 ] );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'action' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( data[ 1 ] );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'label' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( data[ 2 ] );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'value' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( data[ 3 ] );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element' ).innerHTML = text.join('');
         } );
 
         // Manualy send
         ga_tags.send( {
-            category : 'category',
-            action   : 'action',
-            label    : 'label',
-            value    : 'value',
+            category : 'foo',
+            action   : 'bar',
+            label    : 'lorem',
+            value    : 'ipsum',
             unique   : 'bar'
         } );
 

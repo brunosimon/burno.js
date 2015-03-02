@@ -3,8 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Burno.js - Demo - Colors</title>
+    <style>
+        .element {margin:20px;padding:20px;background:#eee;float:left;clear:both;font-family:Helvetica,Arial;font-size:14px;}
+        .element td.label {min-width:100px;}
+        .element td.value {min-width:100px;}
+        .element td.value.inactive {color:#f00;}
+        .element td.value.active {color:#00BB3B;}
+    </style>
 </head>
 <body>
+
+    <div class="element"></div>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/libs/polyfills/classlist.js"></script>
+    <script src="../../src/libs/polyfills/foreach.js"></script>
+    <script src="../../src/libs/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/libs/polyfills/indexof.js"></script>
+    <script src="../../src/libs/polyfills/object-keys.js"></script>
+    <script src="../../src/libs/polyfills/requestanimationframe.js"></script>
 
     <!-- LIBS -->
     <script src="../../src/libs/class.js"></script>
@@ -23,8 +40,58 @@
     <script src="../../src/app/tools/keyboard.class.js"></script>
     <script src="../../src/app/tools/mouse.class.js"></script>
     <script src="../../src/app/tools/colors.class.js"></script>
+    <script src="../../src/app/tools/offline.class.js"></script>
 
     <script>
+
+        var colors      = new B.Tools.Colors(),
+            test_colors = [
+                'red',
+                'cornflower blue',
+                'dark-violet',
+                'darkviolet',
+                '0x54ffb1',
+                '#b1ff54',
+                '7c54ff',
+                '#f0f',
+                '{"r":255,"g":84,"b":148}',
+                '{"h":0.84,"s":0.3,"l":0.3}',
+            ];
+
+
+        var text = [];
+        text.push( '<strong>' );
+        text.push( 'color conversions' );
+        text.push( '</strong>' );
+        text.push( '<br>' );
+        text.push( '<table>' );
+
+        for( var i = 0, len = test_colors.length; i < len; i++ )
+        {
+            var color           = test_colors[ i ],
+                converted_color = colors.any_to_rgb( color );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( color );
+            text.push( '</td>' );
+            text.push( '<td class="value" style="color:rgb(' );
+            text.push( converted_color.r );
+            text.push( ',' );
+            text.push( converted_color.g );
+            text.push( ',' );
+            text.push( converted_color.b );
+            text.push( ')">' );
+            text.push( JSON.stringify( converted_color ) );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+        }
+        text.push( '</table>' );
+
+        // Add to DOM
+        document.querySelector( '.element' ).innerHTML = text.join('');
+
+
 
     </script>
 </body>
