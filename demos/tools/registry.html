@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Burno.js - Demo - App</title>
+    <title>Burno.js - Demo - Registry</title>
+    <link rel="stylesheet" href="../src/css/style.css">
 </head>
 <body>
 
@@ -32,7 +33,23 @@
     <script src="../../src/tools/ticker.class.js"></script>
 
     <script>
-        var app = new B.Components.App();
+
+        var registry = new B.Tools.Registry();
+
+        registry.set( 'key-1', 'foo' );
+
+        // Key exist
+        console.log( registry.get( 'key-1' ) );
+
+        // Key doesn't exist
+        console.log( registry.get( 'key-2' ) );
+
+        // Key doesn't exist but set value if so
+        console.log( registry.get( 'key-3', function()
+        {
+            return 'bar';
+        } ) );
+
     </script>
 </body>
 </html>

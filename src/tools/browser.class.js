@@ -1,4 +1,12 @@
-(function()
+/**
+ * @class    Browser
+ * @author   Bruno SIMON / http://bruno-simon.com
+ * @fires    resize
+ * @fires    scroll
+ * @fires    breakpoint
+ * @requires B.Tools.Ticker
+ */
+( function()
 {
     'use strict';
 
@@ -14,12 +22,12 @@
         },
 
         /**
-         * INIT
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
          */
         init : function( options )
         {
-            var that = this;
-
             this._super( options );
 
             this.ticker = new B.Tools.Ticker();
@@ -45,16 +53,98 @@
             this.init_detection();
             this.init_breakpoints();
             this.init_disable_hover_on_scroll();
-            this.init_events();
+            this.listen_to_events();
 
-            this.add_classes();
-            this.initial_trigger();
+            this.add_detection_classes();
+            this.trigger_initial_events();
         },
 
         /**
-         * INITIAL TRIGGER
+         * Listen to events
+         * @return {object} Context
          */
-        initial_trigger : function()
+        listen_to_events : function()
+        {
+            var that = this;
+
+            // Resize
+            window.onresize = function()
+            {
+                that.resize_handler();
+            };
+
+            // Scroll
+            window.onscroll = function()
+            {
+                that.scroll_handler();
+            };
+
+            return this;
+        },
+
+        /**
+         * Handle the resize event
+         * @return {object} Context
+         */
+        resize_handler : function()
+        {
+            this.viewport.width  = window.innerWidth;
+            this.viewport.height = window.innerHeight;
+
+            this.test_breakpoints();
+
+            this.trigger( 'resize', [ this.viewport ] );
+
+            return this;
+        },
+
+        /**
+         * Handle the scroll event
+         * @return {object} Context
+         */
+        scroll_handler : function()
+        {
+            var direction_y = null,
+                direction_x = null,
+                top         = null,
+                left        = null;
+
+            if( this.detect.browser.ie && document.compatMode === 'CSS1Compat' )
+            {
+                direction_y = window.document.documentElement.scrollTop  > this.viewport.top  ? 'down'  : 'up';
+                direction_x = window.document.documentElement.scrollLeft > this.viewport.left ? 'right' : 'left';
+                top         = window.document.documentElement.scrollTop;
+                left        = window.document.documentElement.scrollLeft;
+            }
+            else
+            {
+                direction_y = window.pageYOffset > this.viewport.top  ? 'down'  : 'up';
+                direction_x = window.pageXOffset > this.viewport.left ? 'right' : 'left';
+                top         = window.pageYOffset;
+                left        = window.pageXOffset;
+            }
+
+            this.viewport.direction.y = direction_y;
+            this.viewport.direction.x = direction_x;
+            this.viewport.delta.top   = top  - this.viewport.top;
+            this.viewport.delta.left  = left - this.viewport.left;
+            this.viewport.delta.y     = this.viewport.delta.top;
+            this.viewport.delta.x     = this.viewport.delta.left;
+            this.viewport.top         = top;
+            this.viewport.left        = left;
+            this.viewport.y           = this.viewport.top;
+            this.viewport.x           = this.viewport.left;
+
+            this.trigger( 'scroll', [ this.viewport ] );
+
+            return this;
+        },
+
+        /**
+         * Trigger initial events on next frame
+         * @return {object} Context
+         */
+        trigger_initial_events : function()
         {
             var that = this;
 
@@ -64,14 +154,17 @@
                 this.ticker.do_next( function()
                 {
                     // Trigger scroll and resize
-                    that.scroll_handle();
-                    that.resize_handle();
+                    that.scroll_handler();
+                    that.resize_handler();
                 } );
             }
+
+            return this;
         },
 
         /**
-         * INIT BREAKPOINTS
+         * Initialise breakpoints
+         * @return {object} Context
          */
         init_breakpoints : function()
         {
@@ -80,18 +173,82 @@
             this.breakpoints.current = null;
 
             this.add_breakpoints( this.options.breakpoints );
+
+            return this;
         },
 
         /**
-         * ADD BREAKPOINTS
+         * Add one breakpoint
+         * @param {object} breakpoint Breakpoint informations
+         * @return {object}           Context
+         * @example
+         *
+         *     add_breakpoint( {
+         *         name     : 'large',
+         *         limits   :
+         *         {
+         *             width :
+         *             {
+         *                 value    : 960,
+         *                 extreme  : 'min',
+         *                 included : false
+         *             }
+         *         }
+         *     } )
+         *
          */
         add_breakpoint : function( breakpoint )
         {
             this.breakpoints.items.push( breakpoint );
+
+            return this;
         },
 
         /**
-         * ADD BREAKPOINTS
+         * Add multiple breakpoint
+         * @param {array} breakpoints Array of breakpoints
+         * @return {object}           Context
+         * @example
+         *
+         *     add_breakpoints( [
+         *         {
+         *             name     : 'large',
+         *             limits   :
+         *             {
+         *                 width :
+         *                 {
+         *                     value    : 960,
+         *                     extreme  : 'min',
+         *                     included : false
+         *                 }
+         *             }
+         *         },
+         *         {
+         *             name     : 'medium',
+         *             limits   :
+         *             {
+         *                 width :
+         *                 {
+         *                     value    : 960,
+         *                     extreme  : 'max',
+         *                     included : true
+         *                 }
+         *             }
+         *         },
+         *         {
+         *             name     : 'small',
+         *             limits   :
+         *             {
+         *                 width :
+         *                 {
+         *                     value    : 500,
+         *                     extreme  : 'max',
+         *                     included : true
+         *                 }
+         *             }
+         *         }
+         *     ] )
+         *
          */
         add_breakpoints : function( breakpoints )
         {
@@ -99,10 +256,13 @@
             {
                 this.add_breakpoint( breakpoints[ i ] );
             }
+
+            return this;
         },
 
         /**
-         * TEST BREAKPOINTS
+         * Test every breakpoint and trigger 'breakpoint' event if current breakpoint changed
+         * @return {object} Context
          */
         test_breakpoints : function()
         {
@@ -188,11 +348,13 @@
                 this.breakpoints.current      = current_breakpoint;
                 this.trigger( 'breakpoint', [ this.breakpoints.current, old_breakpoint ] );
             }
+
+            return this;
         },
 
         /**
-         * INIT DISABLE HOVER ON SCROLL
-         * Huge gain in performance when scrolling
+         * Disable pointer events on body when scrolling for performance
+         * @return {object} Context
          */
         init_disable_hover_on_scroll : function()
         {
@@ -226,10 +388,13 @@
             }
 
             this.on( 'scroll', disable );
+
+            return this;
         },
 
         /**
-         * INIT DETECTION
+         * Detect engine, browser, system and feature in a specified list and store in 'detect' property
+         * @return {object} Context
          */
         init_detection : function()
         {
@@ -425,10 +590,10 @@
         },
 
         /**
-         * ADD CLASSES
-         * Add browser class to wanted elements like <body> or <html>
+         * Add detected informations to the DOM (on <html> by default)
+         * @return {object} Context
          */
-        add_classes : function()
+        add_detection_classes : function()
         {
             var targets  = null,
                 selector = null;
@@ -483,83 +648,14 @@
                         targets[ j ].classList.add.apply( targets[ j ].classList, this.classes );
                 }
             }
+
+            return this;
         },
 
         /**
-         * INIT EVENTS
-         * Start listening events
-         */
-        init_events : function()
-        {
-            var that = this;
-
-            // Resize
-            window.onresize = function()
-            {
-                that.resize_handle();
-            };
-
-            // Scroll
-            window.onscroll = function()
-            {
-                that.scroll_handle();
-            };
-        },
-
-        /**
-         * RESIZE HANDLE
-         */
-        resize_handle : function()
-        {
-            this.viewport.width  = window.innerWidth;
-            this.viewport.height = window.innerHeight;
-
-            this.test_breakpoints();
-
-            this.trigger( 'resize', [ this.viewport ] );
-        },
-
-        /**
-         * SCROLL HANDLE
-         */
-        scroll_handle : function()
-        {
-            var direction_y = null,
-                direction_x = null,
-                top         = null,
-                left        = null;
-
-            if( this.detect.browser.ie && document.compatMode === 'CSS1Compat' )
-            {
-                direction_y = window.document.documentElement.scrollTop  > this.viewport.top  ? 'down'  : 'up';
-                direction_x = window.document.documentElement.scrollLeft > this.viewport.left ? 'right' : 'left';
-                top         = window.document.documentElement.scrollTop;
-                left        = window.document.documentElement.scrollLeft;
-            }
-            else
-            {
-                direction_y = window.pageYOffset > this.viewport.top  ? 'down'  : 'up';
-                direction_x = window.pageXOffset > this.viewport.left ? 'right' : 'left';
-                top         = window.pageYOffset;
-                left        = window.pageXOffset;
-            }
-
-            this.viewport.direction.y = direction_y;
-            this.viewport.direction.x = direction_x;
-            this.viewport.delta.top   = top  - this.viewport.top;
-            this.viewport.delta.left  = left - this.viewport.left;
-            this.viewport.delta.y     = this.viewport.delta.top;
-            this.viewport.delta.x     = this.viewport.delta.left;
-            this.viewport.top         = top;
-            this.viewport.left        = left;
-            this.viewport.y           = this.viewport.top;
-            this.viewport.x           = this.viewport.left;
-
-            this.trigger( 'scroll', [ this.viewport ] );
-        },
-
-        /**
-         * MATH MEDIA
+         * Test media and return false if not compatible
+         * @param  {string} condition Condition to test
+         * @return {boolean}          Match
          */
         match_media : function( condition )
         {

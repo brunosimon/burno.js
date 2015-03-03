@@ -1,3 +1,7 @@
+/**
+ * @class  Resizer
+ * @author Bruno SIMON / http://bruno-simon.com
+ */
 (function()
 {
     'use strict';
@@ -10,7 +14,9 @@
         },
 
         /**
-         * INIT
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
          */
         init : function( options )
         {

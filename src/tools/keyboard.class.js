@@ -1,4 +1,11 @@
-(function()
+/**
+ * @class    Keyboard
+ * @author   Bruno SIMON / http://bruno-simon.com
+ * @fires    down
+ * @fires    up
+ * @requires B.Tools.Browser
+ */
+( function()
 {
     'use strict';
 
@@ -27,7 +34,9 @@
         },
 
         /**
-         * INIT
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
          */
         init : function( options )
         {
@@ -36,13 +45,14 @@
             this.browser = new B.Tools.Browser();
             this.downs   = [];
 
-            this.init_events();
+            this.listen_to_events();
         },
 
         /**
-         * INIT EVENTS
+         * Listen to events
+         * @return {object} Context
          */
-        init_events : function()
+        listen_to_events : function()
         {
             var that = this;
 
@@ -69,31 +79,37 @@
 
                 that.trigger( 'up', [ e.keyCode, character ] );
             };
+
+            return this;
         },
 
         /**
-         * KEYCODE TO CHAR
+         * Convert a keycode to a char
+         * @param  {integer} input Original keycode
+         * @return {string}        Output
          */
-        keycode_to_character : function( keycode )
+        keycode_to_character : function( input )
         {
-            var character = this.options.keycode_names[ keycode ];
+            var output = this.options.keycode_names[ input ];
 
-            if( !character )
-                character = String.fromCharCode( keycode ).toLowerCase();
+            if( !output )
+                output = String.fromCharCode( input ).toLowerCase();
 
-            return character;
+            return output;
         },
 
         /**
-         * ARE DOWN
+         * Test if keys are down
+         * @param  {array} inputs Array of char to test as strings
+         * @return {boolean}      True if every keys are down
          */
-        are_down : function( keys )
+        are_down : function( inputs )
         {
             var down = true;
 
-            for( var i = 0; i < keys.length; i++ )
+            for( var i = 0; i < inputs.length; i++ )
             {
-                var key = keys[ i ];
+                var key = inputs[ i ];
 
                 if( typeof key === 'number' )
                     key = this.keycode_to_character( key );
@@ -106,11 +122,13 @@
         },
 
         /**
-         * IS DOWN
+         * Test if key is down
+         * @param  {string}  input Char as string
+         * @return {boolean}       True if key is down
          */
-        is_down : function( key )
+        is_down : function( input )
         {
-            return this.are_down( [ key ] );
+            return this.are_down( [ input ] );
         }
     } );
 } )();

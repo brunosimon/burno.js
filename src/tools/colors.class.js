@@ -1,11 +1,23 @@
-(function()
+/**
+ * @class    Colors
+ * @author   Bruno SIMON / http://bruno-simon.com
+ */
+( function()
 {
     'use strict';
 
     B.Tools.Colors = B.Core.Abstract.extend(
     {
         static  : 'colors',
-        options : {},
+        options :
+        {
+            parse   : true,
+            classes :
+            {
+                to_convert : 'gradient-text',
+                converted  : 'gradient-text-converted',
+            }
+        },
         names   :
         {
             'aliceblue'            : 'F0F8FF',
@@ -152,7 +164,22 @@
         },
 
         /**
-         * ANY TO RGB
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
+         */
+        init : function( options )
+        {
+            this._super( options );
+
+            if( this.options.parse )
+                this.parse();
+        },
+
+        /**
+         * Try to convert any data to RGB object
+         * @param  {any}     Any color format
+         * @return {object}  RGB object
          */
         any_to_rgb : function( any )
         {
@@ -217,28 +244,29 @@
         },
 
         /**
-         * PARSE FOR GRADIENT TEXTS
+         * Parse the target looking for text to convert to gradients
+         * @param  {HTMLElement} target   HTML target (default body)
+         * @param  {string}      selector Query selector
+         * @return {object}               Context
          */
-        parse_for_gradient_texts : function( selector, $container )
+        parse : function( target, selector )
         {
-            var that = this;
+            // Defaults
+            target   = target   || document.body;
+            selector = selector || this.options.classes.to_convert;
 
-            if( typeof selector === 'undefined' )
-                selector = '.gradient-text';
+            var that     = this,
+                elements = target.querySelectorAll( '.' + selector + ':not(' + this.options.classes.converted + ')' );
 
-            if( typeof $container === 'undefined' )
-                $container = $( 'body' );
-
-            var $texts = $container.find( selector );
-
-            $texts.each( function()
+            // Each element
+            for( var i = 0, i_len = elements.length; i < i_len; i++ )
             {
-                var $text    = $( this ),
-                    new_text = '',
-                    text     = $text.text(),
-                    start    = $text.data( 'gradient-start' ),
-                    end      = $text.data( 'gradient-end' ),
-                    steps    = null;
+                var element    = elements[ i ],
+                    beautified = '',
+                    text       = element.innerText,
+                    start      = element.getAttribute( 'data-gradient-start' ),
+                    end        = element.getAttribute( 'data-gradient-end' ),
+                    steps      = null;
 
                 if( !start )
                     start = '#47add9';
@@ -248,17 +276,50 @@
 
                 steps = that.get_steps_colors( start, end, text.length, 'rgb' );
 
-                for( var i = 0; i < text.length; i++ )
+                for( var j = 0, j_len = text.length; j < j_len; j++ )
                 {
-                    new_text += '<span style="color:rgb(' + steps[ i ].r + ',' + steps[ i ].g + ',' + steps[ i ].b + ')">' + text[ i ] + '</span>';
+                    beautified += '<span style="color:rgb(' + steps[ j ].r + ',' + steps[ j ].g + ',' + steps[ j ].b + ')">' + text[ j ] + '</span>';
                 }
 
-                $text.html( new_text );
-            } );
+                element.innerHTML = beautified;
+            }
+
+
+            // $texts.each( function()
+            // {
+            //     var $text    = $( this ),
+            //         new_text = '',
+            //         text     = $text.text(),
+            //         start    = $text.data( 'gradient-start' ),
+            //         end      = $text.data( 'gradient-end' ),
+            //         steps    = null;
+
+            //     if( !start )
+            //         start = '#47add9';
+
+            //     if( !end )
+            //         end = '#3554e9';
+
+            //     steps = that.get_steps_colors( start, end, text.length, 'rgb' );
+
+            //     for( var i = 0; i < text.length; i++ )
+            //     {
+            //         new_text += '<span style="color:rgb(' + steps[ i ].r + ',' + steps[ i ].g + ',' + steps[ i ].b + ')">' + text[ i ] + '</span>';
+            //     }
+
+            //     $text.html( new_text );
+            // } );
+
+            return this;
         },
 
         /**
-         * GET STEPS COLORS
+         * Retrieve every step color between the start and end color
+         * @param  {any}     start  Any color format
+         * @param  {any}     end    Any color format
+         * @param  {integer} count  Number of steps
+         * @param  {string}  format 'rgb' or 'hsl'
+         * @return {array}          Array of HSL or RGB objects
          */
         get_steps_colors : function( start, end, count, format )
         {
@@ -289,12 +350,15 @@
             return steps;
         },
 
+
         /**
-         * HEXA TO RGBA
+         * Convert from hexa to RGB
+         * @param  {string} input Hexa code in 6 char length format
+         * @return {object}       RGB object
          */
-        hexa_to_rgb : function( hexa )
+        hexa_to_rgb : function( input )
         {
-            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec( hexa );
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec( input );
 
             return {
                 r : parseInt( result[ 1 ], 16 ),
@@ -304,16 +368,18 @@
         },
 
         /**
-         * RGB TO HSL
+         * Convert from RGB to HSL
+         * @param  {object} input RGB object
+         * @return {object}       HSL object
          */
-        rgb_to_hsl : function( color )
+        rgb_to_hsl : function( input )
         {
-            color.r /= 255;
-            color.g /= 255;
-            color.b /= 255;
+            input.r /= 255;
+            input.g /= 255;
+            input.b /= 255;
 
-            var max       = Math.max( color.r, color.g, color.b ),
-                min       = Math.min( color.r, color.g, color.b ),
+            var max       = Math.max( input.r, input.g, input.b ),
+                min       = Math.min( input.r, input.g, input.b ),
                 color_hsl = {};
 
             color_hsl.h = ( max + min ) / 2;
@@ -333,16 +399,16 @@
 
                 switch( max )
                 {
-                    case color.r :
-                        color_hsl.h = ( color.g - color.b ) / d + ( color.g < color.b ? 6 : 0 );
+                    case input.r :
+                        color_hsl.h = ( input.g - input.b ) / d + ( input.g < input.b ? 6 : 0 );
                         break;
 
-                    case color.g :
-                        color_hsl.h = ( color.b - color.r ) / d + 2;
+                    case input.g :
+                        color_hsl.h = ( input.b - input.r ) / d + 2;
                         break;
 
-                    case color.b :
-                        color_hsl.h = ( color.r - color.g ) / d + 4;
+                    case input.b :
+                        color_hsl.h = ( input.r - input.g ) / d + 4;
                         break;
                 }
 
@@ -353,17 +419,19 @@
         },
 
         /**
-         * HSL TO RGB
+         * Convert from HSL to RGB
+         * @param  {object} input HSL object
+         * @return {object}       RGB object
          */
-        hsl_to_rgb : function( color )
+        hsl_to_rgb : function( input )
         {
             var color_rgb = {};
 
-            if( color.s === 0 )
+            if( input.s === 0 )
             {
-                color_rgb.r = color.l;
-                color_rgb.g = color.l;
-                color_rgb.b = color.l;
+                color_rgb.r = input.l;
+                color_rgb.g = input.l;
+                color_rgb.b = input.l;
             }
             else
             {
@@ -377,12 +445,12 @@
                     return p;
                 };
 
-                var q = color.l < 0.5 ? color.l * (1 + color.s) : color.l + color.s - color.l * color.s;
-                var p = 2 * color.l - q;
+                var q = input.l < 0.5 ? input.l * (1 + input.s) : input.l + input.s - input.l * input.s;
+                var p = 2 * input.l - q;
 
-                color_rgb.r = hue2rgb( p, q, color.h  + 1 / 3 );
-                color_rgb.g = hue2rgb( p, q, color.h );
-                color_rgb.b = hue2rgb( p, q, color.h  - 1 / 3 );
+                color_rgb.r = hue2rgb( p, q, input.h  + 1 / 3 );
+                color_rgb.g = hue2rgb( p, q, input.h );
+                color_rgb.b = hue2rgb( p, q, input.h  - 1 / 3 );
             }
 
             color_rgb.r = Math.round( color_rgb.r * 255 );

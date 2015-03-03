@@ -1,4 +1,11 @@
-(function()
+/**
+ * @class    Offline
+ * @author   Bruno SIMON / http://bruno-simon.com
+ * @fires    online
+ * @fires    offline
+ * @fires    change
+ */
+( function()
 {
     'use strict';
 
@@ -17,7 +24,9 @@
         },
 
         /**
-         * INIT
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
          */
         init : function( options )
         {
@@ -25,13 +34,14 @@
 
             this.status = null;
 
-            this.init_events();
+            this.listen_to_events();
         },
 
         /**
-         * INIT EVENTS
+         * Listen to events
+         * @return {object} Context
          */
-        init_events : function()
+        listen_to_events : function()
         {
             var that = this;
 
@@ -87,6 +97,8 @@
             }
 
             change();
+
+            return this;
         }
     } );
 } )();

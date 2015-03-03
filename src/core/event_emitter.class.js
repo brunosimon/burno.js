@@ -1,3 +1,7 @@
+/**
+ * @class  Resizer
+ * @author Bruno SIMON / http://bruno-simon.com
+ */
 (function()
 {
     'use strict';
@@ -8,7 +12,9 @@
         options : {},
 
         /**
-         * INIT
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
          */
         init : function( options )
         {
@@ -19,9 +25,18 @@
         },
 
         /**
-         * ON
+         * Start listening specified events
+         * @param  {string}   names    Events names (can contain namespace)
+         * @param  {function} callback Function to apply if events are triggered
+         * @return {object}            Context
+         * @example
+         *
+         *     on( 'event-1.namespace event-2.namespace event-3', function( value )
+         *     {
+         *         console.log( 'fire !', value );
+         *     } );
          */
-        on : function( names, action )
+        on : function( names, callback )
         {
             var that  = this;
 
@@ -32,9 +47,9 @@
                 return false;
             }
 
-            if( typeof action === 'undefined' )
+            if( typeof callback === 'undefined' )
             {
-                console.warn( 'wrong action' );
+                console.warn( 'wrong callback' );
                 return false;
             }
 
@@ -51,19 +66,29 @@
                 if( !( that.callbacks[ name.namespace ] instanceof Object ) )
                     that.callbacks[ name.namespace ] = {};
 
-                // Create action if not exist
+                // Create callback if not exist
                 if( !( that.callbacks[ name.namespace ][ name.value ] instanceof Array ) )
                     that.callbacks[ name.namespace ][ name.value ] = [];
 
-                // Add action
-                that.callbacks[ name.namespace ][ name.value ].push( action );
+                // Add callback
+                that.callbacks[ name.namespace ][ name.value ].push( callback );
             });
 
             return this;
         },
 
         /**
-         * OFF
+         * Stop listening specified events
+         * @param  {string}   names Events names (can contain namespace or be the namespace only)
+         * @return {object}         Context
+         * @example
+         *
+         *     off( 'event-1 event-2' );
+         *
+         *     off( 'event-3.namespace' );
+         *
+         *     off( '.namespace' );
+         *
          */
         off : function( names )
         {
@@ -91,7 +116,7 @@
                     delete that.callbacks[ name.namespace ];
                 }
 
-                // Remove specific action in namespace
+                // Remove specific callback in namespace
                 else
                 {
                     // Default
@@ -127,7 +152,10 @@
         },
 
         /**
-         * TRIGGER
+         * Fires event
+         * @param  {string} name Event name (single)
+         * @param  {array} args  Arguments to send to callbacks
+         * @return {boolean}     First value sent by the callbacks applieds
          */
         trigger : function( name, args )
         {
@@ -155,14 +183,14 @@
             // Default namespace
             if( name.namespace === 'base' )
             {
-                // Try to find action in each namespace
+                // Try to find callback in each namespace
                 for( var namespace in that.callbacks )
                 {
                     if( that.callbacks[ namespace ] instanceof Object && that.callbacks[ namespace ][ name.value ] instanceof Array )
                     {
-                        that.callbacks[ namespace ][ name.value ].forEach( function( action )
+                        that.callbacks[ namespace ][ name.value ].forEach( function( callback )
                         {
-                            result = action.apply( that,args );
+                            result = callback.apply( that,args );
 
                             if( typeof final_result === 'undefined' )
                                 final_result = result;
@@ -180,9 +208,9 @@
                     return this;
                 }
 
-                that.callbacks[ name.namespace ][ name.value ].forEach( function( action )
+                that.callbacks[ name.namespace ][ name.value ].forEach( function( callback )
                 {
-                    result = action.apply( that, args );
+                    result = callback.apply( that, args );
 
                     if( typeof final_result === 'undefined' )
                         final_result = result;
@@ -193,7 +221,7 @@
         },
 
         /**
-         * TRIGGA NIGGA WUT
+         * Trigga wut say wut
          */
         trigga : function( name, args )
         {
@@ -201,7 +229,18 @@
         },
 
         /**
-         * RESOLVE NAMES
+         * Fire everything !
+         * https://www.youtube.com/watch?v=1Io0OQ2zPS4
+         */
+        fire : function( name, args )
+        {
+            return this.trigger( name, args );
+        },
+
+        /**
+         * Resolve events names
+         * @param  {string} names Events names
+         * @return {array}        Array of names (with namespace included in name)
          */
         resolve_names : function( names )
         {
@@ -213,7 +252,9 @@
         },
 
         /**
-         * RESOLVE NAME
+         * Resolve event name
+         * @param  {string} name Event name
+         * @return {object}      Event object containing original name, real event name and namespace
          */
         resolve_name : function( name )
         {

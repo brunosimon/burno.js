@@ -1,4 +1,8 @@
-(function()
+/**
+ * @class    Css
+ * @author   Bruno SIMON / http://bruno-simon.com
+ */
+( function()
 {
     'use strict';
 
@@ -11,23 +15,18 @@
         },
 
         /**
-         * INIT
+         * Apply css on target and add every prefixes
+         * @param  {HTMLElement} target HTML element that need to be applied
+         * @param  {string} property Property name
+         * @param  {string} value    Value
+         * @return {HTMLElement}     Modified element
          */
-        init : function( options )
-        {
-            this._super( options );
-        },
-
-        /**
-         * Apply
-         */
-        apply : function( $target, property, value )
+        apply : function( target, property, value )
         {
             // Force array
-            if( typeof $target.length === 'undefined' )
+            if( typeof target.length === 'undefined' )
             {
-                // console.log('ok');
-                $target = [ $target ];
+                target = [ target ];
             }
 
             // // Remove translateZ if necessary
@@ -49,21 +48,25 @@
 
             // Apply each CSS on each element
             var keys = Object.keys( css );
-            for( var j = 0, j_len = $target.length; j < j_len; j++ )
+            for( var j = 0, j_len = target.length; j < j_len; j++ )
             {
-                var element = $target[ j ];
+                var element = target[ j ];
 
                 for( var k = 0, k_len = keys.length; k < k_len; k++ )
                     element.style[ keys[ k ] ] = css[ keys[ k ] ];
             }
+
+            return target;
         },
 
         /**
-         * CAPITALIZE FIRST LETTER
+         * Capitalize first letter
+         * @param  {string} input Input
+         * @return {string}       Output
          */
-        capitalize_first_letter : function( text )
+        capitalize_first_letter : function( input )
         {
-            return text.charAt( 0 ).toUpperCase() + text.slice( 1 );
+            return input.charAt( 0 ).toUpperCase() + input.slice( 1 );
         }
     } );
 } )();

@@ -1,8 +1,16 @@
-// /* Simple JavaScript Inheritance
-//  * By John Resig http://ejohn.org/
-//  * MIT Licensed.
-//  */
-// // Inspired by base2 and Prototype
+// Simple structure
+var B =
+{
+    Core       : {},
+    Tools      : {},
+    Components : {}
+};
+
+/* Simple JavaScript Inheritance
+ * By John Resig http://ejohn.org/blog/simple-javascript-inheritance/
+ * MIT Licensed.
+ */
+// Inspired by base2 and Prototype
 (function ()
 {
     "use strict";

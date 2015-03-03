@@ -1,4 +1,9 @@
-(function()
+/**
+ * @class    Resizer
+ * @author   Bruno SIMON / http://bruno-simon.com
+ * @requires B.Tools.Browser
+ */
+( function()
 {
     'use strict';
 
@@ -18,7 +23,9 @@
         },
 
         /**
-         * INIT
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
          */
         init : function( options )
         {
@@ -34,7 +41,8 @@
         },
 
         /**
-         * INIT AUTO RESIZE
+         * Initialise auto resize
+         * @return {object} Context
          */
         init_auto_resize : function()
         {
@@ -46,19 +54,25 @@
             {
                 that.resize_all();
             } );
+
+            return this;
         },
 
         /**
-         * PARSE
+         * Parse the target looking for elements to resize
+         * @param  {HTMLElement} target    HTML target (default body)
+         * @param  {string}      selector  Query selector
+         * @return {object}                Context
          */
-        parse : function( target )
+        parse : function( target, selector )
         {
             // Default
-            target = target || document;
+            target   = target   || document.body;
+            selector = selector || this.options.classes.to_resize;
 
             // Elements
             this.elements = [];
-            var containers = target.querySelectorAll( '.' + this.options.classes.to_resize );
+            var containers = target.querySelectorAll( '.' + selector );
 
             // Each element
             for( var i = 0, len = containers.length; i < len; i++ )
@@ -78,10 +92,13 @@
                     } );
                 }
             }
+
+            return this;
         },
 
         /**
-         * RESIZE ALL
+         * Apply resize on each element
+         * @return {object} Context
          */
         resize_all : function()
         {
@@ -91,10 +108,16 @@
 
                 this.resize( element.container, element.content );
             }
+
+            return this;
         },
 
         /**
-         * RESIZE
+         * Apply resize on HTML target
+         * @param  {HTMLElement} container   HTML element outside
+         * @param  {HTMLElement} content     HTML element inside
+         * @param  {boolean}     force_style Force minimum CSS to make the resize work (position and overflow)
+         * @return {object}                  Context
          */
         resize : function( container, content, force_style )
         {
@@ -160,10 +183,28 @@
             content.style.left   = sizes.css.left;
             content.style.width  = sizes.css.width;
             content.style.height = sizes.css.height;
+
+            return this;
         },
 
         /**
-         * GET SIZES
+         * Retrieve the sizes for a content to fit inside a container
+         * @param  {object} parameters Parameters
+         * @return {object}            Sizes
+         * @example
+         *
+         *     get_sizes( {
+         *         content_width    : 200.4,
+         *         content_height   : 300.5,
+         *         container_width  : 600.6,
+         *         container_height : 400.7,
+         *         fit_type         : 'fit',
+         *         alignment_x      : 'center',
+         *         alignment_y      : 'center',
+         *         rounding         : 'floor',
+         *         coordinates      : 'cartesian'
+         *     } )
+         *
          */
         get_sizes : function( parameters )
         {
@@ -308,5 +349,5 @@
 
             return sizes;
         }
-    });
-})();
+    } );
+} )();

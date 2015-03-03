@@ -1,4 +1,9 @@
-(function()
+/**
+ * @class    GA_Tags
+ * @author   Bruno SIMON / http://bruno-simon.com
+ * @fires    send
+ */
+( function()
 {
     'use strict';
 
@@ -23,11 +28,13 @@
         },
 
         /**
-         * INIT
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
          */
         init : function( options )
         {
-            this._super(options);
+            this._super( options );
 
             this.unique_sent = [];
 
@@ -36,14 +43,18 @@
         },
 
         /**
-         * PARSE
+         * Parse the target looking for tags
+         * @param  {HTMLElement} target   HTML target (default body)
+         * @param  {string}      selector Query selector
+         * @return {object}               Context
          */
-        parse : function( target )
+        parse : function( target, selector )
         {
-            target = target || document;
+            target   = target   || document.body;
+            selector = selector || this.options.classes.to_tag;
 
             var that     = this,
-                elements = target.querySelectorAll( '.' + this.options.classes.to_tag + ':not(' + this.options.classes.tagged + ')' );
+                elements = target.querySelectorAll( '.' + selector + ':not(' + this.options.classes.tagged + ')' );
 
             function click_handle( e )
             {
@@ -94,7 +105,7 @@
                 }
             }
 
-            // Listen
+            // Each element
             for( var i = 0, len = elements.length; i < len; i++ )
             {
                 var element = elements[ i ];
@@ -105,10 +116,23 @@
                 // Set tagged class
                 element.classList.add( this.options.classes.tagged );
             }
+
+            return this;
         },
 
         /**
-         * SEND
+         * Send to Analytics
+         * @param  {object} options Datas to send
+         * @return {object}         Context
+         * @example
+         *
+         *     send( {
+         *         category : 'foo',
+         *         action   : 'bar',
+         *         label    : 'lorem',
+         *         value    : 'ipsum'
+         *     } )
+         *
          */
         send : function( options )
         {
@@ -213,6 +237,8 @@
 
                 this.trigger( 'send', [ send ] );
             }
+
+            return this;
         }
     } );
 } )();

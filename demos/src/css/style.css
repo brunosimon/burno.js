@@ -1,0 +1,5 @@
+.element {margin:20px;padding:20px;background:#eee;float:left;clear:both;font-family:Helvetica,Arial;font-size:14px;}
+.element td.label {min-width:80px;padding:0 10px;}
+.element td.value {min-width:80px;padding:0 10px;}
+.element td.value.inactive {color:#f00;}
+.element td.value.active {color:#00BB3B;}

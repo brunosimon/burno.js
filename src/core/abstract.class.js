@@ -1,3 +1,7 @@
+/**
+ * @class  Resizer
+ * @author Bruno SIMON / http://bruno-simon.com
+ */
 (function()
 {
     'use strict';
@@ -7,14 +11,14 @@
         static : false,
 
         /**
-         * INIT
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
          */
         init : function( options )
         {
             if( typeof options === 'undefined' )
                 options = {};
-
-            this.$ = {};
 
             this.options = merge( this.options,options );
 
@@ -31,7 +35,8 @@
         },
 
         /**
-         * STATIC INSTANTIATE (SINGLETON)
+         * True constructur used first to return class if static
+         * @return {class|null} Return class if static or null if default
          */
         static_instantiate : function()
         {
@@ -42,15 +47,7 @@
         },
 
         /**
-         * IGNITE DAT FIRE!
-         */
-        ignite : function()
-        {
-            return this.start();
-        },
-
-        /**
-         * DESTROY
+         * Destroy
          */
         destroy : function()
         {

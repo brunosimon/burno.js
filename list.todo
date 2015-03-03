@@ -1,26 +1,29 @@
 -------------------------------------------------------
 TODO
+imperative
 -------------------------------------------------------
-[ ] Create doc
-[ ] Merging issue with special objects like jQuery or THREE
+[ ] Doc
 [ ] Demos
 	[ ] App
 		[ ] Main App
 		[ ] Custom Tool
 		[ ] Custom Component
-	[√] Tools
-		[√] Colors
-		[√] Keyboard
-		[√] Browser
-		[√] GA Tags
-		[√] Mouse
-		[√] Resizer
-		[√] Ticker
-		[√] Offline
-[ ] Comments everywhere !!! (DocBlock http://en.wikipedia.org/wiki/PHPDoc#Tags)
-	[ ] Classes
-	[ ] Methods
+	[√] Common CSS
+	[√] Classes
+		[√] Registry
+[√] Better structure
+[√] Comments everywhere !!! (DocBlock http://en.wikipedia.org/wiki/PHPDoc#Tags)
+	[√] Classes
+	[√] Methods
+
+-------------------------------------------------------
+TODO
+optional
+-------------------------------------------------------
+[ ] Merging issue with special objects like jQuery or THREE
+[ ] Sublime snippets
 [ ] Classes (create)
+	[ ] Css
 	[ ] Storyline
 	[ ] Navigation
 	[ ] Scroll
@@ -31,11 +34,19 @@ TODO
 [ ] Classes (update)
 	[ ] Event_Emitter
 		[ ] Deffered trigger (can specify event)
+	[ ] Better Match media
+		[ ] Multiple matches
+		[ ] Fallback for width and height
 	[ ] GA Tags
 		[ ] Dynamically add GA script with method "init( ua_code )"
 			[ ] Trigger event
 	[ ] Mouse
 		[ ] Wheel type detection
 	[ ] Colors
+		[ ] Better param names (input/output)
 		[ ] Better gradient (multiple steps)
 		[ ] Only one convertissor method (default any => rgb)
+		[√] No jQuery
+	[ ] Registery
+		[ ] Persistence (localstorage / cookie fallback)
+		[√] Get callback if not found

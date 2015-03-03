@@ -1,12 +1,24 @@
-(function()
+/**
+ * @class    Mouse
+ * @author   Bruno SIMON / http://bruno-simon.com
+ * @fires    down
+ * @fires    up
+ * @fires    move
+ * @fires    wheel
+ * @requires B.Tools.Browser
+ */
+( function()
 {
     'use strict';
 
     B.Tools.Mouse = B.Core.Event_Emitter.extend(
     {
         static  : 'mouse',
+
         /**
-         * INIT
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
          */
         init : function( options )
         {
@@ -23,13 +35,14 @@
             this.wheel            = {};
             this.wheel.delta      = 0;
 
-            this.init_events();
+            this.listen_to_events();
         },
 
         /**
-         * INIT EVENTS
+         * Listen to events
+         * @return {object} Context
          */
-        init_events : function()
+        listen_to_events : function()
         {
             var that = this;
 
@@ -92,6 +105,8 @@
                 document.attachEvent( 'onmousemove', mouse_move_handle, false );
                 document.attachEvent( 'onmousewheel', mouse_wheel_handle, false );
             }
+
+            return this;
         }
     } );
 } )();

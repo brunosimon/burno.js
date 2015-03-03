@@ -1,4 +1,8 @@
-(function()
+/**
+ * @class    Resizer
+ * @author   Bruno SIMON / http://bruno-simon.com
+ */
+( function()
 {
     'use strict';
 
@@ -11,13 +15,15 @@
         },
 
         /**
-         * INIT
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
          */
         init : function( options )
         {
             this._super( options );
 
-            this.started                = false;
+            this.reseted                = false;
             this.running                = false;
             this.time                   = {};
             this.time.start             = 0;
@@ -33,11 +39,13 @@
         },
 
         /**
-         * START
+         * Reset the ticker by setting time infos to 0
+         * @param  {boolean} run Start the ticker
+         * @return {object}      Context
          */
-        start : function( run )
+        reset : function( run )
         {
-            this.started = true;
+            this.reseted = true;
 
             this.time.start   = + ( new Date() );
             this.time.current = this.time.start;
@@ -46,10 +54,13 @@
 
             if( run )
                 this.run();
+
+            return this;
         },
 
         /**
-         * RUN
+         * Run the ticker
+         * @return {object} Context
          */
         run : function()
         {
@@ -70,23 +81,30 @@
             };
 
             loop();
+
+            return this;
         },
 
         /**
-         * STOP
+         * Stop ticking
+         * @return {object} Context
          */
         stop : function()
         {
             this.running = false;
+
+            return this;
         },
 
         /**
-         * TICK
+         * Tick (or is it tack ?)
+         * @return {object} Context
          */
         tick : function()
         {
-            if( !this.started )
-                this.start();
+            // Reset if needed
+            if( !this.reseted )
+                this.reset();
 
             // Set time infos
             this.time.current = + ( new Date() );
@@ -114,10 +132,15 @@
                 this.do_next_actions.after[ i ].call( this, [ this.time ] );
                 this.do_next_actions.after.splice( i, 1 );
             }
+
+            return this;
         },
 
         /**
-         * DO NEXT
+         * Apply function on the next frame
+         * @param  {function} action Function to apply
+         * @param  {boolean}  before Do before the 'tick' event or after
+         * @return {object}          Context
          */
         do_next : function( action, before )
         {
@@ -125,6 +148,8 @@
                 return false;
 
             this.do_next_actions[ before ? 'before' : 'after' ].push( action );
+
+            return this;
         }
-    });
-})();
+    } );
+} )();

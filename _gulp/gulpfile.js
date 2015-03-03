@@ -16,22 +16,27 @@ var paths =
 gulp.task( 'js', function()
 {
     gulp.src([
-        paths.sources + 'libs/polyfills/classlist.js',
-        paths.sources + 'libs/polyfills/foreach.js',
-        paths.sources + 'libs/polyfills/indexof.js',
-        paths.sources + 'libs/polyfills/requestanimationframe.js',
-        paths.sources + 'libs/polyfills/object-keys.js',
-        paths.sources + 'libs/class.js',
-        paths.sources + 'app/core/b.class.js',
-        paths.sources + 'app/core/abstract.class.js',
-        paths.sources + 'app/core/event_emitter.class.js',
-        paths.sources + 'app/tools/mouse.class.js',
-        paths.sources + 'app/tools/keyboard.class.js',
-        paths.sources + 'app/tools/browser.class.js',
-        paths.sources + 'app/tools/css.class.js',
-        paths.sources + 'app/tools/images.class.js',
-        paths.sources + 'app/tools/ticker.class.js',
-        paths.sources + 'app/tools/navigation.class.js',
+        paths.sources + 'polyfills/classlist.js',
+        paths.sources + 'polyfills/foreach.js',
+        paths.sources + 'polyfills/getcomputedstyle.js',
+        paths.sources + 'polyfills/indexof.js',
+        paths.sources + 'polyfills/object-keys.js',
+        paths.sources + 'polyfills/requestanimationframe.js',
+
+        paths.sources + 'core/b.class.js',
+        paths.sources + 'core/abstract.class.js',
+        paths.sources + 'core/event_emitter.class.js',
+
+        paths.sources + 'tools/browser.class.js',
+        paths.sources + 'tools/colors.class.js',
+        paths.sources + 'tools/css.class.js',
+        paths.sources + 'tools/ga_tags.class.js',
+        paths.sources + 'tools/keyboard.class.js',
+        paths.sources + 'tools/mouse.class.js',
+        paths.sources + 'tools/offline.class.js',
+        paths.sources + 'tools/registry.class.js',
+        paths.sources + 'tools/resizer.class.js',
+        paths.sources + 'tools/ticker.class.js',
     ])
     .pipe( concat( 'burno.js' ) )
     .pipe( gulp.dest( paths.destination ) )
