@@ -6,154 +6,188 @@ var B =
     Components : {}
 };
 
-/* Simple JavaScript Inheritance
+/**
+ * Simple JavaScript Inheritance
  * By John Resig http://ejohn.org/blog/simple-javascript-inheritance/
  * MIT Licensed.
+ * Inspired by base2 and Prototype
  */
-// Inspired by base2 and Prototype
-(function ()
+( function()
 {
-    "use strict";
+    'use strict';
 
-    window.copy = function(object)
+    B.copy = function( object )
     {
         var c = null;
 
-        if(!object || typeof (object) !== 'object' || (typeof HTMLElement !== 'undefined' && object instanceof HTMLElement) || object instanceof Class || (typeof THREE !== 'undefined' && object instanceof THREE.Object3D) || (typeof jQuery !== 'undefined' && object instanceof jQuery))
+        // Simple object (exclude jQuery object, HTML Element, THREE js, ...)
+        if(
+            !object ||
+
+            object.constructor === Object
+        )
+        {
+            c = {};
+
+            for( var key in object )
+                c[ key ] = B.copy( object[ key ] );
+
+            return c;
+        }
+
+        // Array
+        else if( object instanceof Array )
+        {
+            c = [];
+
+            for( var i = 0, l = object.length; i < l; i++ )
+                c[ i ] = B.copy( object[ i ] );
+
+            return c;
+        }
+
+        // Other
+        else
         {
             return object;
         }
-        else if(object instanceof Array)
-        {
-            c = [];
-            for(var i = 0, l = object.length; i < l; i++)
-            {
-                c[i] = copy(object[i]);
-            }
-
-            return c;
-        }
-        else
-        {
-            c = {};
-            for(var i in object)
-            {
-                c[i] = copy(object[i]);
-            }
-
-            return c;
-        }
     };
 
-    window.merge = function (original, extended)
+    B.merge = function( original, extended )
     {
-          for(var key in extended)
-          {
-              var ext = extended[key];
-              if(typeof (ext) !== 'object' || (typeof HTMLElement !== 'undefined' && ext instanceof HTMLElement) || ext instanceof Class || (typeof THREE !== 'undefined' && ext instanceof THREE.Object3D) || (typeof ext !== 'undefined' && ( typeof jQuery !== 'undefined' && ext instanceof jQuery)))
-              {
-                  original[key] = ext;
-              }
-              else
-              {
-                  if(!original[key] || typeof (original[key]) !== 'object')
-                  {
-                      original[key] = (ext instanceof Array) ? [] : {};
-                  }
-                  merge(original[key], ext);
-              }
-          }
-          return original;
-      };
+        for( var key in extended )
+        {
+            var ext = extended[ key ];
+
+            if( ext.constructor === Object )
+            {
+                if( !original[ key ] )
+                    original[ key ] = {};
+
+                ext = Object.create( ext );
+
+                B.merge( ext, original[ key ] );
+            }
+            else
+            {
+                original[ key ] = ext;
+            }
+        }
+
+        return original;
+    };
 
     var initializing = false,
-        fnTest = /xyz/.test(function () {
-            xyz;
-        }) ? /\b_super\b/ : /.*/;
-    window.Class = function () {};
-    var inject = function (prop) {
-        var proto = this.prototype;
-        var _super = {};
-        for(var name in prop)
+        fnTest       = /xyz/.test( function()
         {
-            if(typeof (prop[name]) === "function" && typeof (proto[name]) === "function" && fnTest.test(prop[name]))
+            xyz;
+        } ) ? /\b_super\b/ : /.*/;
+
+    B.Class = function(){};
+
+    var inject = function( prop )
+    {
+        var proto  = this.prototype,
+            _super = {};
+
+        for( var name in prop )
+        {
+            if( typeof prop[ name ] === 'function' && typeof proto[ name ] === 'function' && fnTest.test( prop[ name ] ) )
             {
-                _super[name] = proto[name];
-                proto[name] = (function (name, fn)
+                _super[ name ] = proto[ name ];
+                proto[ name ]  = ( function( name, fn )
                 {
                     return function()
                     {
                         var tmp     = this._super;
-                        this._super = _super[name];
-                        var ret     = fn.apply(this, arguments);
+                        this._super = _super[ name ];
+                        var ret     = fn.apply( this, arguments );
                         this._super = tmp;
                         return ret;
                     };
-                })(name, prop[name]);
+                } )( name, prop[ name ] );
             }
+
             else
             {
-                proto[name] = prop[name];
+                proto[ name ] = prop[ name ];
             }
         }
     };
-    window.Class.extend = function(prop)
+
+    B.Class.extend = function( prop )
     {
         var _super    = this.prototype;
         initializing  = true;
         var prototype = new this();
         initializing  = false;
-        for(var name in prop)
+
+        for( var name in prop )
         {
-            if(typeof (prop[name]) === "function" && typeof (_super[name]) === "function" && fnTest.test(prop[name]))
+            if( typeof prop[ name ] === 'function' && typeof _super[ name ] === 'function' && fnTest.test( prop[ name ] ) )
             {
-                prototype[name] = (function(name, fn)
+                prototype[ name ] = ( function( name, fn )
                 {
                     return function()
                     {
                         var tmp     = this._super;
-                        this._super = _super[name];
-                        var ret     = fn.apply(this, arguments);
+                        this._super = _super[ name ];
+                        var ret     = fn.apply( this, arguments );
                         this._super = tmp;
+
                         return ret;
                     };
-                })(name, prop[name]);
+                } )( name, prop[ name ] );
             }
             else
             {
-                prototype[name] = prop[name];
+                if( name === 'options' )
+                {
+                    var temp = null;
+                    if( typeof prototype[ name ] === 'undefined' )
+                        temp = {};
+                    else
+                        temp = Object.create( prototype[ name ] );
+
+                    B.merge( prop[ name ], prototype[ name ] );
+                }
+
+                prototype[ name ] = prop[ name ];
             }
         }
 
-        function Class() {
-            if(!initializing)
+        function Class()
+        {
+            if( !initializing )
             {
-                if(this.static_instantiate)
+                if( this.static_instantiate )
                 {
-                    var obj = this.static_instantiate.apply(this, arguments);
-                    if (obj)
-                    {
+                    var obj = this.static_instantiate.apply( this, arguments );
+                    if( obj )
                         return obj;
-                    }
                 }
-                for(var p in this)
+
+                for( var p in this )
                 {
-                    if (typeof (this[p]) === 'object')
+                    if( typeof this[ p ] === 'object' )
                     {
-                        this[p] = copy(this[p]);
+                        this[ p ] = B.copy( this[ p ] );
                     }
                 }
-                if(this.init)
+
+                if( this.init )
                 {
-                    this.init.apply(this, arguments);
+                    this.init.apply( this, arguments );
                 }
             }
             return this;
         }
+
         Class.prototype             = prototype;
         Class.prototype.constructor = Class;
-        Class.extend                = window.Class.extend;
+        Class.extend                = B.Class.extend;
         Class.inject                = inject;
+
         return Class;
     };
-})();
+} )();

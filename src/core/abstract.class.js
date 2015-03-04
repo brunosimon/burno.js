@@ -6,7 +6,7 @@
 {
     'use strict';
 
-    B.Core.Abstract = Class.extend(
+    B.Core.Abstract = B.Class.extend(
     {
         static : false,
 
@@ -20,7 +20,7 @@
             if( typeof options === 'undefined' )
                 options = {};
 
-            this.options = merge( this.options,options );
+            this.options = B.merge( this.options, options );
 
             // Create statics container
             if( typeof B.Statics !== 'object' )

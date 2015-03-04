@@ -117,8 +117,10 @@
             // Do next (before trigger)
             for( ; i < len; i++ )
             {
-                this.do_next_actions.before[ i ].call( this, [ this.time ] );
+                this.do_next_actions.before[ i ].apply( this, [ this.time ] );
                 this.do_next_actions.before.splice( i, 1 );
+                i--;
+                len--;
             }
 
             // Trigger
@@ -129,8 +131,10 @@
             len = this.do_next_actions.after.length;
             for( ; i < len; i++ )
             {
-                this.do_next_actions.after[ i ].call( this, [ this.time ] );
+                this.do_next_actions.after[ i ].apply( this, [ this.time ] );
                 this.do_next_actions.after.splice( i, 1 );
+                i--;
+                len--;
             }
 
             return this;

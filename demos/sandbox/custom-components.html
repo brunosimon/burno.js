@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Sandbox - Custom components</title>
+</head>
+<body>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/polyfills/classlist.js"></script>
+    <script src="../../src/polyfills/foreach.js"></script>
+    <script src="../../src/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/polyfills/indexof.js"></script>
+    <script src="../../src/polyfills/object-keys.js"></script>
+    <script src="../../src/polyfills/requestanimationframe.js"></script>
+
+    <!-- CORE -->
+    <script src="../../src/core/b.class.js"></script>
+    <script src="../../src/core/abstract.class.js"></script>
+    <!-- <script src="../../src/core/event_emitter.class.js"></script> -->
+
+    <!-- TOOLS -->
+    <!-- <script src="../../src/tools/browser.class.js"></script>
+    <script src="../../src/tools/colors.class.js"></script>
+    <script src="../../src/tools/css.class.js"></script>
+    <script src="../../src/tools/ga_tags.class.js"></script>
+    <script src="../../src/tools/keyboard.class.js"></script>
+    <script src="../../src/tools/mouse.class.js"></script>
+    <script src="../../src/tools/offline.class.js"></script>
+    <script src="../../src/tools/registry.class.js"></script>
+    <script src="../../src/tools/resizer.class.js"></script>
+    <script src="../../src/tools/ticker.class.js"></script> -->
+
+    <script>
+
+        // Simple square class extending Abstract
+        B.Components.Square = B.Core.Abstract.extend( {
+
+            // Default options
+            options :
+            {
+                size  : 100,
+                color : '#939393',
+                foo   :
+                {
+                    bar  : 1,
+                    toto :
+                    {
+                        tutu : 'hey'
+                    }
+                }
+            },
+
+            // Tell what to do when instantiate
+            init : function( options )
+            {
+                // _super refers overriden 'init' method from the extended class (B.Core.Abstract)
+                this._super( options );
+
+                // Create element
+                this.element = document.createElement('div');
+
+                // Set type using options
+                this.element.style.margin          = '20px';
+                this.element.style.width           = this.options.size + 'px';
+                this.element.style.height          = this.options.size + 'px';
+                this.element.style.backgroundColor = this.options.color;
+
+                // Add to DOM
+                document.body.appendChild( this.element );
+            }
+
+        } );
+
+        B.Components.Rounded_Square = B.Components.Square.extend( {
+
+            // Add 'radius' options
+            // Extended class options ('size' and 'color') will be preserved
+            options :
+            {
+                radius : 20
+            },
+
+            init : function( options )
+            {
+                this._super( options );
+
+                // Add radius to the element
+                this.element.style.borderRadius = this.options.radius + 'px';
+            },
+
+            test : function()
+            {
+
+            }
+        } );
+
+        // Create some squares using the two component classes we just made with some options
+        var square                = new B.Components.Square(),
+            orange_square         = new B.Components.Square( { color : '#ff6000' } ),
+            rounded_square        = new B.Components.Rounded_Square( { radius : 40 } ),
+            orange_rounded_square = new B.Components.Rounded_Square( { color : '#ff6000' } );
+
+    </script>
+</body>
+</html>

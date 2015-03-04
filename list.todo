@@ -3,24 +3,22 @@ TODO
 imperative
 -------------------------------------------------------
 [ ] Doc
+[ ] Final IE8 test
 [ ] Demos
 	[ ] App
 		[ ] Main App
-		[ ] Custom Tool
-		[ ] Custom Component
-	[√] Common CSS
-	[√] Classes
-		[√] Registry
-[√] Better structure
-[√] Comments everywhere !!! (DocBlock http://en.wikipedia.org/wiki/PHPDoc#Tags)
-	[√] Classes
-	[√] Methods
+		[√] Custom Tool
+		[√] Custom Component
+[√] Options merging when extending
+[√] Versions
+[√] Polyfills
+	[√] Object.create
 
 -------------------------------------------------------
 TODO
 optional
 -------------------------------------------------------
-[ ] Merging issue with special objects like jQuery or THREE
+[√] Merging issue with special objects like jQuery or THREE
 [ ] Sublime snippets
 [ ] Classes (create)
 	[ ] Css
@@ -46,7 +44,5 @@ optional
 		[ ] Better param names (input/output)
 		[ ] Better gradient (multiple steps)
 		[ ] Only one convertissor method (default any => rgb)
-		[√] No jQuery
 	[ ] Registery
 		[ ] Persistence (localstorage / cookie fallback)
-		[√] Get callback if not found

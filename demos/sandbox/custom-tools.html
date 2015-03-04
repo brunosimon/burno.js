@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Sandbox - Custom tools</title>
+</head>
+<body>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/polyfills/classlist.js"></script>
+    <script src="../../src/polyfills/foreach.js"></script>
+    <script src="../../src/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/polyfills/indexof.js"></script>
+    <script src="../../src/polyfills/object-keys.js"></script>
+    <script src="../../src/polyfills/requestanimationframe.js"></script>
+
+    <!-- CORE -->
+    <script src="../../src/core/b.class.js"></script>
+    <script src="../../src/core/abstract.class.js"></script>
+    <script src="../../src/core/event_emitter.class.js"></script>
+
+    <!-- TOOLS -->
+    <!-- <script src="../../src/tools/browser.class.js"></script>
+    <script src="../../src/tools/colors.class.js"></script>
+    <script src="../../src/tools/css.class.js"></script>
+    <script src="../../src/tools/ga_tags.class.js"></script>
+    <script src="../../src/tools/keyboard.class.js"></script>
+    <script src="../../src/tools/mouse.class.js"></script>
+    <script src="../../src/tools/offline.class.js"></script>
+    <script src="../../src/tools/registry.class.js"></script>
+    <script src="../../src/tools/resizer.class.js"></script>
+    <script src="../../src/tools/ticker.class.js"></script> -->
+
+    <script>
+
+        // Create a custom tools that we choosed to name Robbie The Robot
+        B.Tools.Robbie_The_Robot = B.Core.Event_Emitter.extend(
+        {
+            // Set as static to use as a singleton
+            // Just choose something unique
+            static  : 'robbie_the_robot',
+
+            // Default options
+            options :
+            {
+                color : 'red'
+            },
+
+            // Tell what should Robbie do when instantiate
+            init : function( options )
+            {
+                // _super refers overriden 'init' method from the extended class (B.Core.Event_Emitter)
+                this._super( options );
+
+                // If Robbie need some Burno.js tools, you can set them here or later when needed
+                this.ticker = new B.Tools.Ticker();
+
+                // Do next frame
+                var that = this;
+                this.ticker.do_next( function()
+                {
+                    that.trigger( 'ready' );
+                } );
+            },
+
+            // Add 'say_hi' method to Robbie
+            say_hi : function()
+            {
+                // Choose a random hello message
+                var rand = Math.random(),
+                    talk = rand < 0.2 ? 'Hi !'         :
+                           rand < 0.4 ? 'Hello'        :
+                           rand < 0.6 ? 'Good morning' :
+                           rand < 0.8 ? 'Hola'         :
+                                        'Salute';
+
+                console.log( 'Robbie : ' + talk );
+            }
+        } );
+
+
+        // Instantiate the robot using the class
+        var robot = new B.Tools.Robbie_The_Robot( {
+            color : 'blue'
+        } );
+
+        // Listen for the 'ready' event
+        robot.on( 'ready', function()
+        {
+            console.log( 'Robbie The Robot is ready with color ' + this.options.color );
+            robot.say_hi();
+        } );
+
+        // Try to instantiate another robot
+        // Because Robbie The Robot is a static class, if you try to instantiate again, you will get the same instance
+        var new_robot = new B.Tools.Robbie_The_Robot( {
+            color : 'green'
+        } );
+
+    </script>
+</body>
+</html>

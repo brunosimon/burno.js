@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Sandbox - Custom components</title>
+</head>
+<body>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/polyfills/classlist.js"></script>
+    <script src="../../src/polyfills/foreach.js"></script>
+    <script src="../../src/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/polyfills/indexof.js"></script>
+    <script src="../../src/polyfills/object-keys.js"></script>
+    <script src="../../src/polyfills/requestanimationframe.js"></script>
+
+    <!-- BURNO.JS -->
+    <script src="../../build/burno-0.1.min.js"></script>
+
+    <!-- YOUR SCRIPT -->
+    <script>
+
+        var browser = new B.Tools.Browser();
+
+        browser.on( 'resize', function( viewport )
+        {
+            console.log( 'viewport height ', viewport.height );
+        } );
+
+    </script>
+
+</body>
+</html>

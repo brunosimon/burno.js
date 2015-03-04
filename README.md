@@ -1,58 +1,90 @@
-# Burno.js
+Burno.js
+========
 
 #### Yet another JS framework ####
 
-* Minimum dependencies (no jQuery, only few polyfills)
-* Mostly benefit with the tools
-* Light weight
-* Enable to organise (var app = new B.Component.App())
-* Include the file in your HTML, use it
-* Why Burno.JS
+Burno.js (or **B.js**) is a light (**< 40ko**) and simple **JS framework** I made and used on many website I developed.
+Because Internet is a place of love and sharing, here it is.
 
-## Usage
+With B.js, you can organize your web application into **Components** and **Tools**. It comes with some useful premade tools like "Browser", "Mouse", "Keyboard", "Resizer".
+Simply include the JS files in your HTML and start using it.
 
-### The simple way
-
-* Add the .js
-* Use the tools
-* example demos/tools
-* Only using tools
-
-
-### Inside of Burno.js
-
-* Organizing inside Components
-* Structure (namescape is just a way to organize)
-* Inherit (Improved version of Jon Resig)
-* Use strict (self called function)
-* Abstract (init (always called), destroy, $) / Event_Emitter (anchor to event emitter)
-* Options
-* Example demos/app
-
-
-### Abstract
-
-* For simple object
-* Singleton
-
-
-### Event Emitter
-
-* For object that will be listend
-* Inherit from abstract
-* Deferred
-* On
-* Off
-* Flags / Tags (?)
-* Transformation on event names
-* Form me
+B.js is still in development.
 
 
 ## Compatibility
 
-* All modern browsers
-* Polyfills
-* IE8
+B.js has no dependencies (because who need jQuery today?).
+It's compatible with all modern browsers down to IE8 (included)
+Depending on the browsers and classes you are using, you may need the polyfills which are included on the src/polyfills folder.
+
+
+## Usage
+
+There is two ways of using B.js.
+You can use it as a simple library by instantiating the Tools or you can use it as a Framework by developing your App and Components by extending B.js
+
+#### As a library (the easy way)
+
+* Include the build in your HTML
+* Instantiate the tools you need
+* Start using them (see below what each tool can do)
+
+```html
+<script src="../../build/burno-0.1.min.js"></script>
+<script>
+
+    var browser = new B.Tools.Browser();
+
+    browser.on( 'resize', function( viewport )
+    {
+        console.log( 'viewport height ', viewport.height );
+    } );
+
+</script>
+```
+
+#### As a framework (the powerful way)
+
+Create your own classes based on B.js classes and organize your web application into Components. You can organize all your components inside `B.Components` object or you can improve the namespace like `B.Components.Foo.Bar`.
+Inheritance is based on the [John Resig code](http://ejohn.org/blog/simple-javascript-inheritance/) with some improvements like deep property merging.
+B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode). Do as you whish and feel free to share your custom Tools and Components.
+
+* Include the build in your HTML
+* Create your own Tools and Components based on Burno classes **Abstract** or **Event Emitter**
+
+```html
+<script src="../../build/burno-0.1.min.js"></script>
+<script>
+
+
+
+</script>
+```
+
+## Core classes
+
+#### Abstract
+
+* Options (merging)
+* Init (always called)
+* For simple object
+* Static / Singleton
+* JS to include
+* example
+
+
+#### Event Emitter
+
+* For object that need to fire events and to be listen
+* Inherit from abstract
+* On
+* Off
+* Trigger (can ise 'fire')
+* Flags / Tags (?)
+* Transformation on event names
+* JS to include
+* example
 
 
 ## Tools

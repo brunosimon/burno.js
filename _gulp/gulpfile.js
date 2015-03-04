@@ -1,13 +1,19 @@
+// Modules
 var gulp   = require( 'gulp' ),
     concat = require( 'gulp-concat' ),
     uglify = require( 'gulp-uglify' ),
     watch  = require( 'gulp-watch' ),
     rename = require( 'gulp-rename' );
 
-var paths =
+// Options
+var options =
 {
-    sources     : '../src/',
-    destination : '../build/'
+    version : '0.1',
+    paths   :
+    {
+        sources     : '../src/',
+        destination : '../build/'
+    }
 };
 
 /**
@@ -15,34 +21,35 @@ var paths =
  */
 gulp.task( 'js', function()
 {
-    gulp.src([
-        paths.sources + 'polyfills/classlist.js',
-        paths.sources + 'polyfills/foreach.js',
-        paths.sources + 'polyfills/getcomputedstyle.js',
-        paths.sources + 'polyfills/indexof.js',
-        paths.sources + 'polyfills/object-keys.js',
-        paths.sources + 'polyfills/requestanimationframe.js',
+    gulp.src( [
+        options.paths.sources + 'polyfills/classlist.js',
+        options.paths.sources + 'polyfills/foreach.js',
+        options.paths.sources + 'polyfills/getcomputedstyle.js',
+        options.paths.sources + 'polyfills/indexof.js',
+        options.paths.sources + 'polyfills/object-keys.js',
+        options.paths.sources + 'polyfills/object-create.js',
+        options.paths.sources + 'polyfills/requestanimationframe.js',
 
-        paths.sources + 'core/b.class.js',
-        paths.sources + 'core/abstract.class.js',
-        paths.sources + 'core/event_emitter.class.js',
+        options.paths.sources + 'core/b.class.js',
+        options.paths.sources + 'core/abstract.class.js',
+        options.paths.sources + 'core/event_emitter.class.js',
 
-        paths.sources + 'tools/browser.class.js',
-        paths.sources + 'tools/colors.class.js',
-        paths.sources + 'tools/css.class.js',
-        paths.sources + 'tools/ga_tags.class.js',
-        paths.sources + 'tools/keyboard.class.js',
-        paths.sources + 'tools/mouse.class.js',
-        paths.sources + 'tools/offline.class.js',
-        paths.sources + 'tools/registry.class.js',
-        paths.sources + 'tools/resizer.class.js',
-        paths.sources + 'tools/ticker.class.js',
-    ])
-    .pipe( concat( 'burno.js' ) )
-    .pipe( gulp.dest( paths.destination ) )
+        options.paths.sources + 'tools/browser.class.js',
+        options.paths.sources + 'tools/colors.class.js',
+        options.paths.sources + 'tools/css.class.js',
+        options.paths.sources + 'tools/ga_tags.class.js',
+        options.paths.sources + 'tools/keyboard.class.js',
+        options.paths.sources + 'tools/mouse.class.js',
+        options.paths.sources + 'tools/offline.class.js',
+        options.paths.sources + 'tools/registry.class.js',
+        options.paths.sources + 'tools/resizer.class.js',
+        options.paths.sources + 'tools/ticker.class.js',
+    ] )
+    .pipe( concat( 'burno-' + options.version + '.js' ) )
+    .pipe( gulp.dest( options.paths.destination ) )
     .pipe( uglify() )
-    .pipe(rename( { extname: '.min.js' } ) )
-    .pipe( gulp.dest( paths.destination ) );
+    .pipe( rename( { extname : '.min.js' } ) )
+    .pipe( gulp.dest( options.paths.destination ) );
 } );
 
 /**
@@ -51,11 +58,10 @@ gulp.task( 'js', function()
 gulp.task( 'watch', [ 'js' ], function()
 {
     // JS
-    watch( [ paths.sources + 'js/**' ], function()
+    watch( [ options.paths.sources + 'js/**' ], function()
     {
         gulp.start( 'js' );
     } );
-
 } );
 
 gulp.task( 'default', [ 'js' ] );
