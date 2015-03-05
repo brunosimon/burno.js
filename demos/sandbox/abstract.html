@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Sandbox - Custom components</title>
+</head>
+<body>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/polyfills/classlist.js"></script>
+    <script src="../../src/polyfills/foreach.js"></script>
+    <script src="../../src/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/polyfills/indexof.js"></script>
+    <script src="../../src/polyfills/object-keys.js"></script>
+    <script src="../../src/polyfills/requestanimationframe.js"></script>
+
+    <!-- BURNO.JS -->
+    <script src="../../src/core/b.class.js"></script>
+    <script src="../../src/core/abstract.class.js"></script>
+
+    <!-- YOUR SCRIPT -->
+    <script>
+
+        // B.Components.Custom_Class = B.Core.Abstract.extend(
+        // {
+        //     init : function()
+        //     {
+        //         console.log( 'Welcome to my custom class' );
+        //     }
+        // } );
+
+        // var custom_class = new B.Components.Custom_Class();
+
+
+        B.Components.Custom_Class = B.Core.Abstract.extend(
+        {
+            options :
+            {
+                test :
+                {
+                    foo   : 'bar',
+                    lorem : 'ipsum'
+                }
+            },
+
+            init : function( options )
+            {
+                this._super( options );
+
+                console.log( 'See my custom class options', this.options );
+            }
+        } );
+
+        var custom_class = new B.Components.Custom_Class( {
+            test :
+            {
+                lorem : 'dolores'
+            }
+        } );
+
+    </script>
+
+</body>
+</html>

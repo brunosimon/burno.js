@@ -3,26 +3,26 @@ Burno.js
 
 #### Yet another JS framework ####
 
-Burno.js (or **B.js**) is a light (**< 40ko**) and simple **JS framework** I made and used on many website I developed.
+Burno.js (or **B.js**) is a light (**< 40ko**) and simple **JS framework** made to help you develop well structured web application quickly.
 Because Internet is a place of love and sharing, here it is.
 
-With B.js, you can organize your web application into **Components** and **Tools**. It comes with some useful premade tools like "Browser", "Mouse", "Keyboard", "Resizer".
+You can organize your web application into **Components** and **Tools**. It comes with some useful premade [tools](#tools).
 Simply include the JS files in your HTML and start using it.
 
-B.js is still in development.
+B.js is still in development, don't hesitate if you have any advice.
 
 
 ## Compatibility
 
 B.js has no dependencies (because who need jQuery today?).
 It's compatible with all modern browsers down to IE8 (included)
-Depending on the browsers and classes you are using, you may need the polyfills which are included on the src/polyfills folder.
+Depending on the browsers and classes you are using, you may need polyfills which are included in the src/polyfills folder.
 
 
 ## Usage
 
 There is two ways of using B.js.
-You can use it as a simple library by instantiating the Tools or you can use it as a Framework by developing your App and Components by extending B.js
+You can use it as a simple library by instantiating the Tools or you can use it as a Framework by developing your web application and its Components by extending B.js
 
 #### As a library (the easy way)
 
@@ -31,7 +31,10 @@ You can use it as a simple library by instantiating the Tools or you can use it 
 * Start using them (see below what each tool can do)
 
 ```html
+<!-- B.js -->
 <script src="../../build/burno-0.1.min.js"></script>
+
+<!-- Your script -->
 <script>
 
     var browser = new B.Tools.Browser();
@@ -54,43 +57,219 @@ B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/
 * Create your own Tools and Components based on Burno classes **Abstract** or **Event Emitter**
 
 ```html
+<!-- B.js -->
 <script src="../../build/burno-0.1.min.js"></script>
+
+<!-- Your classes -->
 <script>
 
+    // Create a class wrapping the all application
+    B.Components.My_App = B.Core.Abstract.extend(
+    {
+        // No default options
+        options : {},
 
+        init : function( options )
+        {
+            this._super( options );
+
+            // Instantiate a sidebar with blue color
+            this.sidebar = new B.Components.My_Sidebar( {
+                colors :
+                {
+                    title : 'red'
+                }
+            } );
+
+            // Listen to activate and deactivate events
+            this.sidebar.on( 'activate deactivate', function( status )
+            {
+                console.log( 'sidebar active :', status );
+            } );
+        }
+    } );
+
+    // Create a  class for the sidebar
+    B.Components.My_Sidebar = B.Core.Event_Emitter.extend(
+    {
+        // Default options
+        options :
+        {
+            colors :
+            {
+                title      : 'blue',
+                background : '#ccc'
+            }
+        },
+
+        init : function( options )
+        {
+            this._super( options );
+
+            // Set variables
+            this.main     = document.querySelector( 'aside' );
+            this.title    = this.main.querySelector( '.title' );
+            this.active   = this.main.classList.contains( 'active' );
+            this.keyboard = new B.Tools.Keyboard();
+
+            // Update style
+            this.main.style.backgroundColor = this.options.colors.background;
+            this.title.style.color          = this.options.colors.title;
+
+            // Listen to keyboard 'down' event
+            var that = this;
+            this.keyboard.on( 'down', function( keycode, caracter )
+            {
+                // Test if key down is the 'space' key
+                if( caracter === 'space' )
+                {
+                    // Toggle the sidebar
+                    that.toggle();
+
+                    // Prevent default keyboard event
+                    return false;
+                }
+            } );
+        },
+
+        // Toggle method (simply call activate or deactivate methods)
+        toggle : function()
+        {
+            if( this.active )
+                this.deactivate();
+            else
+                this.activate();
+        },
+
+        // Activate method
+        activate : function()
+        {
+            // inactive
+            if( this.active )
+                return;
+
+            // Update sidebar
+            this.main.classList.add( 'active' );
+            this.active = true;
+
+            // Fire 'activate' event
+            this.trigger( 'activate', [ this.active ] );
+        },
+
+        // Deactivate method
+        deactivate : function()
+        {
+            // Already inactive
+            if( !this.active )
+                return;
+
+            // Update sidebar
+            this.main.classList.remove( 'active' );
+            this.active = false;
+
+            // Fire 'deactivate' event
+            this.trigger( 'deactivate', [ this.active ] );
+        }
+    } );
+
+</script>
+
+<!-- Your script -->
+<script>
+
+    // Let's rock
+    var my_app = new B.Components.My_App({});
 
 </script>
 ```
 
 ## Core classes
 
+Core classes are based classes you want to inherite if your building custom Components and Tools.
+
 #### Abstract
 
-* Options (merging)
-* Init (always called)
-* For simple object
+`B.Core.Abstract` is the default class you can inherit.
+
+* Construct method
 * Static / Singleton
-* JS to include
-* example
+* Deep options merging
+
+
+###### Default example
+```javascript
+B.Components.Custom_Class = B.Core.Abstract.extend(
+{
+    init : function()
+    {
+        console.log( 'Welcome to my custom class' );
+    }
+} );
+
+var custom_class = new B.Components.Custom_Class();
+```
+
+###### Options with deep merging example
+```javascript
+B.Components.Custom_Class = B.Core.Abstract.extend(
+{
+    options :
+    {
+        test :
+        {
+            foo   : 'bar',
+            lorem : 'ipsum'
+        }
+    },
+
+    init : function( options )
+    {
+        this._super( options );
+
+        console.log( 'See my custom class options', this.options );
+    }
+} );
+
+var custom_class = new B.Components.Custom_Class( {
+    test :
+    {
+        lorem : 'dolores'
+    }
+} );
+```
+
+###### Options with static
+```javascript
+
+```
 
 
 #### Event Emitter
 
-* For object that need to fire events and to be listen
-* Inherit from abstract
-* On
-* Off
-* Trigger (can ise 'fire')
-* Flags / Tags (?)
-* Transformation on event names
-* JS to include
-* example
+`B.Core.Event_Emitter` inherit from `B.Core.Abstract` and add some event methods (**on**, **off**, **trigger**).
 
+* Normalize event names
+* Event parameters
+* Namespace
+* On()
+* Off()
+* Trigger()
+
+###### Default example
+```javascript
+
+```
+
+###### Namespace example
+```javascript
+
+```
 
 ## Tools
 
-* Singleton
-* Create your own (can inherit)
+B.js comes with some premade Tools. Each one is a singleton (static). You can instantiate it multiple times, you will always get the first instance.
+
+You can inherit from those tools if you want.
 
 ### Browser
 

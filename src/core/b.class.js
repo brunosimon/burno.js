@@ -66,7 +66,7 @@ var B =
 
                 ext = Object.create( ext );
 
-                B.merge( ext, original[ key ] );
+                B.merge( original[ key ], ext );
             }
             else
             {

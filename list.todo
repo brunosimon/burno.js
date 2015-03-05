@@ -2,6 +2,7 @@
 TODO
 imperative
 -------------------------------------------------------
+[ ] Init => Construct
 [ ] Doc
 [ ] Final IE8 test
 [ ] Demos
@@ -18,7 +19,6 @@ imperative
 TODO
 optional
 -------------------------------------------------------
-[√] Merging issue with special objects like jQuery or THREE
 [ ] Sublime snippets
 [ ] Classes (create)
 	[ ] Css
@@ -30,6 +30,8 @@ optional
 		[ ] Formater (custom formats (sprinf like))
 		[ ] Local
 [ ] Classes (update)
+	[ ] Browser
+		[ ] Array of breakpoints
 	[ ] Event_Emitter
 		[ ] Deffered trigger (can specify event)
 	[ ] Better Match media
@@ -46,3 +48,4 @@ optional
 		[ ] Only one convertissor method (default any => rgb)
 	[ ] Registery
 		[ ] Persistence (localstorage / cookie fallback)
+[√] Merging issue with special objects like jQuery or THREE

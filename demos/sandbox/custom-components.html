@@ -78,12 +78,18 @@
             // Extended class options ('size' and 'color') will be preserved
             options :
             {
-                radius : 20
+                radius : 20,
+                foo    :
+                {
+                    bar : 2
+                }
             },
 
             init : function( options )
             {
                 this._super( options );
+
+                console.log(this.options.foo);
 
                 // Add radius to the element
                 this.element.style.borderRadius = this.options.radius + 'px';

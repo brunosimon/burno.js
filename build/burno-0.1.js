@@ -1,5 +1,3 @@
-
-
 /*
  * classList.js: Cross-browser full element.classList implementation.
  * 2014-07-23
@@ -317,9 +315,10 @@ if (!window.getComputedStyle) {
         return this;
     }
 }
-
+// Production steps of ECMA-262, Edition 5, 15.4.4.14
+// Reference: http://es5.github.io/#x15.4.4.14
 if (!Array.prototype.indexOf) {
-  Array.prototype.indexOf = function (searchElement, fromIndex) {
+  Array.prototype.indexOf = function(searchElement, fromIndex) {
 
     var k;
 
@@ -361,7 +360,6 @@ if (!Array.prototype.indexOf) {
 
     // 9. Repeat, while k < len
     while (k < len) {
-      var kValue;
       // a. Let Pk be ToString(k).
       //   This is implicit for LHS operands of the in operator
       // b. Let kPresent be the result of calling the
@@ -382,9 +380,7 @@ if (!Array.prototype.indexOf) {
     return -1;
   };
 }
-
-
-// De MDN - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+// From MDN - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
 if (!Object.keys) {
   Object.keys = (function () {
     'use strict';
@@ -426,13 +422,28 @@ if (!Object.keys) {
   }());
 }
 
+// From MDN - https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Object/create
+if (typeof Object.create != 'function') {
+  Object.create = (function() {
+    var Temp = function() {};
+    return function (prototype) {
+      if (arguments.length > 1) {
+        throw Error('Cette prothèse ne supporte pas le second argument');
+      }
+      if (typeof prototype != 'object') {
+        throw TypeError('L\'argument doit être un objet');
+      }
+      Temp.prototype = prototype;
+      var result = new Temp();
+      Temp.prototype = null;
+      return result;
+    };
+  })();
+}
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-
 // requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
-
 // MIT license
-
 (function() {
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
@@ -465,157 +476,191 @@ var B =
     Components : {}
 };
 
-/* Simple JavaScript Inheritance
+/**
+ * Simple JavaScript Inheritance
  * By John Resig http://ejohn.org/blog/simple-javascript-inheritance/
  * MIT Licensed.
+ * Inspired by base2 and Prototype
  */
-// Inspired by base2 and Prototype
-(function ()
+( function()
 {
-    "use strict";
+    'use strict';
 
-    window.copy = function(object)
+    B.copy = function( object )
     {
         var c = null;
 
-        if(!object || typeof (object) !== 'object' || (typeof HTMLElement !== 'undefined' && object instanceof HTMLElement) || object instanceof Class || (typeof THREE !== 'undefined' && object instanceof THREE.Object3D) || (typeof jQuery !== 'undefined' && object instanceof jQuery))
+        // Simple object (exclude jQuery object, HTML Element, THREE js, ...)
+        if(
+            !object ||
+
+            object.constructor === Object
+        )
+        {
+            c = {};
+
+            for( var key in object )
+                c[ key ] = B.copy( object[ key ] );
+
+            return c;
+        }
+
+        // Array
+        else if( object instanceof Array )
+        {
+            c = [];
+
+            for( var i = 0, l = object.length; i < l; i++ )
+                c[ i ] = B.copy( object[ i ] );
+
+            return c;
+        }
+
+        // Other
+        else
         {
             return object;
         }
-        else if(object instanceof Array)
-        {
-            c = [];
-            for(var i = 0, l = object.length; i < l; i++)
-            {
-                c[i] = copy(object[i]);
-            }
-
-            return c;
-        }
-        else
-        {
-            c = {};
-            for(var i in object)
-            {
-                c[i] = copy(object[i]);
-            }
-
-            return c;
-        }
     };
 
-    window.merge = function (original, extended)
+    B.merge = function( original, extended )
     {
-          for(var key in extended)
-          {
-              var ext = extended[key];
-              if(typeof (ext) !== 'object' || (typeof HTMLElement !== 'undefined' && ext instanceof HTMLElement) || ext instanceof Class || (typeof THREE !== 'undefined' && ext instanceof THREE.Object3D) || (typeof ext !== 'undefined' && ( typeof jQuery !== 'undefined' && ext instanceof jQuery)))
-              {
-                  original[key] = ext;
-              }
-              else
-              {
-                  if(!original[key] || typeof (original[key]) !== 'object')
-                  {
-                      original[key] = (ext instanceof Array) ? [] : {};
-                  }
-                  merge(original[key], ext);
-              }
-          }
-          return original;
-      };
+        for( var key in extended )
+        {
+            var ext = extended[ key ];
+
+            if( ext.constructor === Object )
+            {
+                if( !original[ key ] )
+                    original[ key ] = {};
+
+                ext = Object.create( ext );
+
+                B.merge( ext, original[ key ] );
+            }
+            else
+            {
+                original[ key ] = ext;
+            }
+        }
+
+        return original;
+    };
 
     var initializing = false,
-        fnTest = /xyz/.test(function () {
-            xyz;
-        }) ? /\b_super\b/ : /.*/;
-    window.Class = function () {};
-    var inject = function (prop) {
-        var proto = this.prototype;
-        var _super = {};
-        for(var name in prop)
+        fnTest       = /xyz/.test( function()
         {
-            if(typeof (prop[name]) === "function" && typeof (proto[name]) === "function" && fnTest.test(prop[name]))
+            xyz;
+        } ) ? /\b_super\b/ : /.*/;
+
+    B.Class = function(){};
+
+    var inject = function( prop )
+    {
+        var proto  = this.prototype,
+            _super = {};
+
+        for( var name in prop )
+        {
+            if( typeof prop[ name ] === 'function' && typeof proto[ name ] === 'function' && fnTest.test( prop[ name ] ) )
             {
-                _super[name] = proto[name];
-                proto[name] = (function (name, fn)
+                _super[ name ] = proto[ name ];
+                proto[ name ]  = ( function( name, fn )
                 {
                     return function()
                     {
                         var tmp     = this._super;
-                        this._super = _super[name];
-                        var ret     = fn.apply(this, arguments);
+                        this._super = _super[ name ];
+                        var ret     = fn.apply( this, arguments );
                         this._super = tmp;
                         return ret;
                     };
-                })(name, prop[name]);
+                } )( name, prop[ name ] );
             }
+
             else
             {
-                proto[name] = prop[name];
+                proto[ name ] = prop[ name ];
             }
         }
     };
-    window.Class.extend = function(prop)
+
+    B.Class.extend = function( prop )
     {
         var _super    = this.prototype;
         initializing  = true;
         var prototype = new this();
         initializing  = false;
-        for(var name in prop)
+
+        for( var name in prop )
         {
-            if(typeof (prop[name]) === "function" && typeof (_super[name]) === "function" && fnTest.test(prop[name]))
+            if( typeof prop[ name ] === 'function' && typeof _super[ name ] === 'function' && fnTest.test( prop[ name ] ) )
             {
-                prototype[name] = (function(name, fn)
+                prototype[ name ] = ( function( name, fn )
                 {
                     return function()
                     {
                         var tmp     = this._super;
-                        this._super = _super[name];
-                        var ret     = fn.apply(this, arguments);
+                        this._super = _super[ name ];
+                        var ret     = fn.apply( this, arguments );
                         this._super = tmp;
+
                         return ret;
                     };
-                })(name, prop[name]);
+                } )( name, prop[ name ] );
             }
             else
             {
-                prototype[name] = prop[name];
+                if( name === 'options' )
+                {
+                    var temp = null;
+                    if( typeof prototype[ name ] === 'undefined' )
+                        temp = {};
+                    else
+                        temp = Object.create( prototype[ name ] );
+
+                    B.merge( prop[ name ], prototype[ name ] );
+                }
+
+                prototype[ name ] = prop[ name ];
             }
         }
 
-        function Class() {
-            if(!initializing)
+        function Class()
+        {
+            if( !initializing )
             {
-                if(this.static_instantiate)
+                if( this.static_instantiate )
                 {
-                    var obj = this.static_instantiate.apply(this, arguments);
-                    if (obj)
-                    {
+                    var obj = this.static_instantiate.apply( this, arguments );
+                    if( obj )
                         return obj;
-                    }
                 }
-                for(var p in this)
+
+                for( var p in this )
                 {
-                    if (typeof (this[p]) === 'object')
+                    if( typeof this[ p ] === 'object' )
                     {
-                        this[p] = copy(this[p]);
+                        this[ p ] = B.copy( this[ p ] );
                     }
                 }
-                if(this.init)
+
+                if( this.init )
                 {
-                    this.init.apply(this, arguments);
+                    this.init.apply( this, arguments );
                 }
             }
             return this;
         }
+
         Class.prototype             = prototype;
         Class.prototype.constructor = Class;
-        Class.extend                = window.Class.extend;
+        Class.extend                = B.Class.extend;
         Class.inject                = inject;
+
         return Class;
     };
-})();
+} )();
 
 /**
  * @class  Resizer
@@ -625,7 +670,7 @@ var B =
 {
     'use strict';
 
-    B.Core.Abstract = Class.extend(
+    B.Core.Abstract = B.Class.extend(
     {
         static : false,
 
@@ -639,7 +684,11 @@ var B =
             if( typeof options === 'undefined' )
                 options = {};
 
-            this.options = merge( this.options,options );
+            console.log('-----');
+            console.log(this.options);
+            console.log(options);
+
+            this.options = B.merge( this.options, options );
 
             // Create statics container
             if( typeof B.Statics !== 'object' )
@@ -3286,8 +3335,10 @@ var B =
             // Do next (before trigger)
             for( ; i < len; i++ )
             {
-                this.do_next_actions.before[ i ].call( this, [ this.time ] );
+                this.do_next_actions.before[ i ].apply( this, [ this.time ] );
                 this.do_next_actions.before.splice( i, 1 );
+                i--;
+                len--;
             }
 
             // Trigger
@@ -3298,8 +3349,10 @@ var B =
             len = this.do_next_actions.after.length;
             for( ; i < len; i++ )
             {
-                this.do_next_actions.after[ i ].call( this, [ this.time ] );
+                this.do_next_actions.after[ i ].apply( this, [ this.time ] );
                 this.do_next_actions.after.splice( i, 1 );
+                i--;
+                len--;
             }
 
             return this;

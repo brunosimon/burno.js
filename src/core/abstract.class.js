@@ -20,7 +20,7 @@
             if( typeof options === 'undefined' )
                 options = {};
 
-            this.options = B.merge( this.options, options );
+            B.merge( this.options, options );
 
             // Create statics container
             if( typeof B.Statics !== 'object' )
