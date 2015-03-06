@@ -54,7 +54,7 @@ Inheritance is based on the [John Resig code](http://ejohn.org/blog/simple-javas
 B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode). Do as you whish and feel free to share your custom Tools and Components.
 
 * Include the build in your HTML
-* Create your own Tools and Components based on Burno classes **Abstract** or **Event Emitter**
+* Create your own Tools and Components based on Burno classes **Abstract** or **Event Emitter** (you may want to create put each class in a different file)
 
 ```html
 <!-- B.js -->
@@ -66,109 +66,41 @@ B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/
     // Create a class wrapping the all application
     B.Components.My_App = B.Core.Abstract.extend(
     {
-        // No default options
-        options : {},
-
-        init : function( options )
+        init : function()
         {
-            this._super( options );
-
-            // Instantiate a sidebar with blue color
-            this.sidebar = new B.Components.My_Sidebar( {
-                colors :
-                {
-                    title : 'red'
-                }
-            } );
-
-            // Listen to activate and deactivate events
-            this.sidebar.on( 'activate deactivate', function( status )
-            {
-                console.log( 'sidebar active :', status );
-            } );
+            // Instantiate a sidebar and header
+            this.sidebar = new B.Components.My_Sidebar( { color : 'blue' } );
+            this.header  = new B.Components.My_Header();
         }
     } );
 
-    // Create a  class for the sidebar
-    B.Components.My_Sidebar = B.Core.Event_Emitter.extend(
+    // Create a class for the sidebar
+    B.Components.My_Sidebar = B.Core.Abstract.extend(
     {
         // Default options
         options :
         {
-            colors :
-            {
-                title      : 'blue',
-                background : '#ccc'
-            }
+            colors : 'red'
         },
 
         init : function( options )
         {
             this._super( options );
 
-            // Set variables
-            this.main     = document.querySelector( 'aside' );
-            this.title    = this.main.querySelector( '.title' );
-            this.active   = this.main.classList.contains( 'active' );
-            this.keyboard = new B.Tools.Keyboard();
+            this.main = document.querySelector( 'aside' );
 
-            // Update style
-            this.main.style.backgroundColor = this.options.colors.background;
-            this.title.style.color          = this.options.colors.title;
+            console.log( 'Init Sidebar' );
+        }
+    } );
 
-            // Listen to keyboard 'down' event
-            var that = this;
-            this.keyboard.on( 'down', function( keycode, caracter )
-            {
-                // Test if key down is the 'space' key
-                if( caracter === 'space' )
-                {
-                    // Toggle the sidebar
-                    that.toggle();
-
-                    // Prevent default keyboard event
-                    return false;
-                }
-            } );
-        },
-
-        // Toggle method (simply call activate or deactivate methods)
-        toggle : function()
+    // Create a class for the header
+    B.Components.My_Header = B.Core.Abstract.extend(
+    {
+        init : function()
         {
-            if( this.active )
-                this.deactivate();
-            else
-                this.activate();
-        },
+            this.main = document.querySelector( 'header' );
 
-        // Activate method
-        activate : function()
-        {
-            // inactive
-            if( this.active )
-                return;
-
-            // Update sidebar
-            this.main.classList.add( 'active' );
-            this.active = true;
-
-            // Fire 'activate' event
-            this.trigger( 'activate', [ this.active ] );
-        },
-
-        // Deactivate method
-        deactivate : function()
-        {
-            // Already inactive
-            if( !this.active )
-                return;
-
-            // Update sidebar
-            this.main.classList.remove( 'active' );
-            this.active = false;
-
-            // Fire 'deactivate' event
-            this.trigger( 'deactivate', [ this.active ] );
+            console.log( 'Init Header' );
         }
     } );
 
@@ -178,7 +110,7 @@ B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/
 <script>
 
     // Let's rock
-    var my_app = new B.Components.My_App({});
+    var my_app = new B.Components.My_App();
 
 </script>
 ```
@@ -187,7 +119,7 @@ B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/
 
 Core classes are based classes you want to inherite if your building custom Components and Tools.
 
-#### Abstract
+#### Abstract Class
 
 `B.Core.Abstract` is the default class you can inherit.
 
@@ -196,8 +128,9 @@ Core classes are based classes you want to inherite if your building custom Comp
 * Deep options merging
 
 
-###### Default example
+###### Default
 ```javascript
+// Inherit from Abstract
 B.Components.Custom_Class = B.Core.Abstract.extend(
 {
     init : function()
@@ -209,10 +142,11 @@ B.Components.Custom_Class = B.Core.Abstract.extend(
 var custom_class = new B.Components.Custom_Class();
 ```
 
-###### Options with deep merging example
+###### Options with deep merging
 ```javascript
 B.Components.Custom_Class = B.Core.Abstract.extend(
 {
+    // Options with random deep properties
     options :
     {
         test :
@@ -222,14 +156,17 @@ B.Components.Custom_Class = B.Core.Abstract.extend(
         }
     },
 
+    // Add options argument
     init : function( options )
     {
+        // Pass options to _super
         this._super( options );
 
-        console.log( 'See my custom class options', this.options );
+        console.log( 'Options', this.options );
     }
 } );
 
+// Instantiate by passing different options
 var custom_class = new B.Components.Custom_Class( {
     test :
     {
@@ -238,22 +175,38 @@ var custom_class = new B.Components.Custom_Class( {
 } );
 ```
 
-###### Options with static
-```javascript
+###### Static / Singleton
 
+```javascript
+// Currently, static functionnality is only used for tools but it's just a namespace. Do what ever you want.
+B.Tools.Custom_Class = B.Core.Event_Emitter.extend(
+{
+    // Chose a name never used
+    static : 'custom_tool',
+
+    init : function()
+    {
+        console.log( 'Init' );
+    }
+} );
+
+// 'custom_tool' and 'custom_tool_again' will share the same instance
+// 'init' will be called only the first time
+var custom_class       = new B.Tools.Custom_Class(),
+    custom_class_again = new B.Tools.Custom_Class();
 ```
 
 
-#### Event Emitter
+#### Event Emitter Class
 
-`B.Core.Event_Emitter` inherit from `B.Core.Abstract` and add some event methods (**on**, **off**, **trigger**).
+`B.Core.Event_Emitter` inherit from `B.Core.Abstract` with extra event methods (**on**, **off**, **trigger**).
 
-* Normalize event names
+* Normalize event names (*event-name* == *eventname* == *event_name*)
 * Event parameters
 * Namespace
-* On()
-* Off()
-* Trigger()
+* on()
+* off()
+* trigger()
 
 ###### Default example
 ```javascript
@@ -273,14 +226,32 @@ You can inherit from those tools if you want.
 
 ### Browser
 
-* Options
-* Viewport
-* Detection (user agent, no plateform (emulation), browser, engine, system (messy), features (touch))
+**Options**
+```javascript
+{
+    disable_hover_on_scroll : true,       // Improve performance when scrolling but disable hovers
+    initial_trigger         : true,       // Trigger 'scroll' and 'resize' events on the next frame
+    add_classes_to          : [ 'html' ], // Add detect informations to selectors in array
+    breakpoints             : []          // Breakpoints
+}
+```
+
+**Properties**
+* viewport
+* detect
+
+**Methods**
+* match_media
+
+**Events**
+* resize
+* scroll
+* breakpoint
+
 * Classes
 * Breakpoints
 * Disable hover on scroll
 * Match media
-* Events
 
 ### Colors
 

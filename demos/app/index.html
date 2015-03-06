@@ -2,9 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Burno.js - Demo - App</title>
+    <title>Burno.js - Sandbox - Custom components</title>
+    <style>
+        section.wrapper {position:relative;width:800px;margin:0 auto;background:#eee;}
+        section.wrapper .content {padding:50px;}
+        section.wrapper aside {position:absolute;top:0;right:820px;width:0;overflow:hidden;}
+        section.wrapper aside.active {width:200px;}
+    </style>
 </head>
 <body>
+
+    <section class="wrapper">
+        <aside class="active">
+            <div class="title">Sidebar</div>
+            <ul>
+                <li><a href="#">link</a></li>
+                <li><a href="#">link</a></li>
+                <li><a href="#">link</a></li>
+                <li><a href="#">link</a></li>
+                <li><a href="#">link</a></li>
+                <li><a href="#">link</a></li>
+                <li><a href="#">link</a></li>
+                <li><a href="#">link</a></li>
+            </ul>
+        </aside>
+        <div class="content">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam architecto sit, consectetur nisi minus ab porro dolor, beatae recusandae quo doloremque soluta ipsum quod sequi voluptates rem numquam enim laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam architecto sit, consectetur nisi minus ab porro dolor, beatae recusandae quo doloremque soluta ipsum quod sequi voluptates rem numquam enim laborum.</p>
+            <p>Presse SPACE key to toggle sidebar</p>
+        </div>
+    </section>
 
     <!-- POLYFILLS -->
     <script src="../../src/polyfills/classlist.js"></script>
@@ -14,25 +41,130 @@
     <script src="../../src/polyfills/object-keys.js"></script>
     <script src="../../src/polyfills/requestanimationframe.js"></script>
 
-    <!-- CORE -->
-    <script src="../../src/core/b.class.js"></script>
-    <script src="../../src/core/abstract.class.js"></script>
-    <script src="../../src/core/event_emitter.class.js"></script>
+    <!-- B.js -->
+    <script src="../../build/burno-0.1.min.js"></script>
 
-    <!-- TOOLS -->
-    <script src="../../src/tools/browser.class.js"></script>
-    <script src="../../src/tools/colors.class.js"></script>
-    <script src="../../src/tools/css.class.js"></script>
-    <script src="../../src/tools/ga_tags.class.js"></script>
-    <script src="../../src/tools/keyboard.class.js"></script>
-    <script src="../../src/tools/mouse.class.js"></script>
-    <script src="../../src/tools/offline.class.js"></script>
-    <script src="../../src/tools/registry.class.js"></script>
-    <script src="../../src/tools/resizer.class.js"></script>
-    <script src="../../src/tools/ticker.class.js"></script>
-
+    <!-- Your classes -->
     <script>
-        var app = new B.Components.App();
+
+        // Create a class wrapping the all application
+        B.Components.My_App = B.Core.Event_Emitter.extend(
+        {
+            // No default options
+            options : {},
+
+            init : function( options )
+            {
+                this._super( options );
+
+                // Instantiate a sidebar with blue color
+                this.sidebar = new B.Components.My_Sidebar( {
+                    colors :
+                    {
+                        title : 'red'
+                    }
+                } );
+
+                // Listen to activate and deactivate events
+                this.sidebar.on( 'activate deactivate', function( status )
+                {
+                    console.log( 'sidebar active :', status );
+                } );
+            }
+        } );
+
+        // Create a  class for the sidebar
+        B.Components.My_Sidebar = B.Core.Event_Emitter.extend(
+        {
+            // Default options
+            options :
+            {
+                colors :
+                {
+                    title      : 'blue',
+                    background : '#ccc'
+                }
+            },
+
+            init : function( options )
+            {
+                this._super( options );
+
+                // Set variables
+                this.main     = document.querySelector( 'aside' );
+                this.title    = this.main.querySelector( '.title' );
+                this.active   = this.main.classList.contains( 'active' );
+                this.keyboard = new B.Tools.Keyboard();
+
+                // Update style
+                this.main.style.backgroundColor = this.options.colors.background;
+                this.title.style.color          = this.options.colors.title;
+
+                // Listen to keyboard 'down' event
+                var that = this;
+                this.keyboard.on( 'down', function( keycode, caracter )
+                {
+                    // Test if key down is the 'space' key
+                    if( caracter === 'space' )
+                    {
+                        // Toggle the sidebar
+                        that.toggle();
+
+                        // Prevent default keyboard event
+                        return false;
+                    }
+                } );
+            },
+
+            // Toggle method (simply call activate or deactivate methods)
+            toggle : function()
+            {
+                if( this.active )
+                    this.deactivate();
+                else
+                    this.activate();
+            },
+
+            // Activate method
+            activate : function()
+            {
+                // inactive
+                if( this.active )
+                    return;
+
+                // Update sidebar
+                this.main.classList.add( 'active' );
+                this.active = true;
+
+                // Fire 'activate' event
+                this.trigger( 'activate', [ this.active ] );
+            },
+
+            // Deactivate method
+            deactivate : function()
+            {
+                // Already inactive
+                if( !this.active )
+                    return;
+
+                // Update sidebar
+                this.main.classList.remove( 'active' );
+                this.active = false;
+
+                // Fire 'deactivate' event
+                this.trigger( 'deactivate', [ this.active ] );
+            }
+        } );
+
     </script>
+
+    <!-- Your script -->
+    <script>
+
+        // Let's rock
+        var my_app = new B.Components.My_App({});
+
+    </script>
+
 </body>
 </html>

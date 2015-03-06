@@ -21,19 +21,29 @@
     <!-- YOUR SCRIPT -->
     <script>
 
-        // B.Components.Custom_Class = B.Core.Abstract.extend(
-        // {
-        //     init : function()
-        //     {
-        //         console.log( 'Welcome to my custom class' );
-        //     }
-        // } );
+        /**
+         * Simple
+         */
 
-        // var custom_class = new B.Components.Custom_Class();
+        // Inherit from Abstract
+        B.Components.Custom_Class = B.Core.Abstract.extend(
+        {
+            init : function()
+            {
+                console.log( 'Welcome to my custom class' );
+            }
+        } );
 
+        var custom_class = new B.Components.Custom_Class();
+
+
+        /**
+         * Options
+         */
 
         B.Components.Custom_Class = B.Core.Abstract.extend(
         {
+            // Options with random deep properties
             options :
             {
                 test :
@@ -43,20 +53,45 @@
                 }
             },
 
+            // Add options argument
             init : function( options )
             {
+                // Pass options to _super
                 this._super( options );
 
-                console.log( 'See my custom class options', this.options );
+                console.log( 'Options', this.options );
             }
         } );
 
+        // Instantiate by passing different options
         var custom_class = new B.Components.Custom_Class( {
             test :
             {
                 lorem : 'dolores'
             }
         } );
+
+
+        /**
+         * Static / Singleton
+         */
+
+        // Currently, static functionnality is only used for tools but it's just a namespace. Do what ever you want.
+        B.Tools.Custom_Class = B.Core.Event_Emitter.extend(
+        {
+            // Chose a name never used
+            static : 'custom_tool',
+
+            init : function()
+            {
+                console.log( 'Init' );
+            }
+        } );
+
+        // 'custom_tool' and 'custom_tool_again' will share the same instance
+        // 'init' will be called only the first time
+        var custom_class       = new B.Tools.Custom_Class(),
+            custom_class_again = new B.Tools.Custom_Class();
 
     </script>
 

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Sandbox - Custom components</title>
+    <style>
+        section.wrapper {position:relative;width:800px;margin:0 auto;background:#eee;}
+        section.wrapper .content {padding:50px;}
+        section.wrapper aside {position:absolute;top:0;right:820px;width:0;overflow:hidden;}
+        section.wrapper aside.active {width:200px;}
+    </style>
+</head>
+<body>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/polyfills/classlist.js"></script>
+    <script src="../../src/polyfills/foreach.js"></script>
+    <script src="../../src/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/polyfills/indexof.js"></script>
+    <script src="../../src/polyfills/object-keys.js"></script>
+    <script src="../../src/polyfills/requestanimationframe.js"></script>
+
+    <!-- B.js -->
+    <script src="../../build/burno-0.1.min.js"></script>
+
+    <!-- Your classes -->
+    <script>
+
+        // Currently, static functionnality is only used for tools but it's just a namespace. Do what ever you want.
+        B.Tools.Cumstom_Tool = B.Core.Event_Emitter.extend(
+        {
+            // Chose a name never used
+            static : 'custom_tool',
+
+            init : function()
+            {
+                console.log( 'Init' );
+            }
+        } );
+
+        // 'custom_tool' and 'custom_tool_again' will share the same instance
+        // 'init' will be called only the first time
+        var custom_tool       = new B.Tools.Custom_Tool(),
+            custom_tool_again = new B.Tools.Custom_Tool();
+
+    </script>
+
+</body>
+</html>
