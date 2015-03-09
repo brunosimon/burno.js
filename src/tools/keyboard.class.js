@@ -11,26 +11,24 @@
 
     B.Tools.Keyboard = B.Core.Event_Emitter.extend(
     {
-        static  : 'keyboard',
-        options :
+        static        : 'keyboard',
+        options       : {},
+        keycode_names :
         {
-            keycode_names :
-            {
-                91 : 'cmd',
-                17 : 'ctrl',
-                32 : 'space',
-                16 : 'shift',
-                18 : 'alt',
-                20 : 'caps',
-                9  : 'tab',
-                13 : 'enter',
-                8  : 'backspace',
-                38 : 'up',
-                39 : 'right',
-                40 : 'down',
-                37 : 'left',
-                27 : 'esc'
-            }
+            91 : 'cmd',
+            17 : 'ctrl',
+            32 : 'space',
+            16 : 'shift',
+            18 : 'alt',
+            20 : 'caps',
+            9  : 'tab',
+            13 : 'enter',
+            8  : 'backspace',
+            38 : 'up',
+            39 : 'right',
+            40 : 'down',
+            37 : 'left',
+            27 : 'esc'
         },
 
         /**
@@ -90,7 +88,7 @@
          */
         keycode_to_character : function( input )
         {
-            var output = this.options.keycode_names[ input ];
+            var output = this.keycode_names[ input ];
 
             if( !output )
                 output = String.fromCharCode( input ).toLowerCase();

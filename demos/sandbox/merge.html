@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Sandbox - Custom components</title>
+</head>
+<body>
+
+    <!-- POLYFILLS -->
+    <script src="../../src/polyfills/classlist.js"></script>
+    <script src="../../src/polyfills/foreach.js"></script>
+    <script src="../../src/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/polyfills/indexof.js"></script>
+    <script src="../../src/polyfills/object-keys.js"></script>
+    <script src="../../src/polyfills/requestanimationframe.js"></script>
+
+    <!-- BURNO.JS -->
+    <script src="../../src/core/b.class.js"></script>
+    <script src="../../src/core/abstract.class.js"></script>
+
+    <!-- YOUR SCRIPT -->
+    <script>
+
+        /**
+         * Options
+         */
+
+        // B.Components.Custom_Class = B.Core.Abstract.extend(
+        // {
+        //     // Options with random deep properties
+        //     options :
+        //     {
+        //         test :
+        //         {
+        //             foo   : 'bar',
+        //             lorem : 'ipsum'
+        //         }
+        //     },
+
+        //     // Add options argument
+        //     init : function( options )
+        //     {
+        //         // Pass options to _super
+        //         this._super( options );
+
+        //         console.log( 'Options', this.options );
+        //     }
+        // } );
+
+        // // Instantiate by passing different options
+        // var custom_class = new B.Components.Custom_Class( {
+        //     test :
+        //     {
+        //         lorem : 'dolores'
+        //     }
+        // } );
+
+
+        /**
+         * Extend
+         */
+
+        B.Components.Custom_Class = B.Core.Abstract.extend(
+        {
+            // Options with random deep properties
+            options :
+            {
+                test :
+                {
+                    foo   : 'bar',
+                    lorem : 'ipsum'
+                }
+            },
+
+            // Add options argument
+            init : function( options )
+            {
+                // Pass options to _super
+                this._super( options );
+
+                console.log( 'Options', this.options );
+            }
+        } );
+
+        B.Components.Custom_Class_2 = B.Components.Custom_Class.extend(
+        {
+            options :
+            {
+                test :
+                {
+                    lorem : 'dolores'
+                },
+                test2 : 'uh'
+            },
+
+            // Add options argument
+            init : function()
+            {
+                console.log( 'Options', this.options );
+            }
+        } );
+
+        var text = new B.Components.Custom_Class();
+        var text = new B.Components.Custom_Class_2();
+
+    </script>
+
+</body>
+</html>

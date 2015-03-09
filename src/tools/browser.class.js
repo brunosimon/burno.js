@@ -48,7 +48,7 @@
             this.viewport.width       = window.innerWidth;
             this.viewport.height      = window.innerHeight;
 
-            this.pixel_ratio   = window.devicePixelRatio || 1;
+            this.pixel_ratio = window.devicePixelRatio || 1;
 
             this.init_detection();
             this.init_breakpoints();

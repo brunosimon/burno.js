@@ -11,11 +11,15 @@
         static  : 'colors',
         options :
         {
-            parse   : true,
-            classes :
+            gradients :
             {
-                to_convert : 'gradient-text',
-                converted  : 'gradient-text-converted',
+                parse   : true,
+                target  : document.body,
+                classes :
+                {
+                    to_convert : 'gradient-text',
+                    converted  : 'gradient-text-converted',
+                }
             }
         },
         names   :
@@ -172,7 +176,7 @@
         {
             this._super( options );
 
-            if( this.options.parse )
+            if( this.options.gradients.parse )
                 this.parse();
         },
 
@@ -181,64 +185,64 @@
          * @param  {any}     Any color format
          * @return {object}  RGB object
          */
-        any_to_rgb : function( any )
+        any_to_rgb : function( input )
         {
-            any = '' + any;            // String
-            any = any.toLowerCase();   // Lower case
-            any = any.replace(/[\s-]/g,''); // No spaces
+            input = '' + input;            // String
+            input = input.toLowerCase();   // Lower case
+            input = input.replace(/[\s-]/g,''); // No spaces
 
             // Name
-            if( typeof this.names[ any ] !== 'undefined' )
+            if( typeof this.names[ input ] !== 'undefined' )
             {
-                return this.hexa_to_rgb( this.names[ any ] );
+                return this.hexa_to_rgb( this.names[ input ] );
             }
 
             // '0x' Hexa type
-            if( any.indexOf( '0x' ) === 0 )
+            if( input.indexOf( '0x' ) === 0 )
             {
-                return this.hexa_to_rgb( any.replace( '0x', '' ) );
+                return this.hexa_to_rgb( input.replace( '0x', '' ) );
             }
 
             // '#' Hexa type
-            if( any.indexOf( '#' ) === 0 )
+            if( input.indexOf( '#' ) === 0 )
             {
-                any = any.replace( '#', '' );
+                input = input.replace( '#', '' );
             }
 
             // XXXXXX hexa type
-            if( any.length === 6 )
+            if( input.length === 6 )
             {
-                return this.hexa_to_rgb( any );
+                return this.hexa_to_rgb( input );
             }
 
             // XXX hexa type
-            if( any.length === 3 )
+            if( input.length === 3 )
             {
-                var new_any = '';
-                for( var i = 0; i < any.length; i++ )
-                    new_any += any[ i ] + any[ i ];
+                var new_input = '';
+                for( var i = 0; i < input.length; i++ )
+                    new_input += input[ i ] + input[ i ];
 
-                return this.hexa_to_rgb( new_any );
+                return this.hexa_to_rgb( new_input );
             }
 
             // Objects
             try
             {
-                any  = JSON.parse( any );
+                input  = JSON.parse( input );
 
-                if( typeof any.r !== 'undefined' && typeof any.g !== 'undefined' && typeof any.b !== 'undefined' )
+                if( typeof input.r !== 'undefined' && typeof input.g !== 'undefined' && typeof input.b !== 'undefined' )
                 {
-                    return any;
+                    return input;
                 }
-                else if( typeof any.h !== 'undefined' && typeof any.s !== 'undefined' && typeof any.l !== 'undefined' )
+                else if( typeof input.h !== 'undefined' && typeof input.s !== 'undefined' && typeof input.l !== 'undefined' )
                 {
-                    return this.hsl_to_rgb( any );
+                    return this.hsl_to_rgb( input );
                 }
             }
             catch( e ){}
 
             // No type found
-            console.warn( 'Wrong color value : ' + any );
+            console.warn( 'Wrong color value : ' + input );
 
             return { r : 0, g : 0, b : 0 };
         },
@@ -252,11 +256,11 @@
         parse : function( target, selector )
         {
             // Defaults
-            target   = target   || document.body;
-            selector = selector || this.options.classes.to_convert;
+            target   = target   || this.options.gradients.target;
+            selector = selector || this.options.gradients.classes.to_convert;
 
             var that     = this,
-                elements = target.querySelectorAll( '.' + selector + ':not(' + this.options.classes.converted + ')' );
+                elements = target.querySelectorAll( '.' + selector + ':not(' + this.options.gradients.classes.converted + ')' );
 
             // Each element
             for( var i = 0, i_len = elements.length; i < i_len; i++ )

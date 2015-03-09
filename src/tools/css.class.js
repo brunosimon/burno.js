@@ -21,52 +21,59 @@
          * @param  {string} value    Value
          * @return {HTMLElement}     Modified element
          */
-        apply : function( target, property, value )
+        apply : function( target, style, prefixes )
         {
+            // jQuery handling
+            if( typeof jQuery !== 'undefined' && target instanceof jQuery)
+                target = target.toArray();
+
             // Force array
             if( typeof target.length === 'undefined' )
-            {
                 target = [ target ];
+
+            // Prefixes
+            if( typeof prefixes === 'undefined' )
+                prefixes = false;
+
+            if( prefixes === true )
+                prefixes = this.options.prefixes;
+
+            if( prefixes instanceof Array )
+            {
+                // Add prefix
+                var new_style = {};
+                for( var property in style )
+                {
+                    for( var prefix in prefixes )
+                    {
+                        var new_property = null;
+
+                        if( prefixes[ prefix ] )
+                            new_property = prefixes[ prefix ] + ( property.charAt( 0 ).toUpperCase() + property.slice( 1 ) );
+                        else
+                            new_property = property;
+
+                        new_style[ new_property ] = style[ property ];
+                    }
+                }
+
+                style = new_style;
             }
 
-            // // Remove translateZ if necessary
-            // if( this.browser.is.IE && this.browser.version < 10 )
-            //     value = value.replace( 'translateZ(0)', '' );
-
-            // Add prefix
-            for( var css = {}, i = 0, i_len = this.options.prefixes.length; i < i_len; i++ )
+            // Apply style on each element
+            for( var element in target )
             {
-                var updated_property = this.options.prefixes[ i ];
+                element = target[ element ];
 
-                if( updated_property !== '' )
-                    updated_property += this.capitalize_first_letter( property );
-                else
-                    updated_property = property;
+                if( element instanceof HTMLElement )
+                {
+                    for( var _property in style )
+                        element.style[ _property ] = style[ _property ];
+                }
 
-                css[ updated_property ] = value;
-            }
-
-            // Apply each CSS on each element
-            var keys = Object.keys( css );
-            for( var j = 0, j_len = target.length; j < j_len; j++ )
-            {
-                var element = target[ j ];
-
-                for( var k = 0, k_len = keys.length; k < k_len; k++ )
-                    element.style[ keys[ k ] ] = css[ keys[ k ] ];
             }
 
             return target;
-        },
-
-        /**
-         * Capitalize first letter
-         * @param  {string} input Input
-         * @return {string}       Output
-         */
-        capitalize_first_letter : function( input )
-        {
-            return input.charAt( 0 ).toUpperCase() + input.slice( 1 );
         }
     } );
 } )();

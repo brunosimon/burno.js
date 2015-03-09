@@ -33,33 +33,52 @@
 
     <script>
 
-        // Create a custom
-        B.Components.Custom_Tool = B.Core.Event_Emitter.extend(
+        // /**
+        //  * Default example
+        //  */
+        // // Create a custom component that inherit Event_Emitter
+        // B.Components.Custom_Component = B.Core.Event_Emitter.extend(
+        // {
+        //     init : function()
+        //     {
+        //         this._super();
+
+        //         // Save context
+        //         var that = this;
+
+        //         // Interval every seconds
+        //         window.setInterval( function()
+        //         {
+        //             // Trigger event and pass parameters
+        //             that.trigger( 'event-test', [ 'test-1' ] );
+        //         }, 1000 );
+        //     }
+        // } );
+
+        // var custom_component = new B.Components.Custom_Component();
+
+        // // Listen to 'event-text'
+        // custom_component.on( 'event-test', function( value )
+        // {
+        //     // Will log 'text-1' every second
+        //     console.log( value );
+        // } );
+
+        /**
+         * Complex
+         */
+        // Create a custom component that inherit Event_Emitter
+        B.Components.Custom_Component = B.Core.Event_Emitter.extend(
         {
-            // Set as static to use as a singleton
-            static  : 'custom_tool',
-
-            // Currently no options
-            options :
+            init : function()
             {
-
-            },
-
-            /**
-             * INIT
-             */
-            init : function( options )
-            {
-                this._super( options );
-
-                // Use ticker
-                this.ticker = new B.Tools.Ticker();
+                this._super();
 
                 // Save context
                 var that = this;
 
-                // Do next frame
-                this.ticker.do_next( function()
+                // Wait a second
+                window.setTimeout( function()
                 {
                     // Trigger some events
                     that.trigger( 'event-1', [ 'test-1' ] );
@@ -71,44 +90,28 @@
         } );
 
         // Try to instantiate twice but get a common object each time
-        var custom_tool_1 = new B.Components.Custom_Tool(),
-            custom_tool_2 = new B.Components.Custom_Tool();
+        var custom_component = new B.Components.Custom_Component();
 
-        // Listen on two events
-        custom_tool_1.on( 'event-1 event-2', function( value )
+        // Listen two events
+        custom_component.on( 'event-1 event-2', function( value )
         {
-            console.log( '1 - received : ' + value );
+            console.log( value );
         } );
 
-        // Listen on event
-        custom_tool_1.on( 'event-3', function( value )
-        {
-            console.log( '2 - received : ' + value );
-        } );
-
-        // Stop listening on one event
-        custom_tool_1.off( 'event-3' );
-
-        // Listen to event without namespace
-        custom_tool_1.on( 'event-4', function( value )
-        {
-            console.log( '3 - received : ' + value );
-        } );
+        // Stop listening to 'event-3' event
+        custom_component.off( 'event-1' );
 
         // Listen to event with namespace
-        custom_tool_1.on( 'event-4.namespace', function( value )
+        custom_component.on( 'event-2.foo event-3.bar event-4.bar', function( value )
         {
-            console.log( '4 - received : ' + value );
+            console.log( value );
         } );
 
-        // Listen to event with namespace
-        custom_tool_1.on( 'event-2.namespace', function( value )
-        {
-            console.log( '5 - received : ' + value );
-        } );
+        // Stop listening on 'event-2' with 'foo' namespace
+        custom_component.off( 'event-2.foo' );
 
-        // Stop listening on one event
-        custom_tool_1.off( '.namespace' );
+        // Stop listening on every events with 'bar' namespace
+        custom_component.off( '.bar' );
 
     </script>
 </body>

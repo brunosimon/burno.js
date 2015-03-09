@@ -9,6 +9,7 @@
     B.Tools.Registry = B.Core.Abstract.extend(
     {
         static  : 'registry',
+        options : {},
 
         /**
          * Initialise and merge options

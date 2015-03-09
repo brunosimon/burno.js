@@ -14,6 +14,7 @@
     B.Tools.Mouse = B.Core.Event_Emitter.extend(
     {
         static  : 'mouse',
+        options : {},
 
         /**
          * Initialise and merge options

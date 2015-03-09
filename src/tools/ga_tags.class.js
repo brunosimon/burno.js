@@ -15,6 +15,7 @@
             send               : true,
             parse              : true,
             true_link_duration : 300,
+            target  : document.body,
             classes :
             {
                 to_tag : 'tag',
@@ -50,7 +51,7 @@
          */
         parse : function( target, selector )
         {
-            target   = target   || document.body;
+            target   = target   || this.options.target;
             selector = selector || this.options.classes.to_tag;
 
             var that     = this,
@@ -122,8 +123,8 @@
 
         /**
          * Send to Analytics
-         * @param  {object} options Datas to send
-         * @return {object}         Context
+         * @param  {object} datas Datas to send
+         * @return {object}       Context
          * @example
          *
          *     send( {
@@ -134,26 +135,26 @@
          *     } )
          *
          */
-        send : function( options )
+        send : function( datas )
         {
             var send = [];
 
             // Error
-            if( typeof options !== 'object' )
+            if( typeof datas !== 'object' )
             {
                 // Logs
                 if( this.options.logs.warnings )
-                    console.warn( 'tag wrong options' );
+                    console.warn( 'tag wrong datas' );
 
                 return false;
             }
 
             // Unique
-            if( options.unique && this.unique_sent.indexOf( options.unique ) !== -1 )
+            if( datas.unique && this.unique_sent.indexOf( datas.unique ) !== -1 )
             {
                 // Logs
                 if( this.options.logs.warnings )
-                    console.warn( 'tag prevent : ' + options.unique );
+                    console.warn( 'tag prevent : ' + datas.unique );
 
                 return false;
             }
@@ -164,24 +165,24 @@
                 var sent = false;
 
                 // Category
-                if( typeof options.category !== 'undefined' )
+                if( typeof datas.category !== 'undefined' )
                 {
-                    send.push( options.category );
+                    send.push( datas.category );
 
                     // Action
-                    if( typeof options.action !== 'undefined' )
+                    if( typeof datas.action !== 'undefined' )
                     {
-                        send.push( options.action );
+                        send.push( datas.action );
 
                         // Label
-                        if( typeof options.label !== 'undefined' )
+                        if( typeof datas.label !== 'undefined' )
                         {
-                            send.push( options.label );
+                            send.push( datas.label );
 
                             // Value
-                            if( typeof options.value !== 'undefined' )
+                            if( typeof datas.value !== 'undefined' )
                             {
-                                send.push( options.value );
+                                send.push( datas.value );
                             }
                         }
 
@@ -232,8 +233,8 @@
             if( sent )
             {
                 // Save in unique_sent array
-                if( options.unique )
-                    this.unique_sent.push( options.unique );
+                if( datas.unique )
+                    this.unique_sent.push( datas.unique );
 
                 this.trigger( 'send', [ send ] );
             }

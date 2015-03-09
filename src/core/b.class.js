@@ -22,8 +22,7 @@ var B =
 
         // Simple object (exclude jQuery object, HTML Element, THREE js, ...)
         if(
-            !object ||
-
+            typeof object === 'undefined' ||
             object.constructor === Object
         )
         {
@@ -64,9 +63,9 @@ var B =
                 if( !original[ key ] )
                     original[ key ] = {};
 
-                ext = Object.create( ext );
+                // ext = Object.create( ext );
 
-                B.merge( original[ key ], ext );
+                original[ key ] = B.merge( original[ key ], ext );
             }
             else
             {
@@ -143,16 +142,18 @@ var B =
             {
                 if( name === 'options' )
                 {
-                    var temp = null;
                     if( typeof prototype[ name ] === 'undefined' )
-                        temp = {};
-                    else
-                        temp = Object.create( prototype[ name ] );
+                        prototype[ name ] = {};
 
-                    B.merge( prop[ name ], prototype[ name ] );
+                    var prototype_copy = B.copy( prototype[ name ] ),
+                        prop_copy      = B.copy( prop[ name ] );
+
+                    prototype[ name ] = B.merge( prototype_copy, prop_copy );
                 }
-
-                prototype[ name ] = prop[ name ];
+                else
+                {
+                    prototype[ name ] = prop[ name ];
+                }
             }
         }
 

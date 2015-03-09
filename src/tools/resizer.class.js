@@ -14,6 +14,7 @@
         {
             force_style : true,
             parse       : true,
+            target      : document.body,
             auto_resize : true,
             classes     :
             {
@@ -67,7 +68,7 @@
         parse : function( target, selector )
         {
             // Default
-            target   = target   || document.body;
+            target   = target   || this.options.target;
             selector = selector || this.options.classes.to_resize;
 
             // Elements

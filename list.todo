@@ -1,19 +1,17 @@
 -------------------------------------------------------
 TODO
-imperative
+essential
 -------------------------------------------------------
-[ ] Init => Construct
 [ ] Doc
+	[ ] Changelog
+	[ ] Todo (ahah...)
+	[√] Tools events details
+	[√] Tools properties details
 [ ] Final IE8 test
-[ ] Demos
-	[ ] App
-		[ ] Main App
-		[√] Custom Tool
-		[√] Custom Component
-[√] Options merging when extending
-[√] Versions
-[√] Polyfills
-	[√] Object.create
+[√] Demos
+	[√] App
+		[√] Main App
+[√] Bug options merging
 
 -------------------------------------------------------
 TODO
@@ -21,7 +19,14 @@ optional
 -------------------------------------------------------
 [ ] Sublime snippets
 [ ] Classes (create)
-	[ ] Css
+	[ ] Strings
+		[ ] Capitalize
+		[ ] SnakeCase
+		[ ] CamelCase
+		[ ] PascalCase
+		[ ] Slugify
+		[ ] Is false (0, nop, no, false, nein, non, ...)
+	[√] Css
 	[ ] Storyline
 	[ ] Navigation
 	[ ] Scroll
@@ -30,8 +35,14 @@ optional
 		[ ] Formater (custom formats (sprinf like))
 		[ ] Local
 [ ] Classes (update)
+	[ ] CSS
+		[ ] IE translateZ and translate3d prevent (in options)
+		[√] Properties/values as object
+		[√] jQuery handling
 	[ ] Browser
 		[ ] Array of breakpoints
+		[ ] Test method that return currents
+		[ ] Breakpoint name to breakpoint object method
 	[ ] Event_Emitter
 		[ ] Deffered trigger (can specify event)
 	[ ] Better Match media
@@ -46,6 +57,6 @@ optional
 		[ ] Better param names (input/output)
 		[ ] Better gradient (multiple steps)
 		[ ] Only one convertissor method (default any => rgb)
+		[ ] Use Strings Tool
 	[ ] Registery
 		[ ] Persistence (localstorage / cookie fallback)
-[√] Merging issue with special objects like jQuery or THREE
