@@ -3,7 +3,7 @@ Burno.js
 
 #### Yet another JS framework ####
 
-Burno.js (or **B.js**) is a light (**< 40ko**) and simple **JS framework** made to help you develop well structured web applications quickly.
+Burno.js (or **B.js**) is a light (< 40ko) and simple **JS framework** made to help you develop well structured web applications quickly.
 Because Internet is a place of love and sharing, here it is.
 
 You can organize your web application into **Components** and **Tools**. It comes with some useful premade [tools](#tools).
@@ -11,14 +11,14 @@ Simply include the JS files in your HTML and start using it. B.js is still in de
 
 **Table of contents**
 
-* [Compatibility](compatibility)
-* [Usage](usage)
-    * [As a library](as-a-library-the-easy-way)
-    * [As a framework](as-a-framework-the-powerful-way)
-* [Core classes](core-classes)
-    * [Abstract class](abstract-class)
-    * [Event Emitter class](event-emitter-class)
-* [Tools](tools)
+* [Compatibility](#compatibility)
+* [Usage](#usage)
+    * [As a library](#as-a-library-the-easy-way)
+    * [As a framework](#as-a-framework-the-powerful-way)
+* [Core classes](#core-classes)
+    * [Abstract class](#abstract-class)
+    * [Event Emitter class](#event-emitter-class)
+* [Tools](#tools)
     * [Browser](#browser)
     * [Colors](#colors)
     * [GA tags](#ga-tags)
@@ -28,8 +28,8 @@ Simply include the JS files in your HTML and start using it. B.js is still in de
     * [Registry](#registry)
     * [Css](#css)
     * [Resizer](#resizer)
-* [Todo](todo)
-* [Changelog](changelog)
+* [Todo](#todo)
+* [Changelog](#changelog)
 
 
 ## Compatibility

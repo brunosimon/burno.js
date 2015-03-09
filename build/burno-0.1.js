@@ -492,8 +492,7 @@ var B =
 
         // Simple object (exclude jQuery object, HTML Element, THREE js, ...)
         if(
-            !object ||
-
+            typeof object === 'undefined' ||
             object.constructor === Object
         )
         {
@@ -534,9 +533,9 @@ var B =
                 if( !original[ key ] )
                     original[ key ] = {};
 
-                ext = Object.create( ext );
+                // ext = Object.create( ext );
 
-                B.merge( ext, original[ key ] );
+                original[ key ] = B.merge( original[ key ], ext );
             }
             else
             {
@@ -613,16 +612,18 @@ var B =
             {
                 if( name === 'options' )
                 {
-                    var temp = null;
                     if( typeof prototype[ name ] === 'undefined' )
-                        temp = {};
-                    else
-                        temp = Object.create( prototype[ name ] );
+                        prototype[ name ] = {};
 
-                    B.merge( prop[ name ], prototype[ name ] );
+                    var prototype_copy = B.copy( prototype[ name ] ),
+                        prop_copy      = B.copy( prop[ name ] );
+
+                    prototype[ name ] = B.merge( prototype_copy, prop_copy );
                 }
-
-                prototype[ name ] = prop[ name ];
+                else
+                {
+                    prototype[ name ] = prop[ name ];
+                }
             }
         }
 
@@ -684,11 +685,7 @@ var B =
             if( typeof options === 'undefined' )
                 options = {};
 
-            console.log('-----');
-            console.log(this.options);
-            console.log(options);
-
-            this.options = B.merge( this.options, options );
+            B.merge( this.options, options );
 
             // Create statics container
             if( typeof B.Statics !== 'object' )
@@ -1048,10 +1045,10 @@ var B =
             this.viewport.direction   = {};
             this.viewport.direction.x = null;
             this.viewport.direction.y = null;
-            this.viewport.width       = window.innerWidth;
-            this.viewport.height      = window.innerHeight;
+            this.viewport.width       = window.innerWidth  || document.documentElement.clientWidth  || document.body.clientWidth;
+            this.viewport.height      = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-            this.pixel_ratio   = window.devicePixelRatio || 1;
+            this.pixel_ratio = window.devicePixelRatio || 1;
 
             this.init_detection();
             this.init_breakpoints();
@@ -1091,8 +1088,8 @@ var B =
          */
         resize_handler : function()
         {
-            this.viewport.width  = window.innerWidth;
-            this.viewport.height = window.innerHeight;
+            this.viewport.width  = window.innerWidth  || document.documentElement.clientWidth  || document.body.clientWidth;
+            this.viewport.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
             this.test_breakpoints();
 
@@ -1171,9 +1168,10 @@ var B =
          */
         init_breakpoints : function()
         {
-            this.breakpoints         = {};
-            this.breakpoints.items   = [];
-            this.breakpoints.current = null;
+            this.breakpoints                = {};
+            this.breakpoints.all            = [];
+            this.breakpoints.currents       = [];
+            this.breakpoints.currents_names = [];
 
             this.add_breakpoints( this.options.breakpoints );
 
@@ -1202,7 +1200,7 @@ var B =
          */
         add_breakpoint : function( breakpoint )
         {
-            this.breakpoints.items.push( breakpoint );
+            this.breakpoints.all.push( breakpoint );
 
             return this;
         },
@@ -1264,18 +1262,56 @@ var B =
         },
 
         /**
+         * Remove one breakpoint
+         * @param  {string} breakpoint Breakpoint name (can be the breakpoint object itself)
+         * @return {object}            Context
+         */
+        remove_breakpoint : function( breakpoint )
+        {
+            var name = null;
+
+            // String
+            if( typeof breakpoint === 'string' )
+                name = breakpoint;
+
+            // Object
+            else if( typeof breakpoint === 'object' && typeof breakpoint.name === 'string' )
+                name = breakpoint.name;
+
+            // Each breakpoint
+            for( var i = 0, len = this.breakpoints.all.length; i < len; i++ )
+            {
+                var item = this.breakpoints.all[ i ];
+
+                console.log(item);
+
+                // Breakpoint name match
+                if( item.name === name )
+                {
+                    this.breakpoints.all.splice( i--, 1 );
+                    len--;
+                    i--;
+                }
+            }
+
+            // Test breakpoints
+            this.test_breakpoints();
+
+            return this;
+        },
+
+        /**
          * Test every breakpoint and trigger 'breakpoint' event if current breakpoint changed
          * @return {object} Context
          */
         test_breakpoints : function()
         {
-            // Default to null
-            var current_breakpoint = null;
+            var breakpoints = [];
 
             // Each breakpoint
-            for( var i = 0, len = this.breakpoints.items.length; i < len; i++ )
+            for( var i = 0, len = this.breakpoints.all.length; i < len; i++ )
             {
-                var breakpoint = this.breakpoints.items[ i ],
+                var breakpoint = this.breakpoints.all[ i ],
                     width      = !breakpoint.limits.width,
                     height     = !breakpoint.limits.height;
 
@@ -1341,18 +1377,66 @@ var B =
 
                 if( width && height )
                 {
-                    current_breakpoint = breakpoint;
+                    breakpoints.push( breakpoint );
                 }
             }
 
-            if( current_breakpoint !== this.breakpoints.current )
+
+            var current_names = this.get_breakpoints_names( breakpoints ),
+                old_names     = this.get_breakpoints_names( this.breakpoints.currents ),
+                difference    = this.get_arrays_differences( current_names, old_names );
+
+            if( difference.length )
             {
-                var old_breakpoint            = this.breakpoints.current;
-                this.breakpoints.current      = current_breakpoint;
-                this.trigger( 'breakpoint', [ this.breakpoints.current, old_breakpoint ] );
+                this.breakpoints.currents       = breakpoints;
+                this.breakpoints.currents_names = current_names;
+                this.trigger( 'breakpoint', [ this.breakpoints.currents, this.breakpoints.currents_names ] );
             }
 
             return this;
+        },
+
+        /**
+         * Get differences between two arrays
+         * @param  {array} a First array
+         * @param  {array} b Second array
+         * @return {array}   Items in one but not in the other
+         */
+        get_arrays_differences : function( a, b )
+        {
+            var a_new = [],
+                diff  = [];
+
+            for( var i = 0; i < a.length; i++ )
+                a_new[ a[ i ] ] = true;
+
+            for( i = 0; i < b.length; i++ )
+            {
+                if( a_new[ b[ i ] ] )
+                    delete a_new[ b[ i ] ];
+                else
+                    a_new[ b[ i ] ] = true;
+            }
+
+            for( var k in a_new )
+                diff.push( k );
+
+            return diff;
+        },
+
+        /**
+         * Retrieve breakpoints names
+         * @param {object} breakpoints Array of breakpoints well formated
+         * @return {array}             Array of breakpoints names
+         */
+        get_breakpoints_names : function( breakpoints )
+        {
+            var names = [];
+
+            for( var i = 0, len = breakpoints.length; i < len; i++ )
+                names.push( breakpoints[ i ].name );
+
+            return names;
         },
 
         /**
@@ -1638,10 +1722,13 @@ var B =
 
                             if( value && property !== 'ver' )
                             {
-                                this.classes.push( category + '-' + property );
+                                if( property !== 'version' )
+                                {
+                                    this.classes.push( category + '-' + property );
+                                    if( category === 'browser'  )
+                                        this.classes.push( category + '-' + property + '-' + value );
+                                }
 
-                                if( category === 'browser'  )
-                                    this.classes.push( category + '-' + property + '-' + value );
                             }
                         }
                     }
@@ -1683,11 +1770,15 @@ var B =
         static  : 'colors',
         options :
         {
-            parse   : true,
-            classes :
+            gradients :
             {
-                to_convert : 'gradient-text',
-                converted  : 'gradient-text-converted',
+                parse   : true,
+                target  : document.body,
+                classes :
+                {
+                    to_convert : 'gradient-text',
+                    converted  : 'gradient-text-converted',
+                }
             }
         },
         names   :
@@ -1844,7 +1935,7 @@ var B =
         {
             this._super( options );
 
-            if( this.options.parse )
+            if( this.options.gradients.parse )
                 this.parse();
         },
 
@@ -1853,64 +1944,64 @@ var B =
          * @param  {any}     Any color format
          * @return {object}  RGB object
          */
-        any_to_rgb : function( any )
+        any_to_rgb : function( input )
         {
-            any = '' + any;            // String
-            any = any.toLowerCase();   // Lower case
-            any = any.replace(/[\s-]/g,''); // No spaces
+            input = '' + input;            // String
+            input = input.toLowerCase();   // Lower case
+            input = input.replace(/[\s-]/g,''); // No spaces
 
             // Name
-            if( typeof this.names[ any ] !== 'undefined' )
+            if( typeof this.names[ input ] !== 'undefined' )
             {
-                return this.hexa_to_rgb( this.names[ any ] );
+                return this.hexa_to_rgb( this.names[ input ] );
             }
 
             // '0x' Hexa type
-            if( any.indexOf( '0x' ) === 0 )
+            if( input.indexOf( '0x' ) === 0 )
             {
-                return this.hexa_to_rgb( any.replace( '0x', '' ) );
+                return this.hexa_to_rgb( input.replace( '0x', '' ) );
             }
 
             // '#' Hexa type
-            if( any.indexOf( '#' ) === 0 )
+            if( input.indexOf( '#' ) === 0 )
             {
-                any = any.replace( '#', '' );
+                input = input.replace( '#', '' );
             }
 
             // XXXXXX hexa type
-            if( any.length === 6 )
+            if( input.length === 6 )
             {
-                return this.hexa_to_rgb( any );
+                return this.hexa_to_rgb( input );
             }
 
             // XXX hexa type
-            if( any.length === 3 )
+            if( input.length === 3 )
             {
-                var new_any = '';
-                for( var i = 0; i < any.length; i++ )
-                    new_any += any[ i ] + any[ i ];
+                var new_input = '';
+                for( var i = 0; i < input.length; i++ )
+                    new_input += input[ i ] + input[ i ];
 
-                return this.hexa_to_rgb( new_any );
+                return this.hexa_to_rgb( new_input );
             }
 
             // Objects
             try
             {
-                any  = JSON.parse( any );
+                input  = JSON.parse( input );
 
-                if( typeof any.r !== 'undefined' && typeof any.g !== 'undefined' && typeof any.b !== 'undefined' )
+                if( typeof input.r !== 'undefined' && typeof input.g !== 'undefined' && typeof input.b !== 'undefined' )
                 {
-                    return any;
+                    return input;
                 }
-                else if( typeof any.h !== 'undefined' && typeof any.s !== 'undefined' && typeof any.l !== 'undefined' )
+                else if( typeof input.h !== 'undefined' && typeof input.s !== 'undefined' && typeof input.l !== 'undefined' )
                 {
-                    return this.hsl_to_rgb( any );
+                    return this.hsl_to_rgb( input );
                 }
             }
             catch( e ){}
 
             // No type found
-            console.warn( 'Wrong color value : ' + any );
+            console.warn( 'Wrong color value : ' + input );
 
             return { r : 0, g : 0, b : 0 };
         },
@@ -1924,36 +2015,40 @@ var B =
         parse : function( target, selector )
         {
             // Defaults
-            target   = target   || document.body;
-            selector = selector || this.options.classes.to_convert;
+            target   = target   || this.options.gradients.target;
+            selector = selector || this.options.gradients.classes.to_convert;
 
             var that     = this,
-                elements = target.querySelectorAll( '.' + selector + ':not(' + this.options.classes.converted + ')' );
+                elements = target.querySelectorAll( '.' + selector );
 
             // Each element
             for( var i = 0, i_len = elements.length; i < i_len; i++ )
             {
-                var element    = elements[ i ],
-                    beautified = '',
-                    text       = element.innerText,
-                    start      = element.getAttribute( 'data-gradient-start' ),
-                    end        = element.getAttribute( 'data-gradient-end' ),
-                    steps      = null;
+                var element    = elements[ i ];
 
-                if( !start )
-                    start = '#47add9';
-
-                if( !end )
-                    end = '#3554e9';
-
-                steps = that.get_steps_colors( start, end, text.length, 'rgb' );
-
-                for( var j = 0, j_len = text.length; j < j_len; j++ )
+                if( !element.classList.contains( this.options.gradients.classes.converted ) )
                 {
-                    beautified += '<span style="color:rgb(' + steps[ j ].r + ',' + steps[ j ].g + ',' + steps[ j ].b + ')">' + text[ j ] + '</span>';
-                }
+                    var beautified = '',
+                        text       = element.innerText,
+                        start      = element.getAttribute( 'data-gradient-start' ),
+                        end        = element.getAttribute( 'data-gradient-end' ),
+                        steps      = null;
 
-                element.innerHTML = beautified;
+                    if( !start )
+                        start = '#47add9';
+
+                    if( !end )
+                        end = '#3554e9';
+
+                    steps = that.get_steps_colors( start, end, text.length, 'rgb' );
+
+                    for( var j = 0, j_len = text.length; j < j_len; j++ )
+                    {
+                        beautified += '<span style="color:rgb(' + steps[ j ].r + ',' + steps[ j ].g + ',' + steps[ j ].b + ')">' + text[ j ] + '</span>';
+                    }
+
+                    element.innerHTML = beautified;
+                }
             }
 
 
@@ -2157,52 +2252,59 @@ var B =
          * @param  {string} value    Value
          * @return {HTMLElement}     Modified element
          */
-        apply : function( target, property, value )
+        apply : function( target, style, prefixes )
         {
+            // jQuery handling
+            if( typeof jQuery !== 'undefined' && target instanceof jQuery)
+                target = target.toArray();
+
             // Force array
             if( typeof target.length === 'undefined' )
-            {
                 target = [ target ];
+
+            // Prefixes
+            if( typeof prefixes === 'undefined' )
+                prefixes = false;
+
+            if( prefixes === true )
+                prefixes = this.options.prefixes;
+
+            if( prefixes instanceof Array )
+            {
+                // Add prefix
+                var new_style = {};
+                for( var property in style )
+                {
+                    for( var prefix in prefixes )
+                    {
+                        var new_property = null;
+
+                        if( prefixes[ prefix ] )
+                            new_property = prefixes[ prefix ] + ( property.charAt( 0 ).toUpperCase() + property.slice( 1 ) );
+                        else
+                            new_property = property;
+
+                        new_style[ new_property ] = style[ property ];
+                    }
+                }
+
+                style = new_style;
             }
 
-            // // Remove translateZ if necessary
-            // if( this.browser.is.IE && this.browser.version < 10 )
-            //     value = value.replace( 'translateZ(0)', '' );
-
-            // Add prefix
-            for( var css = {}, i = 0, i_len = this.options.prefixes.length; i < i_len; i++ )
+            // Apply style on each element
+            for( var element in target )
             {
-                var updated_property = this.options.prefixes[ i ];
+                element = target[ element ];
 
-                if( updated_property !== '' )
-                    updated_property += this.capitalize_first_letter( property );
-                else
-                    updated_property = property;
+                if( element instanceof HTMLElement )
+                {
+                    for( var _property in style )
+                        element.style[ _property ] = style[ _property ];
+                }
 
-                css[ updated_property ] = value;
-            }
-
-            // Apply each CSS on each element
-            var keys = Object.keys( css );
-            for( var j = 0, j_len = target.length; j < j_len; j++ )
-            {
-                var element = target[ j ];
-
-                for( var k = 0, k_len = keys.length; k < k_len; k++ )
-                    element.style[ keys[ k ] ] = css[ keys[ k ] ];
             }
 
             return target;
-        },
-
-        /**
-         * Capitalize first letter
-         * @param  {string} input Input
-         * @return {string}       Output
-         */
-        capitalize_first_letter : function( input )
-        {
-            return input.charAt( 0 ).toUpperCase() + input.slice( 1 );
         }
     } );
 } )();
@@ -2224,6 +2326,7 @@ var B =
             send               : true,
             parse              : true,
             true_link_duration : 300,
+            target  : document.body,
             classes :
             {
                 to_tag : 'tag',
@@ -2259,14 +2362,16 @@ var B =
          */
         parse : function( target, selector )
         {
-            target   = target   || document.body;
+            target   = target   || this.options.target;
             selector = selector || this.options.classes.to_tag;
 
             var that     = this,
-                elements = target.querySelectorAll( '.' + selector + ':not(' + this.options.classes.tagged + ')' );
+                elements = target.querySelectorAll( '.' + selector );
 
             function click_handle( e )
             {
+                e = e || window.event;
+
                 // Set variables
                 var element   = this,
                     true_link = element.getAttribute( 'data-tag-true-link' ),
@@ -2309,7 +2414,10 @@ var B =
                         }, that.options.true_link_duration );
 
                         // Prevent default
-                        e.preventDefault();
+                        if( e.preventDefault )
+                            e.preventDefault();
+                        else
+                            e.returnValue = false;
                     }
                 }
             }
@@ -2319,11 +2427,14 @@ var B =
             {
                 var element = elements[ i ];
 
-                // Listen
-                element.onclick = click_handle;
+                if( !element.classList.contains( this.options.classes.tagged ) )
+                {
+                    // Listen
+                    element.onclick = click_handle;
 
-                // Set tagged class
-                element.classList.add( this.options.classes.tagged );
+                    // Set tagged class
+                    element.classList.add( this.options.classes.tagged );
+                }
             }
 
             return this;
@@ -2331,8 +2442,8 @@ var B =
 
         /**
          * Send to Analytics
-         * @param  {object} options Datas to send
-         * @return {object}         Context
+         * @param  {object} datas Datas to send
+         * @return {object}       Context
          * @example
          *
          *     send( {
@@ -2343,26 +2454,26 @@ var B =
          *     } )
          *
          */
-        send : function( options )
+        send : function( datas )
         {
             var send = [];
 
             // Error
-            if( typeof options !== 'object' )
+            if( typeof datas !== 'object' )
             {
                 // Logs
                 if( this.options.logs.warnings )
-                    console.warn( 'tag wrong options' );
+                    console.warn( 'tag wrong datas' );
 
                 return false;
             }
 
             // Unique
-            if( options.unique && this.unique_sent.indexOf( options.unique ) !== -1 )
+            if( datas.unique && this.unique_sent.indexOf( datas.unique ) !== -1 )
             {
                 // Logs
                 if( this.options.logs.warnings )
-                    console.warn( 'tag prevent : ' + options.unique );
+                    console.warn( 'tag prevent : ' + datas.unique );
 
                 return false;
             }
@@ -2373,24 +2484,24 @@ var B =
                 var sent = false;
 
                 // Category
-                if( typeof options.category !== 'undefined' )
+                if( typeof datas.category !== 'undefined' )
                 {
-                    send.push( options.category );
+                    send.push( datas.category );
 
                     // Action
-                    if( typeof options.action !== 'undefined' )
+                    if( typeof datas.action !== 'undefined' )
                     {
-                        send.push( options.action );
+                        send.push( datas.action );
 
                         // Label
-                        if( typeof options.label !== 'undefined' )
+                        if( typeof datas.label !== 'undefined' )
                         {
-                            send.push( options.label );
+                            send.push( datas.label );
 
                             // Value
-                            if( typeof options.value !== 'undefined' )
+                            if( typeof datas.value !== 'undefined' )
                             {
-                                send.push( options.value );
+                                send.push( datas.value );
                             }
                         }
 
@@ -2441,8 +2552,8 @@ var B =
             if( sent )
             {
                 // Save in unique_sent array
-                if( options.unique )
-                    this.unique_sent.push( options.unique );
+                if( datas.unique )
+                    this.unique_sent.push( datas.unique );
 
                 this.trigger( 'send', [ send ] );
             }
@@ -2465,26 +2576,24 @@ var B =
 
     B.Tools.Keyboard = B.Core.Event_Emitter.extend(
     {
-        static  : 'keyboard',
-        options :
+        static        : 'keyboard',
+        options       : {},
+        keycode_names :
         {
-            keycode_names :
-            {
-                91 : 'cmd',
-                17 : 'ctrl',
-                32 : 'space',
-                16 : 'shift',
-                18 : 'alt',
-                20 : 'caps',
-                9  : 'tab',
-                13 : 'enter',
-                8  : 'backspace',
-                38 : 'up',
-                39 : 'right',
-                40 : 'down',
-                37 : 'left',
-                27 : 'esc'
-            }
+            91 : 'cmd',
+            17 : 'ctrl',
+            32 : 'space',
+            16 : 'shift',
+            18 : 'alt',
+            20 : 'caps',
+            9  : 'tab',
+            13 : 'enter',
+            8  : 'backspace',
+            38 : 'up',
+            39 : 'right',
+            40 : 'down',
+            37 : 'left',
+            27 : 'esc'
         },
 
         /**
@@ -2511,7 +2620,7 @@ var B =
             var that = this;
 
             // Down
-            window.onkeydown = function( e )
+            function keydown_handle(e)
             {
                 var character = that.keycode_to_character( e.keyCode );
 
@@ -2520,11 +2629,18 @@ var B =
 
                 // Trigger and prevend default if asked by return false on callback
                 if( that.trigger( 'down', [ e.keyCode, character ] ) === false )
-                    e.preventDefault();
-            };
+                {
+                    e = e || window.event;
+
+                    if( e.preventDefault )
+                        e.preventDefault();
+                    else
+                        e.returnValue = false;
+                }
+            }
 
             // Up
-            window.onkeyup = function( e )
+            function keyup_handle( e )
             {
                 var character = that.keycode_to_character( e.keyCode );
 
@@ -2532,7 +2648,20 @@ var B =
                     that.downs.splice( that.downs.indexOf( character ), 1 );
 
                 that.trigger( 'up', [ e.keyCode, character ] );
-            };
+            }
+
+
+            // Listen
+            if (document.addEventListener)
+            {
+                document.addEventListener( 'keydown', keydown_handle, false );
+                document.addEventListener( 'keyup', keyup_handle, false );
+            }
+            else
+            {
+                document.attachEvent( 'onkeydown', keydown_handle, false );
+                document.attachEvent( 'onkeyup', keyup_handle, false );
+            }
 
             return this;
         },
@@ -2544,7 +2673,7 @@ var B =
          */
         keycode_to_character : function( input )
         {
-            var output = this.options.keycode_names[ input ];
+            var output = this.keycode_names[ input ];
 
             if( !output )
                 output = String.fromCharCode( input ).toLowerCase();
@@ -2603,6 +2732,7 @@ var B =
     B.Tools.Mouse = B.Core.Event_Emitter.extend(
     {
         static  : 'mouse',
+        options : {},
 
         /**
          * Initialise and merge options
@@ -2816,6 +2946,7 @@ var B =
     B.Tools.Registry = B.Core.Abstract.extend(
     {
         static  : 'registry',
+        options : {},
 
         /**
          * Initialise and merge options
@@ -2878,6 +3009,7 @@ var B =
         {
             force_style : true,
             parse       : true,
+            target      : document.body,
             auto_resize : true,
             classes     :
             {
@@ -2931,7 +3063,7 @@ var B =
         parse : function( target, selector )
         {
             // Default
-            target   = target   || document.body;
+            target   = target   || this.options.target;
             selector = selector || this.options.classes.to_resize;
 
             // Elements
@@ -3030,11 +3162,13 @@ var B =
                 var container_style = window.getComputedStyle( container ),
                     content_style   = window.getComputedStyle( content );
 
+                console.log(container_style);
+
                 // Force positioning
-                if( container_style.position === 'static' )
+                if( container_style.position !== 'fixed' && container_style.position !== 'relative' && container_style.position !== 'absolute' )
                     container.style.position = 'relative';
 
-                if( content_style.position === 'static' )
+                if( content_style.position !== 'fixed' && content_style.position !== 'relative' && content_style.position !== 'absolute' )
                     content.style.position = 'absolute';
 
                 // Force overflow
