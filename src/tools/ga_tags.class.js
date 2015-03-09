@@ -55,10 +55,12 @@
             selector = selector || this.options.classes.to_tag;
 
             var that     = this,
-                elements = target.querySelectorAll( '.' + selector + ':not(' + this.options.classes.tagged + ')' );
+                elements = target.querySelectorAll( '.' + selector );
 
             function click_handle( e )
             {
+                e = e || window.event;
+
                 // Set variables
                 var element   = this,
                     true_link = element.getAttribute( 'data-tag-true-link' ),
@@ -101,7 +103,10 @@
                         }, that.options.true_link_duration );
 
                         // Prevent default
-                        e.preventDefault();
+                        if( e.preventDefault )
+                            e.preventDefault();
+                        else
+                            e.returnValue = false;
                     }
                 }
             }
@@ -111,11 +116,14 @@
             {
                 var element = elements[ i ];
 
-                // Listen
-                element.onclick = click_handle;
+                if( !element.classList.contains( this.options.classes.tagged ) )
+                {
+                    // Listen
+                    element.onclick = click_handle;
 
-                // Set tagged class
-                element.classList.add( this.options.classes.tagged );
+                    // Set tagged class
+                    element.classList.add( this.options.classes.tagged );
+                }
             }
 
             return this;

@@ -167,11 +167,13 @@
                 var container_style = window.getComputedStyle( container ),
                     content_style   = window.getComputedStyle( content );
 
+                console.log(container_style);
+
                 // Force positioning
-                if( container_style.position === 'static' )
+                if( container_style.position !== 'fixed' && container_style.position !== 'relative' && container_style.position !== 'absolute' )
                     container.style.position = 'relative';
 
-                if( content_style.position === 'static' )
+                if( content_style.position !== 'fixed' && content_style.position !== 'relative' && content_style.position !== 'absolute' )
                     content.style.position = 'absolute';
 
                 // Force overflow

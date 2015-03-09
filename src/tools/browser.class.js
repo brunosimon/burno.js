@@ -45,8 +45,8 @@
             this.viewport.direction   = {};
             this.viewport.direction.x = null;
             this.viewport.direction.y = null;
-            this.viewport.width       = window.innerWidth;
-            this.viewport.height      = window.innerHeight;
+            this.viewport.width       = window.innerWidth  || document.documentElement.clientWidth  || document.body.clientWidth;
+            this.viewport.height      = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
             this.pixel_ratio = window.devicePixelRatio || 1;
 
@@ -88,8 +88,8 @@
          */
         resize_handler : function()
         {
-            this.viewport.width  = window.innerWidth;
-            this.viewport.height = window.innerHeight;
+            this.viewport.width  = window.innerWidth  || document.documentElement.clientWidth  || document.body.clientWidth;
+            this.viewport.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
             this.test_breakpoints();
 
@@ -168,9 +168,10 @@
          */
         init_breakpoints : function()
         {
-            this.breakpoints         = {};
-            this.breakpoints.items   = [];
-            this.breakpoints.current = null;
+            this.breakpoints                = {};
+            this.breakpoints.all            = [];
+            this.breakpoints.currents       = [];
+            this.breakpoints.currents_names = [];
 
             this.add_breakpoints( this.options.breakpoints );
 
@@ -199,7 +200,7 @@
          */
         add_breakpoint : function( breakpoint )
         {
-            this.breakpoints.items.push( breakpoint );
+            this.breakpoints.all.push( breakpoint );
 
             return this;
         },
@@ -261,18 +262,56 @@
         },
 
         /**
+         * Remove one breakpoint
+         * @param  {string} breakpoint Breakpoint name (can be the breakpoint object itself)
+         * @return {object}            Context
+         */
+        remove_breakpoint : function( breakpoint )
+        {
+            var name = null;
+
+            // String
+            if( typeof breakpoint === 'string' )
+                name = breakpoint;
+
+            // Object
+            else if( typeof breakpoint === 'object' && typeof breakpoint.name === 'string' )
+                name = breakpoint.name;
+
+            // Each breakpoint
+            for( var i = 0, len = this.breakpoints.all.length; i < len; i++ )
+            {
+                var item = this.breakpoints.all[ i ];
+
+                console.log(item);
+
+                // Breakpoint name match
+                if( item.name === name )
+                {
+                    this.breakpoints.all.splice( i--, 1 );
+                    len--;
+                    i--;
+                }
+            }
+
+            // Test breakpoints
+            this.test_breakpoints();
+
+            return this;
+        },
+
+        /**
          * Test every breakpoint and trigger 'breakpoint' event if current breakpoint changed
          * @return {object} Context
          */
         test_breakpoints : function()
         {
-            // Default to null
-            var current_breakpoint = null;
+            var breakpoints = [];
 
             // Each breakpoint
-            for( var i = 0, len = this.breakpoints.items.length; i < len; i++ )
+            for( var i = 0, len = this.breakpoints.all.length; i < len; i++ )
             {
-                var breakpoint = this.breakpoints.items[ i ],
+                var breakpoint = this.breakpoints.all[ i ],
                     width      = !breakpoint.limits.width,
                     height     = !breakpoint.limits.height;
 
@@ -338,18 +377,66 @@
 
                 if( width && height )
                 {
-                    current_breakpoint = breakpoint;
+                    breakpoints.push( breakpoint );
                 }
             }
 
-            if( current_breakpoint !== this.breakpoints.current )
+
+            var current_names = this.get_breakpoints_names( breakpoints ),
+                old_names     = this.get_breakpoints_names( this.breakpoints.currents ),
+                difference    = this.get_arrays_differences( current_names, old_names );
+
+            if( difference.length )
             {
-                var old_breakpoint            = this.breakpoints.current;
-                this.breakpoints.current      = current_breakpoint;
-                this.trigger( 'breakpoint', [ this.breakpoints.current, old_breakpoint ] );
+                this.breakpoints.currents       = breakpoints;
+                this.breakpoints.currents_names = current_names;
+                this.trigger( 'breakpoint', [ this.breakpoints.currents, this.breakpoints.currents_names ] );
             }
 
             return this;
+        },
+
+        /**
+         * Get differences between two arrays
+         * @param  {array} a First array
+         * @param  {array} b Second array
+         * @return {array}   Items in one but not in the other
+         */
+        get_arrays_differences : function( a, b )
+        {
+            var a_new = [],
+                diff  = [];
+
+            for( var i = 0; i < a.length; i++ )
+                a_new[ a[ i ] ] = true;
+
+            for( i = 0; i < b.length; i++ )
+            {
+                if( a_new[ b[ i ] ] )
+                    delete a_new[ b[ i ] ];
+                else
+                    a_new[ b[ i ] ] = true;
+            }
+
+            for( var k in a_new )
+                diff.push( k );
+
+            return diff;
+        },
+
+        /**
+         * Retrieve breakpoints names
+         * @param {object} breakpoints Array of breakpoints well formated
+         * @return {array}             Array of breakpoints names
+         */
+        get_breakpoints_names : function( breakpoints )
+        {
+            var names = [];
+
+            for( var i = 0, len = breakpoints.length; i < len; i++ )
+                names.push( breakpoints[ i ].name );
+
+            return names;
         },
 
         /**
@@ -635,10 +722,13 @@
 
                             if( value && property !== 'ver' )
                             {
-                                this.classes.push( category + '-' + property );
+                                if( property !== 'version' )
+                                {
+                                    this.classes.push( category + '-' + property );
+                                    if( category === 'browser'  )
+                                        this.classes.push( category + '-' + property + '-' + value );
+                                }
 
-                                if( category === 'browser'  )
-                                    this.classes.push( category + '-' + property + '-' + value );
                             }
                         }
                     }

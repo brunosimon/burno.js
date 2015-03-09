@@ -55,7 +55,7 @@
             var that = this;
 
             // Down
-            window.onkeydown = function( e )
+            function keydown_handle(e)
             {
                 var character = that.keycode_to_character( e.keyCode );
 
@@ -64,11 +64,18 @@
 
                 // Trigger and prevend default if asked by return false on callback
                 if( that.trigger( 'down', [ e.keyCode, character ] ) === false )
-                    e.preventDefault();
-            };
+                {
+                    e = e || window.event;
+
+                    if( e.preventDefault )
+                        e.preventDefault();
+                    else
+                        e.returnValue = false;
+                }
+            }
 
             // Up
-            window.onkeyup = function( e )
+            function keyup_handle( e )
             {
                 var character = that.keycode_to_character( e.keyCode );
 
@@ -76,7 +83,20 @@
                     that.downs.splice( that.downs.indexOf( character ), 1 );
 
                 that.trigger( 'up', [ e.keyCode, character ] );
-            };
+            }
+
+
+            // Listen
+            if (document.addEventListener)
+            {
+                document.addEventListener( 'keydown', keydown_handle, false );
+                document.addEventListener( 'keyup', keyup_handle, false );
+            }
+            else
+            {
+                document.attachEvent( 'onkeydown', keydown_handle, false );
+                document.attachEvent( 'onkeyup', keyup_handle, false );
+            }
 
             return this;
         },

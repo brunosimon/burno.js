@@ -260,32 +260,36 @@
             selector = selector || this.options.gradients.classes.to_convert;
 
             var that     = this,
-                elements = target.querySelectorAll( '.' + selector + ':not(' + this.options.gradients.classes.converted + ')' );
+                elements = target.querySelectorAll( '.' + selector );
 
             // Each element
             for( var i = 0, i_len = elements.length; i < i_len; i++ )
             {
-                var element    = elements[ i ],
-                    beautified = '',
-                    text       = element.innerText,
-                    start      = element.getAttribute( 'data-gradient-start' ),
-                    end        = element.getAttribute( 'data-gradient-end' ),
-                    steps      = null;
+                var element    = elements[ i ];
 
-                if( !start )
-                    start = '#47add9';
-
-                if( !end )
-                    end = '#3554e9';
-
-                steps = that.get_steps_colors( start, end, text.length, 'rgb' );
-
-                for( var j = 0, j_len = text.length; j < j_len; j++ )
+                if( !element.classList.contains( this.options.gradients.classes.converted ) )
                 {
-                    beautified += '<span style="color:rgb(' + steps[ j ].r + ',' + steps[ j ].g + ',' + steps[ j ].b + ')">' + text[ j ] + '</span>';
-                }
+                    var beautified = '',
+                        text       = element.innerText,
+                        start      = element.getAttribute( 'data-gradient-start' ),
+                        end        = element.getAttribute( 'data-gradient-end' ),
+                        steps      = null;
 
-                element.innerHTML = beautified;
+                    if( !start )
+                        start = '#47add9';
+
+                    if( !end )
+                        end = '#3554e9';
+
+                    steps = that.get_steps_colors( start, end, text.length, 'rgb' );
+
+                    for( var j = 0, j_len = text.length; j < j_len; j++ )
+                    {
+                        beautified += '<span style="color:rgb(' + steps[ j ].r + ',' + steps[ j ].g + ',' + steps[ j ].b + ')">' + text[ j ] + '</span>';
+                    }
+
+                    element.innerHTML = beautified;
+                }
             }
 
 

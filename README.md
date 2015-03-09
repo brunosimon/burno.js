@@ -7,22 +7,42 @@ Burno.js (or **B.js**) is a light (**< 40ko**) and simple **JS framework** made 
 Because Internet is a place of love and sharing, here it is.
 
 You can organize your web application into **Components** and **Tools**. It comes with some useful premade [tools](#tools).
-Simply include the JS files in your HTML and start using it.
+Simply include the JS files in your HTML and start using it. B.js is still in development, don't hesitate if you have any advice.
 
-B.js is still in development, don't hesitate if you have any advice.
+**Table of contents**
+
+* [Compatibility](compatibility)
+* [Usage](usage)
+    * [As a library](as-a-library-the-easy-way)
+    * [As a framework](as-a-framework-the-powerful-way)
+* [Core classes](core-classes)
+    * [Abstract class](abstract-class)
+    * [Event Emitter class](event-emitter-class)
+* [Tools](tools)
+    * [Browser](#browser)
+    * [Colors](#colors)
+    * [GA tags](#ga-tags)
+    * [Keyboard](#keyboard)
+    * [Mouse](#mouse)
+    * [Ticker](#ticker)
+    * [Registry](#registry)
+    * [Css](#css)
+    * [Resizer](#resizer)
+* [Todo](todo)
+* [Changelog](changelog)
 
 
 ## Compatibility
 
-B.js has no dependencies (because who need jQuery today?).
-It's compatible with all modern browsers down to IE8 (included)
-Depending on the browsers and classes you are using, you may need polyfills which are included in the src/polyfills folder.
+B.js has no dependencies (no, you don't need jQuery).
+It's compatible with all modern browsers down to IE8 (included).<br />
+Depending on the browsers and classes you are using, you may need polyfills which are included in the [src/polyfills](src/polyfills) folder.
 
 
 ## Usage
 
-There is two ways of using B.js.
-You can use it as a simple library by instantiating the Tools or you can use it as a Framework by developing your web application and its Components by extending B.js
+There are two ways of using B.js.<br />
+You can use it as a simple library by instantiating the tools or you can use it as a Framework by extending B.js to create your own tools and components.
 
 #### As a library (the easy way)
 
@@ -33,7 +53,7 @@ You can use it as a simple library by instantiating the Tools or you can use it 
 ```
 
 * Instantiate the tools you need
-* Start using them (see below what each tool can do)
+* Start using them
 
 ```javascript
 var browser = new B.Tools.Browser();
@@ -47,9 +67,9 @@ browser.on( 'resize', function( viewport )
 
 #### As a framework (the powerful way)
 
-Create your own classes based on B.js classes and organize your web application into Components. You can organize all your components inside `B.Components` object or you can improve the namespace like `B.Components.Foo.Bar`.
-Inheritance is based on the [John Resig code](http://ejohn.org/blog/simple-javascript-inheritance/) with some improvements like deep property merging.
-B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode). Do as you whish and feel free to share your custom Tools and Components.
+Create your own tools and components based on B.js classes. You can put your components inside `B.Components` object or you can create your own namespace like `Foo.Bar.My_Class`.<br/>
+Inheritance is based on the [John Resig code](http://ejohn.org/blog/simple-javascript-inheritance/) with some improvements like deep property merging.<br />
+B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode). Do as you whish and feel free to share your custom tools and components.
 
 * Include the build in your HTML
 
@@ -57,7 +77,7 @@ B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/
 <script src="../../build/burno-0.1.min.js"></script>
 ```
 
-* Create your own Tools and Components based on B.js classes **Abstract** or **Event Emitter** (you may want to create put each class in a different file)
+* Create your own tools and components based on B.js **Abstract** or **Event Emitter** classes (you may want to put each class in a different file)
 
 ```javascript
 // Create a class wrapping the all application
@@ -108,18 +128,18 @@ var my_app = new B.Components.My_App();
 ```
 * Have a beer :beer:
 
-## Core classes
+# Core classes
 
-Core classes are base classes you want to inherite if your building custom Components and Tools.
+Core classes are base classes you want to extend if your building custom components and tools.
 
-### Abstract Class
+## Abstract Class
 
 `B.Core.Abstract` is the default class.
 
 * `extend` method
 * `init` method (called when instantiated)
-* `options` property that will be overriden (see example bellow)
-* `static` property to activate make static classes (also call singleton)
+* `options` property that will be merged (see example bellow)
+* `static` property to set the class as a singleton (can be instantiated only one time)
 
 
 ###### Default
@@ -173,7 +193,7 @@ var custom_class = new B.Components.Custom_Class( {
 
 ```javascript
 // Currently, static functionnality is only used for tools
-// It's just a matter of organization, do what ever you want.
+// It's just a matter of organization, do whatever you want.
 B.Tools.Custom_Class = B.Core.Event_Emitter.extend(
 {
     // Chose a name never used
@@ -192,9 +212,9 @@ var custom_class       = new B.Tools.Custom_Class(),
 ```
 
 
-### Event Emitter Class
+## Event Emitter Class
 
-`B.Core.Event_Emitter` inherit from `B.Core.Abstract` with extra event methods.
+`B.Core.Event_Emitter` extends `B.Core.Abstract` with extra event methods.
 
 * `on`, `off` and `trigger` methods
 * Multiple events listening
@@ -204,7 +224,7 @@ var custom_class       = new B.Tools.Custom_Class(),
 
 ###### Default example
 ```javascript
-// Create a custom component that inherit Event_Emitter
+// Create a custom component that extends Event_Emitter
 B.Components.Custom_Component = B.Core.Event_Emitter.extend(
 {
     init : function()
@@ -235,7 +255,7 @@ custom_component.on( 'event-test', function( value )
 
 ###### Namespace example
 ```javascript
-// Create a custom component that inherit Event_Emitter
+// Create a custom component that extends Event_Emitter
 B.Components.Custom_Component = B.Core.Event_Emitter.extend(
 {
     init : function()
@@ -282,13 +302,23 @@ custom_component.off( 'event-2.foo' );
 custom_component.off( '.bar' );
 ```
 
-## Tools
+# Tools
 
-B.js comes with some premade Tools. Each one is a singleton (static). You can instantiate it multiple times, you will always get the first instance.
+B.js comes with some premade tools. Each one is a singleton (static). You can instantiate it multiple times, you will always get the first instance.
 
-You can inherit from those tools if you want.
+You can extend those tools if you want.
 
-### Browser
+* [Browser](#browser)
+* [Colors](#colors)
+* [GA tags](#ga-tags)
+* [Keyboard](#keyboard)
+* [Mouse](#mouse)
+* [Ticker](#ticker)
+* [Registry](#registry)
+* [Css](#css)
+* [Resizer](#resizer)
+
+## Browser
 
 Gives you informations like system, browser, engine, viewport and methods to handle breakpoints and media queries.<br />
 Breakpoints works a little like width and height for media queries. Specify some breakpoints and the class will trigger events when resizing the viewport.
@@ -350,6 +380,10 @@ Breakpoints works a little like width and height for media queries. Specify some
     * `browser` (object) Liste of browsers with boolean true if detected
     * `system` (object) Liste of systems with boolean true if detected
     * `features` (object) Liste of features with boolean true if detected
+* **breakpoints** (object)
+    * `all` (array) Every current breakpoints
+    * `currents` (array) Every active breakpoints
+    * `currents_names` (array) Names of every active breakpoints
 
 **Methods**
 
@@ -378,7 +412,7 @@ Breakpoints works a little like width and height for media queries. Specify some
 * Match media
 
 
-### Colors
+## Colors
 
 Help you convert strings to well formated colors.<br>
 Create beautifuls rainbows. :rainbow:
@@ -428,7 +462,7 @@ Create beautifuls rainbows. :rainbow:
 none
 
 
-### GA Tags
+## GA Tags
 
 Send informations to Google Analytics using the current instance.
 You must instantiate Google Analytics yourself.
@@ -478,7 +512,7 @@ none
     * datas (array) Sent datas
 
 
-### Keyboard
+## Keyboard
 
 Methods, properties and events relatives to the keyboard
 
@@ -513,7 +547,7 @@ none
     * `character` (string)
 
 
-### Mouse
+## Mouse
 
 Properties and events relatives to the mouse
 
@@ -550,7 +584,7 @@ none
     * `wheel` (object) Mouse wheel informations
     * If you wan't to prevent the default event, just return `false` in the callback
 
-### Ticker
+## Ticker
 
 Run a ticker that trigger events each frame base on requestAnimationFrame.
 
@@ -590,7 +624,7 @@ Run a ticker that trigger events each frame base on requestAnimationFrame.
     * `time` (object) Time informations
 
 
-### Registery
+## Registry
 
 Key/value registry for when you need to store variable and retrieve it anywhere without using ugly global variables.
 You may use it to cache variables.
@@ -620,7 +654,7 @@ none
 none
 
 
-### CSS
+## CSS
 
 Apply CSS on targeted element and automatically add prefixes.
 Property will automatically be formated.
@@ -652,7 +686,7 @@ none
 none
 
 
-### Resizer
+## Resizer
 
 Resize elements inside containers according to many possible options.
 <br>May automatically parse and resize according to classes and attributes on containers.
@@ -721,9 +755,55 @@ none
 
 ## Todo
 
+* ~~IE8 compatible~~
+* Sublime snippets
+* Classes (create)
+    * Storyline
+    * Navigation
+    * Scroll
+    * Page
+    * Images
+    * Loader
+    * Strings
+        * Capitalize
+        * SnakeCase
+        * CamelCase
+        * PascalCase
+        * Slugify
+        * Is false (0, nop, no, false, nein, non, ...)
+    * Time / Date
+        * Formater (custom formats (sprinf like))
+        * Local
+* Classes (update)
+    * CSS
+        * IE translateZ and translate3d prevent (in options)
+    * ~~Browser~~
+        * ~~Array of breakpoints~~
+        * ~~Breakpoint name to breakpoint object method~~
+    * Event_Emitter
+        * Deffered trigger (can specify event)
+    * Better Match media
+        * Multiple matches
+        * Fallback for width and height
+    * GA Tags
+        * Dynamically add GA script with method "init( ua_code )"
+            * Trigger event
+    * Mouse
+        * Wheel type detection
+    * Colors
+        * Better param names (input/output)
+        * Better gradient (multiple steps)
+        * Only one convertissor method (default any => rgb)
+        * Use Strings Tool
+    * Registry
+        * Persistence (localstorage / cookie fallback)
 
 
 
-## ChangeLog
+## Changelog
+
+#### 0.1.0 (2015-03-10)
+
+Init
 
 

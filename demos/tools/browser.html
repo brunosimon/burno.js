@@ -17,6 +17,7 @@
     <script src="../../src/polyfills/classlist.js"></script>
     <script src="../../src/polyfills/foreach.js"></script>
     <script src="../../src/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/polyfills/htmlelement.js"></script>
     <script src="../../src/polyfills/indexof.js"></script>
     <script src="../../src/polyfills/object-keys.js"></script>
     <script src="../../src/polyfills/object-create.js"></script>
@@ -189,9 +190,10 @@
             document.querySelector( '.element.resize' ).innerHTML = text.join('');
         } );
 
-        browser.on( 'breakpoint', function( breakpoint, old_breakpoint )
+        browser.on( 'breakpoint', function( breakpoints, breakpoints_names )
         {
-            console.log( 'breakpoint', breakpoint );
+            console.log( 'breakpoints', breakpoints );
+            console.log( 'breakpoints names', breakpoints_names );
 
             var text = [];
             text.push( '<strong>' );
@@ -200,14 +202,18 @@
 
             text.push( '<table>' );
 
-            text.push( '<tr>' );
-            text.push( '<td class="label">' );
-            text.push( 'name' );
-            text.push( '</td>' );
-            text.push( '<td class="value">' );
-            text.push( breakpoint.name );
-            text.push( '</td>' );
-            text.push( '</tr>' );
+            for( var i = 0; i < breakpoints.length; i++ )
+            {
+                text.push( '<tr>' );
+                text.push( '<td class="label">' );
+                text.push( 'name' );
+                text.push( '</td>' );
+                text.push( '<td class="value">' );
+                text.push( breakpoints[ i ].name );
+                text.push( '</td>' );
+                text.push( '</tr>' );
+            }
+
 
             text.push( '</table>' );
 
@@ -265,7 +271,8 @@
         for( var _class in browser.classes )
         {
             text.push( '<br>' );
-            text.push( browser.classes[ _class ] );
+            if( typeof browser.classes[ _class ] === 'string' )
+                text.push( browser.classes[ _class ] );
             text.push( ' ' );
         }
 
