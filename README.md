@@ -755,6 +755,87 @@ none
 none
 
 
+## Utils
+
+#### Sublime Snippets
+
+* Get sublime texts snippets from [utils/sublime-snippets/](utils/sublime-snippets/)
+* On Sublime Text, go to `Preferences > Browse Packages...`
+* Add the snippets anywhere inside `User/` folder
+
+**bc** : Burno Class
+
+```javascript
+B.Components.Class = B.Core.Abstract.extend(
+{
+    static  : 'class',
+    options : {},
+
+    init : function( options )
+    {
+        this._super( options );
+
+
+    }
+} );
+```
+
+**bcs** : Burno Class Strict
+
+```javascript
+(function()
+{
+    'use strict';
+
+    B.Components.Class = B.Core.Abstract.extend(
+    {
+        static  : 'class',
+        options : {},
+
+        init : function( options )
+        {
+            this._super( options );
+
+
+        }
+    } );
+} )();
+```
+
+**bfn** : Burno Function
+
+```javascript
+/**
+ * Description
+ */
+name : function( options )
+{
+    var that = this;
+
+    this._super();
+
+
+}
+```
+
+**bn** : Burno New
+
+```javascript
+new Burno.Namespace.Class();
+```
+
+**bnc** : Burno New Component
+
+```javascript
+new Burno.Components.Class();
+```
+
+**bnt** : Burno New Tool
+
+```javascript
+new Burno.Tools.Class();
+```
+
 
 ## Todo
 

@@ -1,0 +1,5 @@
+<snippet>
+    <content><![CDATA[new Burno.${1:Namespace}.${2:Class}(${3});]]></content>
+    <tabTrigger>bn</tabTrigger>
+    <scope>source.js</scope>
+</snippet>

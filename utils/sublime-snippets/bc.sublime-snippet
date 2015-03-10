@@ -1,0 +1,16 @@
+<snippet>
+    <content><![CDATA[B.${1:Components}.${2:Class} = B.${3:Core}.${4:Abstract}.extend(
+{
+	${5:static  : '${6:class}',
+    }options : {${7}},
+
+    init : function( options )
+    {
+        this._super( options );
+
+		${8}
+    }
+} );]]></content>
+    <tabTrigger>bc</tabTrigger>
+    <scope>source.js</scope>
+</snippet>

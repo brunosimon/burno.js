@@ -1,0 +1,15 @@
+<snippet>
+    <content><![CDATA[/**
+ * ${1:Description}
+ */
+${2:name} : function(${3: options })
+{
+    ${4:var that = this;
+
+    }${5:this._super();
+
+    }${6}
+}]]></content>
+    <tabTrigger>bfn</tabTrigger>
+    <scope>source.js</scope>
+</snippet>
