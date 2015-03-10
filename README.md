@@ -841,7 +841,7 @@ new Burno.Tools.Class();
 
 * ~~IE8 compatible~~
 * Unit testing
-* Sublime snippets
+* ~~Sublime snippets~~
 * Classes (create)
     * Storyline
     * Navigation
