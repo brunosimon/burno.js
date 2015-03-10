@@ -10,17 +10,19 @@
     <script src="../../src/polyfills/classlist.js"></script>
     <script src="../../src/polyfills/foreach.js"></script>
     <script src="../../src/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/polyfills/htmlelement.js"></script>
     <script src="../../src/polyfills/indexof.js"></script>
     <script src="../../src/polyfills/object-keys.js"></script>
+    <script src="../../src/polyfills/object-create.js"></script>
     <script src="../../src/polyfills/requestanimationframe.js"></script>
 
     <!-- CORE -->
     <script src="../../src/core/b.class.js"></script>
     <script src="../../src/core/abstract.class.js"></script>
-    <!-- <script src="../../src/core/event_emitter.class.js"></script> -->
+    <script src="../../src/core/event_emitter.class.js"></script>
 
     <!-- TOOLS -->
-    <!-- <script src="../../src/tools/browser.class.js"></script>
+    <script src="../../src/tools/browser.class.js"></script>
     <script src="../../src/tools/colors.class.js"></script>
     <script src="../../src/tools/css.class.js"></script>
     <script src="../../src/tools/ga_tags.class.js"></script>
@@ -29,7 +31,7 @@
     <script src="../../src/tools/offline.class.js"></script>
     <script src="../../src/tools/registry.class.js"></script>
     <script src="../../src/tools/resizer.class.js"></script>
-    <script src="../../src/tools/ticker.class.js"></script> -->
+    <script src="../../src/tools/ticker.class.js"></script>
 
     <script>
 
@@ -40,15 +42,7 @@
             options :
             {
                 size  : 100,
-                color : '#939393',
-                foo   :
-                {
-                    bar  : 1,
-                    toto :
-                    {
-                        tutu : 'hey'
-                    }
-                }
+                color : '#939393'
             },
 
             // Tell what to do when instantiate
@@ -56,6 +50,8 @@
             {
                 // _super refers overriden 'init' method from the extended class (B.Core.Abstract)
                 this._super( options );
+
+                console.log(this.options);
 
                 // Create element
                 this.element = document.createElement('div');
@@ -78,18 +74,12 @@
             // Extended class options ('size' and 'color') will be preserved
             options :
             {
-                radius : 20,
-                foo    :
-                {
-                    bar : 2
-                }
+                radius : 20
             },
 
             init : function( options )
             {
                 this._super( options );
-
-                console.log(this.options.foo);
 
                 // Add radius to the element
                 this.element.style.borderRadius = this.options.radius + 'px';

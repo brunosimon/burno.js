@@ -201,11 +201,14 @@ B.Tools.Custom_Class = B.Core.Event_Emitter.extend(
 
     init : function()
     {
+        // Don't forget the _super
+        this._super();
+
         console.log( 'Init' );
     }
 } );
 
-// 'custom_tool' and 'custom_tool_again' will share the same instance
+// 'custom_class' and 'custom_class_again' will share the same instance
 // 'init' will be called only the first time
 var custom_class       = new B.Tools.Custom_Class(),
     custom_class_again = new B.Tools.Custom_Class();
@@ -286,7 +289,7 @@ custom_component.on( 'event-1 event-2', function( value )
     console.log( value );
 } );
 
-// Stop listening to 'event-3' event
+// Stop listening to 'event-1' event
 custom_component.off( 'event-1' );
 
 // Listen to event with namespace
@@ -756,6 +759,7 @@ none
 ## Todo
 
 * ~~IE8 compatible~~
+* Unit testing
 * Sublime snippets
 * Classes (create)
     * Storyline
@@ -781,7 +785,7 @@ none
         * ~~Array of breakpoints~~
         * ~~Breakpoint name to breakpoint object method~~
     * Event_Emitter
-        * Deffered trigger (can specify event)
+        * Deferred trigger (can specify event)
     * Better Match media
         * Multiple matches
         * Fallback for width and height

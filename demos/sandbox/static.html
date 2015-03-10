@@ -16,33 +16,52 @@
     <script src="../../src/polyfills/classlist.js"></script>
     <script src="../../src/polyfills/foreach.js"></script>
     <script src="../../src/polyfills/getcomputedstyle.js"></script>
+    <script src="../../src/polyfills/htmlelement.js"></script>
     <script src="../../src/polyfills/indexof.js"></script>
     <script src="../../src/polyfills/object-keys.js"></script>
+    <script src="../../src/polyfills/object-create.js"></script>
     <script src="../../src/polyfills/requestanimationframe.js"></script>
 
-    <!-- B.js -->
-    <script src="../../build/burno-0.1.min.js"></script>
+    <!-- CORE -->
+    <script src="../../src/core/b.class.js"></script>
+    <script src="../../src/core/abstract.class.js"></script>
+    <script src="../../src/core/event_emitter.class.js"></script>
+
+    <!-- TOOLS -->
+    <script src="../../src/tools/browser.class.js"></script>
+    <script src="../../src/tools/colors.class.js"></script>
+    <script src="../../src/tools/css.class.js"></script>
+    <script src="../../src/tools/ga_tags.class.js"></script>
+    <script src="../../src/tools/keyboard.class.js"></script>
+    <script src="../../src/tools/mouse.class.js"></script>
+    <script src="../../src/tools/offline.class.js"></script>
+    <script src="../../src/tools/registry.class.js"></script>
+    <script src="../../src/tools/resizer.class.js"></script>
+    <script src="../../src/tools/ticker.class.js"></script>
 
     <!-- Your classes -->
     <script>
 
         // Currently, static functionnality is only used for tools
-        // It's just a matter of organization, do what ever you want.
-        B.Tools.Cumstom_Tool = B.Core.Event_Emitter.extend(
+        // It's just a matter of organization, do whatever you want.
+        B.Tools.Custom_Class = B.Core.Event_Emitter.extend(
         {
             // Chose a name never used
             static : 'custom_tool',
 
             init : function()
             {
+                // Don't forget the _super
+                this._super();
+
                 console.log( 'Init' );
             }
         } );
 
-        // 'custom_tool' and 'custom_tool_again' will share the same instance
+        // 'custom_class' and 'custom_class_again' will share the same instance
         // 'init' will be called only the first time
-        var custom_tool       = new B.Tools.Custom_Tool(),
-            custom_tool_again = new B.Tools.Custom_Tool();
+        var custom_class       = new B.Tools.Custom_Class(),
+            custom_class_again = new B.Tools.Custom_Class();
 
     </script>
 
