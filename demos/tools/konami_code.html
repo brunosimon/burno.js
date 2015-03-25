@@ -2,16 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Burno.js - Demo - Css</title>
-    <!-- <link rel="stylesheet" href="../src/css/style.css"> -->
+    <title>Burno.js - Demo - Konami Code</title>
+    <link rel="stylesheet" href="../src/css/style.css">
 </head>
 <body>
 
-    <div class="target target-1"></div>
-    <div class="target target-2"></div>
-    <div class="target target-3"></div>
-    <div class="target target-4"></div>
-    <div class="target target-5"></div>
+    <div class="element"><strong>Use the konami code</strong><br><br><span class="value"></span></div>
 
     <!-- POLYFILLS -->
     <script src="../../src/polyfills/classlist.js"></script>
@@ -42,30 +38,24 @@
     <script src="../../src/tools/strings.class.js"></script>
     <script src="../../src/tools/ticker.class.js"></script>
 
-    <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
     <script>
 
-        var css = new B.Tools.Css();
+        var konami = new B.Tools.Konami_Code();
 
-        // Mutliple
-        css.apply( document.querySelectorAll( '.target' ), { width : '100px', height : '100px', marginBottom : '10px', background : '#ccc' } );
+        konami.on( 'used', function()
+        {
+            document.querySelector( '.element .value' ).innerHTML = 'Hadouken!!!';
+        } );
 
-        // One
-        css.apply( document.querySelector( '.target-1' ), { 'background-color' : 'red' } );
+        konami.on( 'wrong', function( index )
+        {
+            document.querySelector( '.element .value' ).innerHTML = 'wrong after ' + index + ' keys';
+        } );
 
-        // jQuery
-        css.apply( $( '.target' ), { border : '1px solid #aaa' } );
-
-        // With prefixes auto
-        css.apply( document.querySelector( '.target-2' ), { transform : 'translateX(100px)', backgroundColor : 'orange' }, true );
-
-        // With specified prefixes
-        css.apply( document.querySelector( '.target-4' ), { transform : 'translateX(200px)' }, [ 'webkit', 'moz' ] );
-
-        // With translateZ
-        css.apply( document.querySelector( '.target-5' ), { transform : 'translateX(100px) translateZ(100px)' }, true );
+        konami.on( 'timeout', function( index )
+        {
+            document.querySelector( '.element .value' ).innerHTML = 'timeout after ' + index + ' keys';
+        } );
 
     </script>
 </body>

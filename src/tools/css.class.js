@@ -24,6 +24,7 @@
             this._super( options );
 
             this.browser = new B.Tools.Browser();
+            this.strings = new B.Tools.Strings();
         },
 
         /**
@@ -121,27 +122,11 @@
          */
         clean_property : function( value )
         {
-            console.log(value);
             // Remove prefixes
             value = value.replace( /(webkit|moz|o|ms)?/i, '' );
+            value = this.strings.convert_case( value, 'camel' );
 
-            // To camelCase
-            var parts     = value.split( '-' ),
-                new_value = '';
-
-            for( var key in parts )
-            {
-                var part = parts[ key ];
-                if( part )
-                {
-                    if( new_value.length )
-                        new_value += part.charAt( 0 ).toUpperCase() + part.slice( 1 ).toLowerCase();
-                    else
-                        new_value += part.toLowerCase();
-                }
-            }
-
-            return new_value;
+            return value;
         },
 
         /**

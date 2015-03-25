@@ -755,6 +755,104 @@ none
 none
 
 
+## Konami Code
+
+Know when your users use the konami code ↑ ↑ ↓ ↓ ← → ← → B A
+
+[See code](src/tools/konami_code.class.js)<br />
+[See example](demos/tools/konami_code.html)
+
+**Options**
+
+```javascript
+{
+    reset_duration : 1000, // Time in before reseting
+    sequence :             // Sequence to enter
+    [
+        'up',
+        'up',
+        'down',
+        'down',
+        'left',
+        'right',
+        'left',
+        'right',
+        'b',
+        'a',
+    ]
+}
+```
+
+**Properties**
+
+none
+
+**Methods**
+
+none
+
+**Events**
+
+* **used**
+* **timeout**
+    * `index` (int) Progress before timeout
+* **wrong**
+    * `index` (int) Progress before failing
+
+
+## Strings
+
+Method to manage strings
+
+[See code](src/tools/strings.class.js)<br />
+[See example](demos/tools/strings.html)
+
+**Options**
+
+none
+
+**Properties**
+
+none
+
+**Methods**
+
+* **convert_case**
+    * `value` (string) String that need to be case changed
+    * `format` (string) Wanted case
+        * camel
+        * pascal
+        * snake
+        * dash
+        * train
+        * space
+        * title
+        * dot
+        * slash
+        * backslash
+        * lower
+        * upper
+        * studlycaps
+        * ... ([see code](src/tools/strings.class.js) for complete list)
+* **trim**
+    * `value` (string) String to trim
+    * `characters` (string) Characters to trim
+* **to_boolean**
+    * `value` (string) Smartly convert to boolean with many supported languages
+        * 0
+        * false
+        * nop
+        * nein
+        * non
+        * ... ([see code](src/tools/strings.class.js) for complete list)
+* **to_slug**
+    * `value` (string) String to slugify
+
+**Events**
+
+none
+
+
 ## Utils
 
 #### Sublime Snippets
@@ -849,20 +947,21 @@ new Burno.Tools.Class();
     * Page
     * Images
     * Loader
-    * Strings
-        * Capitalize
-        * SnakeCase
-        * CamelCase
-        * PascalCase
-        * Slugify
-        * Is false (0, nop, no, false, nein, non, ...)
+    * ~~Konami Code~~
+        * ~~Doc~~
+    * ~~Strings~~
+        * ~~Case convertor~~
+        * ~~Slugify~~
+        * ~~To boolean (0, nop, no, false, nein, non, ...)~~
+        * ~~Trim with characters choice~~
+        * ~~Doc~~
     * Time / Date
         * Formater (custom formats (sprinf like))
         * Local
 * Classes (update)
-    * CSS
+    * ~~CSS~~
         * ~~IE translateZ and translate3d prevent (in options)~~
-        * Use Strings class
+        * ~~Use Strings class~~
     * Event_Emitter
         * Deferred trigger (can specify event)
     * Better Match media
@@ -880,6 +979,8 @@ new Burno.Tools.Class();
         * Use Strings Tool
     * Registry
         * Persistence (localstorage / cookie fallback)
+    * Ticker
+        * Throttle by only specifying event like on('tick-250') for 250 ms
 
 
 
