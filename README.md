@@ -83,7 +83,7 @@ B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/
 // Create a class wrapping the all application
 B.Components.My_App = B.Core.Abstract.extend(
 {
-    init : function()
+    construct : function()
     {
         // Instantiate a sidebar and header
         this.sidebar = new B.Components.My_Sidebar( { color : 'blue' } );
@@ -100,7 +100,7 @@ B.Components.My_Sidebar = B.Core.Abstract.extend(
         colors : 'red'
     },
 
-    init : function( options )
+    construct : function( options )
     {
         this._super( options );
 
@@ -113,7 +113,7 @@ B.Components.My_Sidebar = B.Core.Abstract.extend(
 // Create a class for the header
 B.Components.My_Header = B.Core.Abstract.extend(
 {
-    init : function()
+    construct : function()
     {
         this.main = document.querySelector( 'header' );
 
@@ -137,7 +137,7 @@ Core classes are base classes you want to extend if your building custom compone
 `B.Core.Abstract` is the default class.
 
 * `extend` method
-* `init` method (called when instantiated)
+* `construct` method (called when instantiated)
 * `options` property that will be merged (see example bellow)
 * `static` property to set the class as a singleton (can be instantiated only one time)
 
@@ -147,7 +147,7 @@ Core classes are base classes you want to extend if your building custom compone
 // Inherit from Abstract
 B.Components.Custom_Class = B.Core.Abstract.extend(
 {
-    init : function()
+    construct : function()
     {
         console.log( 'Welcome to my custom class' );
     }
@@ -171,7 +171,7 @@ B.Components.Custom_Class = B.Core.Abstract.extend(
     },
 
     // Add options argument
-    init : function( options )
+    construct : function( options )
     {
         // Pass options to _super
         this._super( options );
@@ -199,7 +199,7 @@ B.Tools.Custom_Class = B.Core.Event_Emitter.extend(
     // Chose a name never used
     static : 'custom_tool',
 
-    init : function()
+    construct : function()
     {
         // Don't forget the _super
         this._super();
@@ -209,7 +209,7 @@ B.Tools.Custom_Class = B.Core.Event_Emitter.extend(
 } );
 
 // 'custom_class' and 'custom_class_again' will share the same instance
-// 'init' will be called only the first time
+// 'construct' will be called only the first time
 var custom_class       = new B.Tools.Custom_Class(),
     custom_class_again = new B.Tools.Custom_Class();
 ```
@@ -230,7 +230,7 @@ var custom_class       = new B.Tools.Custom_Class(),
 // Create a custom component that extends Event_Emitter
 B.Components.Custom_Component = B.Core.Event_Emitter.extend(
 {
-    init : function()
+    construct : function()
     {
         this._super();
 
@@ -261,7 +261,7 @@ custom_component.on( 'event-test', function( value )
 // Create a custom component that extends Event_Emitter
 B.Components.Custom_Component = B.Core.Event_Emitter.extend(
 {
-    init : function()
+    construct : function()
     {
         this._super();
 
@@ -771,7 +771,7 @@ B.Components.Class = B.Core.Abstract.extend(
     static  : 'class',
     options : {},
 
-    init : function( options )
+    construct : function( options )
     {
         this._super( options );
 
@@ -792,7 +792,7 @@ B.Components.Class = B.Core.Abstract.extend(
         static  : 'class',
         options : {},
 
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
@@ -839,9 +839,9 @@ new Burno.Tools.Class();
 
 ## Todo
 
-* ~~IE8 compatible~~
+* ~~$ property on abstract~~
+* ~~Replace `init` by `construct`~~
 * Unit testing
-* ~~Sublime snippets~~
 * Classes (create)
     * Storyline
     * Navigation
@@ -861,10 +861,8 @@ new Burno.Tools.Class();
         * Local
 * Classes (update)
     * CSS
-        * IE translateZ and translate3d prevent (in options)
-    * ~~Browser~~
-        * ~~Array of breakpoints~~
-        * ~~Breakpoint name to breakpoint object method~~
+        * ~~IE translateZ and translate3d prevent (in options)~~
+        * Use Strings class
     * Event_Emitter
         * Deferred trigger (can specify event)
     * Better Match media

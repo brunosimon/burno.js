@@ -176,7 +176,11 @@ var B =
                     }
                 }
 
-                if( this.init )
+                if( this.construct )
+                {
+                    this.construct.apply( this, arguments );
+                }
+                else if( this.init )
                 {
                     this.init.apply( this, arguments );
                 }

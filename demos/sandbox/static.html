@@ -49,7 +49,7 @@
             // Chose a name never used
             static : 'custom_tool',
 
-            init : function()
+            construct : function()
             {
                 // Don't forget the _super
                 this._super();
@@ -59,7 +59,7 @@
         } );
 
         // 'custom_class' and 'custom_class_again' will share the same instance
-        // 'init' will be called only the first time
+        // 'construct' will be called only the first time
         var custom_class       = new B.Tools.Custom_Class(),
             custom_class_again = new B.Tools.Custom_Class();
 

@@ -43,7 +43,7 @@
         // Inherit from Abstract
         B.Components.Custom_Class = B.Core.Abstract.extend(
         {
-            init : function()
+            construct : function()
             {
                 console.log( 'Welcome to my custom class' );
             }
@@ -69,7 +69,7 @@
             },
 
             // Add options argument
-            init : function( options )
+            construct : function( options )
             {
                 // Pass options to _super
                 this._super( options );
@@ -97,14 +97,14 @@
             // Chose a name never used
             static : 'custom_tool',
 
-            init : function()
+            construct : function()
             {
                 console.log( 'Init' );
             }
         } );
 
         // 'custom_tool' and 'custom_tool_again' will share the same instance
-        // 'init' will be called only the first time
+        // 'construct' will be called only the first time
         var custom_class       = new B.Tools.Custom_Class(),
             custom_class_again = new B.Tools.Custom_Class();
 
