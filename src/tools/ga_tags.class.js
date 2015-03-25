@@ -67,7 +67,7 @@
                     datas     = {};
 
                 // True link interpretation
-                if( [ '0', 'false', 'nop', 'no' ].indexOf( true_link ) !== -1 )
+                if( !true_link || [ '0', 'false', 'nop', 'no' ].indexOf( true_link.toLowerCase() ) !== -1 )
                     true_link = false;
                 else
                     true_link = true;
