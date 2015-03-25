@@ -15,12 +15,14 @@
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             if( typeof options === 'undefined' )
                 options = {};
 
             B.merge( this.options, options );
+
+            this.$ = {};
 
             // Create statics container
             if( typeof B.Statics !== 'object' )

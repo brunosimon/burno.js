@@ -48,7 +48,7 @@
         // Create a class wrapping the all application
         B.Components.My_App = B.Core.Abstract.extend(
         {
-            init : function()
+            construct : function()
             {
                 // Instantiate a sidebar and header
                 this.sidebar = new B.Components.My_Sidebar( { color : 'blue' } );
@@ -65,7 +65,7 @@
                 colors : 'red'
             },
 
-            init : function( options )
+            construct : function( options )
             {
                 this._super( options );
 
@@ -78,7 +78,7 @@
         // Create a class for the header
         B.Components.My_Header = B.Core.Abstract.extend(
         {
-            init : function()
+            construct : function()
             {
                 this.main = document.querySelector( 'header' );
 
