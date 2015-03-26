@@ -90,6 +90,9 @@
                     // Trigger
                     that.trigger( 'used' );
 
+                    // Reset
+                    that.index = 0;
+
                     // Reset timeout
                     window.clearTimeout( that.timeout );
                 }

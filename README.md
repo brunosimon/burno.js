@@ -946,6 +946,8 @@ new Burno.Tools.Class();
     * Scroll
     * Page
     * Images
+        * Update images on pixel_ratio
+        * Load and show image
     * Loader
     * ~~Konami Code~~
         * ~~Doc~~
