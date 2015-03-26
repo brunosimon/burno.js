@@ -12,20 +12,22 @@
         options : {},
         cases   :
         {
-            camel      : [ 'camel', 'camelback', 'compoundnames' ],
-            pascal     : [ 'pascal', 'uppercamelcase', 'bumpycaps', 'camelcaps', 'capitalizedwords', 'capwords' ],
-            snake      : [ 'snake', 'underscore' ],
-            dash       : [ 'dash', 'dashed', 'hyphen', 'kebab', 'spinal' ],
-            train      : [ 'train' ],
-            space      : [ 'space' ],
-            title      : [ 'title' ],
-            dot        : [ 'dot' ],
-            slash      : [ 'slash', 'forwardslash', 'path' ],
-            backslash  : [ 'backslash', 'hack', 'whack', 'escape', 'reverseslash', 'slosh', 'backslant', 'downhill', 'backwhack' ],
-            lower      : [ 'lower' ],
-            upper      : [ 'upper' ],
-            studlycaps : [ 'studlycaps' ],
-            burno      : [ 'burno', 'lol', 'yolo' ],
+            camel          : [ 'camel', 'camelback', 'compoundnames' ],
+            pascal         : [ 'pascal', 'uppercamelcase', 'bumpycaps', 'camelcaps', 'capitalizedwords', 'capwords' ],
+            snake          : [ 'snake', 'underscore', 'plissken' ],
+            titlesnake     : [ 'titlesnake', 'capitalsnake' ],
+            screamingsnake : [ 'screamingsnake', 'uppersnake' ],
+            dash           : [ 'dash', 'dashed', 'hyphen', 'kebab', 'spinal' ],
+            train          : [ 'train' ],
+            space          : [ 'space' ],
+            title          : [ 'title' ],
+            dot            : [ 'dot' ],
+            slash          : [ 'slash', 'forwardslash', 'path' ],
+            backslash      : [ 'backslash', 'hack', 'whack', 'escape', 'reverseslash', 'slosh', 'backslant', 'downhill', 'backwhack' ],
+            lower          : [ 'lower' ],
+            upper          : [ 'upper' ],
+            studlycaps     : [ 'studlycaps' ],
+            burno          : [ 'burno', 'lol', 'yolo' ],
         },
         negatives :
         [
@@ -176,6 +178,15 @@
                     break;
                 case 'snake' :
                     new_value = parts.join( '_' );
+                    break;
+                case 'titlesnake' :
+                    for( i = 0, len = parts.length; i < len; i++ )
+                        parts[ i ] = parts[ i ].charAt( 0 ).toUpperCase() + parts[ i ].slice( 1 );
+                    new_value = parts.join( '_' );
+                    break;
+                case 'screamingsnake' :
+                    new_value = parts.join( '_' );
+                    new_value = new_value.toUpperCase();
                     break;
                 case 'dash' :
                     new_value = parts.join( '-' );

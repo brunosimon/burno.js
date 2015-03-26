@@ -955,6 +955,7 @@ new Burno.Tools.Class();
         * ~~To boolean (0, nop, no, false, nein, non, ...)~~
         * ~~Trim with characters choice~~
         * ~~Doc~~
+        * ~~Add SCREAMING_SNAKE_CASE and Title_Snake_Case~~
     * Time / Date
         * Formater (custom formats (sprinf like))
         * Local
