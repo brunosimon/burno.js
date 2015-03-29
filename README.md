@@ -939,6 +939,9 @@ new Burno.Tools.Class();
 
 * ~~$ property on abstract~~
 * ~~Replace `init` by `construct`~~
+* Parsing classes prefix "b-"
+* Option null bug
+* Loop error bug
 * Unit testing
 * Classes (create)
     * Storyline

@@ -167,8 +167,6 @@
                 var container_style = window.getComputedStyle( container ),
                     content_style   = window.getComputedStyle( content );
 
-                console.log(container_style);
-
                 // Force positioning
                 if( container_style.position !== 'fixed' && container_style.position !== 'relative' && container_style.position !== 'absolute' )
                     container.style.position = 'relative';

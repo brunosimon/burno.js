@@ -646,7 +646,11 @@ var B =
                     }
                 }
 
-                if( this.init )
+                if( this.construct )
+                {
+                    this.construct.apply( this, arguments );
+                }
+                else if( this.init )
                 {
                     this.init.apply( this, arguments );
                 }
@@ -680,12 +684,14 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             if( typeof options === 'undefined' )
                 options = {};
 
             B.merge( this.options, options );
+
+            this.$ = {};
 
             // Create statics container
             if( typeof B.Statics !== 'object' )
@@ -739,7 +745,7 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
@@ -1026,7 +1032,7 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
@@ -1931,7 +1937,7 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
@@ -2246,13 +2252,27 @@ var B =
         },
 
         /**
+         * Initialise and merge options
+         * @constructor
+         * @param {object} options Properties to merge with defaults
+         */
+        construct : function( options )
+        {
+            this._super( options );
+
+            this.browser = new B.Tools.Browser();
+            this.strings = new B.Tools.Strings();
+        },
+
+        /**
          * Apply css on target and add every prefixes
-         * @param  {HTMLElement} target HTML element that need to be applied
-         * @param  {string} property Property name
-         * @param  {string} value    Value
+         * @param  {HTMLElement} target   HTML element that need to be applied
+         * @param  {object}      style    CSS style
+         * @param  {array}       prefixes Array of prefixes (default from options)
+         * @param  {boolean}     clean    Should clean the style
          * @return {HTMLElement}     Modified element
          */
-        apply : function( target, style, prefixes )
+        apply : function( target, style, prefixes, clean )
         {
             // jQuery handling
             if( typeof jQuery !== 'undefined' && target instanceof jQuery)
@@ -2269,9 +2289,13 @@ var B =
             if( prefixes === true )
                 prefixes = this.options.prefixes;
 
+            // Clean
+            if( typeof clean === 'undefined' || clean )
+                style = this.clean_style( style );
+
+            // Add prefix
             if( prefixes instanceof Array )
             {
-                // Add prefix
                 var new_style = {};
                 for( var property in style )
                 {
@@ -2299,12 +2323,68 @@ var B =
                 if( element instanceof HTMLElement )
                 {
                     for( var _property in style )
+                    {
                         element.style[ _property ] = style[ _property ];
+                    }
                 }
-
             }
 
             return target;
+        },
+
+        /**
+         * Clean style
+         * @param  {object} value Style to clean
+         * @return {object}       Cleaned style
+         */
+        clean_style : function( style )
+        {
+            var new_style = {};
+
+            // Each property
+            for( var property in style )
+            {
+                var value = style[ property ];
+
+                // Clean property and value
+                new_style[ this.clean_property( property ) ] = this.clean_value( value );
+            }
+
+            return new_style;
+        },
+
+        /**
+         * Clean property by removing prefixes and converting to camelCase
+         * @param {string} value Property to clean
+         */
+        clean_property : function( value )
+        {
+            // Remove prefixes
+            value = value.replace( /(webkit|moz|o|ms)?/i, '' );
+            value = this.strings.convert_case( value, 'camel' );
+
+            return value;
+        },
+
+        /**
+         * Clean value
+         * @param {string} value Property to fix
+         */
+        clean_value : function( value )
+        {
+            // IE 9
+            if( this.browser.detect.browser.ie === 9 )
+            {
+                // Remove translateZ
+                if( /translateZ/.test( value ) )
+                    value = value.replace( /translateZ\([^)]*\)/g, '' );
+
+                // Replace translate3d by translateX and translateY
+                if( /   /.test( value ) )
+                    value = value.replace( /translate3d\(([^,]*),([^,]*),([^)])*\)/g, 'translateX($1) translateY($2)' );
+            }
+
+            return value;
         }
     } );
 } )();
@@ -2344,7 +2424,7 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
@@ -2378,7 +2458,7 @@ var B =
                     datas     = {};
 
                 // True link interpretation
-                if( [ '0', 'false', 'nop', 'no' ].indexOf( true_link ) !== -1 )
+                if( !true_link || [ '0', 'false', 'nop', 'no' ].indexOf( true_link.toLowerCase() ) !== -1 )
                     true_link = false;
                 else
                     true_link = true;
@@ -2601,7 +2681,7 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
@@ -2739,7 +2819,7 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
@@ -2860,7 +2940,7 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
@@ -2953,7 +3033,7 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
@@ -3023,7 +3103,7 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
@@ -3161,8 +3241,6 @@ var B =
                 // Test current style
                 var container_style = window.getComputedStyle( container ),
                     content_style   = window.getComputedStyle( content );
-
-                console.log(container_style);
 
                 // Force positioning
                 if( container_style.position !== 'fixed' && container_style.position !== 'relative' && container_style.position !== 'absolute' )
@@ -3371,7 +3449,7 @@ var B =
          * @constructor
          * @param {object} options Properties to merge with defaults
          */
-        init : function( options )
+        construct : function( options )
         {
             this._super( options );
 
