@@ -18,8 +18,8 @@
             target  : document.body,
             classes :
             {
-                to_tag : 'tag',
-                tagged : 'tagged'
+                to_tag : 'b-tag',
+                tagged : 'b-tagged'
             },
             logs :
             {

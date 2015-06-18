@@ -8,7 +8,8 @@
 
     B.Core.Abstract = B.Class.extend(
     {
-        static : false,
+        register : false,
+        static   : false,
 
         /**
          * Initialise and merge options
@@ -28,8 +29,15 @@
             if( typeof B.Statics !== 'object' )
                 B.Statics = {};
 
+            // Register
+            if( this.register && typeof this.register === 'string' )
+            {
+                var registry = new B.Tools.Registry();
+                registry.set( this.register, this );
+            }
+
             // Static
-            if( this.static )
+            if( this.static && typeof this.static === 'string' )
             {
                 // Add instance to statics
                 B.Statics[ this.static ] = this;

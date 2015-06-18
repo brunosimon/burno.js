@@ -8,7 +8,7 @@ var gulp   = require( 'gulp' ),
 // Options
 var options =
 {
-    version : '0.1',
+    version : '0.2',
     paths   :
     {
         sources     : '../src/',
@@ -39,10 +39,12 @@ gulp.task( 'js', function()
         options.paths.sources + 'tools/css.class.js',
         options.paths.sources + 'tools/ga_tags.class.js',
         options.paths.sources + 'tools/keyboard.class.js',
+        options.paths.sources + 'tools/konami_code.class.js',
         options.paths.sources + 'tools/mouse.class.js',
         options.paths.sources + 'tools/offline.class.js',
         options.paths.sources + 'tools/registry.class.js',
         options.paths.sources + 'tools/resizer.class.js',
+        options.paths.sources + 'tools/strings.class.js',
         options.paths.sources + 'tools/ticker.class.js',
     ] )
     .pipe( concat( 'burno-' + options.version + '.js' ) )

@@ -136,13 +136,15 @@ Core classes are base classes you want to extend if your building custom compone
 
 `B.Core.Abstract` is the default class.
 
-* `extend` method
-* `construct` method (called when instantiated)
-* `options` property that will be merged (see example bellow)
-* `static` property to set the class as a singleton (can be instantiated only one time)
+* `extend` : Extend from any class
+* `construct` : Method called when instantiated
+* `options` : Property that will be merged with construct parameter
+* `static` : Class can be instantiate only one time. Each other `new` will return the first one (also called singleton)
+* `registry` : Automatically add to the Registry tool
 
 
-###### Default
+###### Extend / Construct
+
 ```javascript
 // Inherit from Abstract
 B.Components.Custom_Class = B.Core.Abstract.extend(
@@ -156,7 +158,8 @@ B.Components.Custom_Class = B.Core.Abstract.extend(
 var custom_class = new B.Components.Custom_Class();
 ```
 
-###### Options with deep merging
+###### Options (with deep merging)
+
 ```javascript
 B.Components.Custom_Class = B.Core.Abstract.extend(
 {
@@ -214,6 +217,29 @@ var custom_class       = new B.Tools.Custom_Class(),
     custom_class_again = new B.Tools.Custom_Class();
 ```
 
+###### Registry
+
+```javascript
+B.Components.Test_Class = B.Core.Abstract.extend(
+{
+    // Chose a registry name
+    register : 'test',
+
+    construct : function( options )
+    {
+        // Pass options to _super
+        this._super( options );
+    }
+} );
+
+// Instantiate
+var test_class   = new B.Components.Test_Class();
+
+// Instantiate the registry tools and get the test_class using the register name
+var registry     = new B.Tools.Registry(),
+    test_class_2 = registry.get( 'test' );
+```
+
 
 ## Event Emitter Class
 
@@ -226,6 +252,7 @@ var custom_class       = new B.Tools.Custom_Class(),
 * Automatically normalized event names (`event-name` == `eventname` == `event_name`)
 
 ###### Default example
+
 ```javascript
 // Create a custom component that extends Event_Emitter
 B.Components.Custom_Component = B.Core.Event_Emitter.extend(
@@ -257,6 +284,7 @@ custom_component.on( 'event-test', function( value )
 ```
 
 ###### Namespace example
+
 ```javascript
 // Create a custom component that extends Event_Emitter
 B.Components.Custom_Component = B.Core.Event_Emitter.extend(
@@ -939,8 +967,9 @@ new Burno.Tools.Class();
 
 * ~~$ property on abstract~~
 * ~~Replace `init` by `construct`~~
-* Parsing classes prefix "b-"
-* Option null bug
+* ~~Replace `init` by `construct` in Sublime snippets~~
+* ~~Parsing classes prefix "b-"~~
+* ~~Option null bug~~
 * Loop error bug
 * Unit testing
 * Classes (create)
@@ -965,6 +994,8 @@ new Burno.Tools.Class();
         * Formater (custom formats (sprinf like))
         * Local
 * Classes (update)
+    * ~~Abstract~~
+        * ~~Auto save in registry~~
     * ~~CSS~~
         * ~~IE translateZ and translate3d prevent (in options)~~
         * ~~Use Strings class~~
@@ -985,8 +1016,8 @@ new Burno.Tools.Class();
         * Use Strings Tool
     * Registry
         * Persistence (localstorage / cookie fallback)
-    * Ticker
-        * Throttle by only specifying event like on('tick-250') for 250 ms
+    * ~~Ticker~~
+        * ~~Throttle by only specifying event like on('tick-250') for 250 ms~~
 
 
 

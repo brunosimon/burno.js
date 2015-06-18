@@ -18,8 +18,8 @@
             auto_resize : true,
             classes     :
             {
-                to_resize : 'to-resize',
-                content   : 'content'
+                to_resize : 'b-resize',
+                content   : 'b-content'
             }
         },
 

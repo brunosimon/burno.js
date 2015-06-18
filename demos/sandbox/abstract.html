@@ -27,10 +27,12 @@
     <script src="../../src/tools/css.class.js"></script>
     <script src="../../src/tools/ga_tags.class.js"></script>
     <script src="../../src/tools/keyboard.class.js"></script>
+    <script src="../../src/tools/konami_code.class.js"></script>
     <script src="../../src/tools/mouse.class.js"></script>
     <script src="../../src/tools/offline.class.js"></script>
     <script src="../../src/tools/registry.class.js"></script>
     <script src="../../src/tools/resizer.class.js"></script>
+    <script src="../../src/tools/strings.class.js"></script>
     <script src="../../src/tools/ticker.class.js"></script>
 
     <!-- YOUR SCRIPT -->
@@ -107,6 +109,30 @@
         // 'construct' will be called only the first time
         var custom_class       = new B.Tools.Custom_Class(),
             custom_class_again = new B.Tools.Custom_Class();
+
+
+        /**
+         * Registry
+         */
+
+        B.Components.Test_Class = B.Core.Abstract.extend(
+        {
+            // Chose a registry name
+            register : 'test',
+
+            construct : function( options )
+            {
+                // Pass options to _super
+                this._super( options );
+            }
+        } );
+
+        // Instantiate
+        var test_class   = new B.Components.Test_Class();
+
+        // Instantiate the registry tools and get the test_class using the register name
+        var registry     = new B.Tools.Registry(),
+            test_class_2 = registry.get( 'test' );
 
     </script>
 
