@@ -33,6 +33,7 @@
             this.do_next_actions        = {};
             this.do_next_actions.before = [];
             this.do_next_actions.after  = [];
+            this.intervals              = {};
 
             if( this.options.auto_run )
                 this.run();
@@ -126,6 +127,9 @@
             // Trigger
             this.trigger( 'tick', [ this.time ] );
 
+            // Trigger intervals
+            this.trigger_intervals();
+
             // Do next (after trigger)
             i   = 0;
             len = this.do_next_actions.after.length;
@@ -154,6 +158,117 @@
             this.do_next_actions[ before ? 'before' : 'after' ].push( action );
 
             return this;
-        }
+        },
+
+        /**
+         * Create interval
+         * @param  {integer} interval Milliseconds between each tick
+         * @return {object}           Context
+         */
+        create_interval : function( interval )
+        {
+            this.intervals[ interval ] = {
+                interval     : interval,
+                next_trigger : interval,
+                start        : this.time.elapsed,
+                last_trigger : this.time.elapsed,
+            };
+
+            return this;
+        },
+
+        /**
+         * Destroy interval
+         * @param  {integer} interval Milliseconds between each tick
+         * @return {object}           Context
+         */
+        destroy_interval : function( interval )
+        {
+            delete this.intervals[ interval ];
+
+            return this;
+        },
+
+        /**
+         * Trigger intervals
+         * @return {object}           Context
+         */
+        trigger_intervals : function()
+        {
+            // Each interval
+            for( var _key in this.intervals )
+            {
+                var interval = this.intervals[ _key ];
+
+                // Test if interval should trigger
+                if( this.time.elapsed - interval.last_trigger > interval.next_trigger  )
+                {
+                    // Update next trigger to stay as close as possible to the interval
+                    interval.next_trigger = interval.interval - ( this.time.elapsed - interval.start ) % interval.interval;
+
+                    interval.last_trigger = this.time.elapsed;
+                    this.trigger( 'tick-' + interval.interval, [ this.time, interval ] );
+                }
+            }
+
+            return this;
+        },
+
+        /**
+         * Start listening specified events
+         * @param  {string}   names    Events names (can contain namespace)
+         * @param  {function} callback Function to apply if events are triggered
+         * @return {object}            Context
+         */
+        on : function( names, callback )
+        {
+            var that           = this,
+                resolved_names = this.resolve_names( names );
+
+            // Each resolved name
+            resolved_names.forEach( function( name )
+            {
+                // Has interval interval
+                if( name.match( /^tick([0-9]+)$/) )
+                {
+                    // Extract interval interval
+                    var interval = parseInt( name.replace( /^tick([0-9]+)$/, '$1' ) );
+
+                    // Create interval
+                    if( interval )
+                        that.create_interval( interval );
+                }
+            } );
+
+            return this._super( names, callback );
+        },
+
+        /**
+         * Stop listening specified events
+         * @param  {string}   names Events names (can contain namespace or be the namespace only)
+         * @return {object}         Context
+         */
+        off : function( names )
+        {
+            var that           = this,
+                resolved_names = this.resolve_names( names );
+
+            // Each resolved name
+            resolved_names.forEach( function( name )
+            {
+                // Has interval interval
+                if( name.match( /^tick([0-9]+)$/) )
+                {
+                    // Extract interval interval
+                    var interval = parseInt( name.replace( /^tick([0-9]+)$/, '$1' ) );
+
+                    // Create interval
+                    if( interval )
+                        that.destroy_interval( interval );
+                }
+            } );
+
+            return this._super( names );
+        },
     } );
 } )();

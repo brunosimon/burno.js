@@ -4,7 +4,7 @@
 	${5:static  : '${6:class}',
     }options : {${7}},
 
-    init : function( options )
+    construct : function( options )
     {
         this._super( options );
 

@@ -17,8 +17,8 @@
                 target  : document.body,
                 classes :
                 {
-                    to_convert : 'gradient-text',
-                    converted  : 'gradient-text-converted',
+                    to_convert : 'b-gradient-text',
+                    converted  : 'b-gradient-text-converted',
                 }
             }
         },

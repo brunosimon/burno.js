@@ -167,8 +167,8 @@
             }
 
             var that         = this,
-                final_result = undefined,
-                result       = undefined;
+                final_result,
+                result;
 
             // Default args
             if( !( args instanceof Array ) )

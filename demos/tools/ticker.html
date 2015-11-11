@@ -44,8 +44,11 @@
 
     <script>
 
-        var ticker = new B.Tools.Ticker();
+        var ticker = new B.Tools.Ticker(),
+            counts = 0,
+            throttle_counts = 0;
 
+        // Listen to default tick event
         ticker.on( 'tick', function( infos )
         {
             var text = [];
@@ -95,6 +98,12 @@
 
             // Add to DOM
             document.querySelector( '.element.infos' ).innerHTML = text.join('');
+        } );
+
+        // Listen to throttle tick event
+        ticker.on( 'tick-500', function( infos )
+        {
+            console.log( infos.elapsed );
         } );
 
         // Reset button

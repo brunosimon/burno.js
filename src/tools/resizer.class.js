@@ -18,8 +18,8 @@
             auto_resize : true,
             classes     :
             {
-                to_resize : 'to-resize',
-                content   : 'content'
+                to_resize : 'b-resize',
+                content   : 'b-content'
             }
         },
 
@@ -166,8 +166,6 @@
                 // Test current style
                 var container_style = window.getComputedStyle( container ),
                     content_style   = window.getComputedStyle( content );
-
-                console.log(container_style);
 
                 // Force positioning
                 if( container_style.position !== 'fixed' && container_style.position !== 'relative' && container_style.position !== 'absolute' )

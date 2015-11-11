@@ -23,7 +23,7 @@ var B =
         // Simple object (exclude jQuery object, HTML Element, THREE js, ...)
         if(
             typeof object === 'undefined' ||
-            object.constructor === Object
+            ( object && object.constructor === Object )
         )
         {
             c = {};

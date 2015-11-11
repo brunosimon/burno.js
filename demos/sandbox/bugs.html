@@ -3,12 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Burno.js - Sandbox - Custom components</title>
-    <style>
-        section.wrapper {position:relative;width:800px;margin:0 auto;background:#eee;}
-        section.wrapper .content {padding:50px;}
-        section.wrapper aside {position:absolute;top:0;right:820px;width:0;overflow:hidden;}
-        section.wrapper aside.active {width:200px;}
-    </style>
 </head>
 <body>
 
@@ -41,29 +35,32 @@
     <script src="../../src/tools/strings.class.js"></script>
     <script src="../../src/tools/ticker.class.js"></script>
 
-    <!-- Your classes -->
+    <!-- YOUR SCRIPT -->
     <script>
 
-        // Currently, static functionnality is only used for tools
-        // It's just a matter of organization, do whatever you want.
-        B.Tools.Custom_Class = B.Core.Event_Emitter.extend(
+        var browser = new B.Tools.Browser();
+
+        browser.on( 'resize', function( viewport )
         {
-            // Chose a name never used
-            static : 'custom_tool',
-
-            construct : function()
-            {
-                // Don't forget the _super
-                this._super();
-
-                console.log( 'Init' );
-            }
+            console.log( dsdf );
         } );
 
-        // 'custom_class' and 'custom_class_again' will share the same instance
-        // 'construct' will be called only the first time
-        var custom_class       = new B.Tools.Custom_Class(),
-            custom_class_again = new B.Tools.Custom_Class();
+
+        // var tests      = [
+        //         function(){ console.log( '1' ); },
+        //         function(){ console.log( '2' ); },
+        //         function(){ console.log( '3' ); }
+        //     ];
+
+        // // for( var test in tests )
+        // // {
+        // //     callback.apply( window, [ test ] );
+        // // }
+
+        // tests.forEach( function( callback )
+        // {
+        //     callback.apply( window, [ 'hey' ] );
+        // } );
 
     </script>
 
