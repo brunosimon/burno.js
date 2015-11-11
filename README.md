@@ -407,13 +407,6 @@ Breakpoints works a little like width and height for media queries. Specify some
     * `breakpoint` (string) Current breakpoint
     * `old_breakpoint` (string) Previous breakpoint
 
-**Todo**
-
-* Classes
-* Breakpoints
-* Disable hover on scroll
-* Match media
-
 
 ## Colors
 
@@ -940,6 +933,7 @@ new Burno.Tools.Class();
 * ~~$ property on abstract~~
 * ~~Replace `init` by `construct`~~
 * Unit testing
+* License
 * Classes (create)
     * Storyline
     * Navigation
@@ -965,6 +959,9 @@ new Burno.Tools.Class();
     * ~~CSS~~
         * ~~IE translateZ and translate3d prevent (in options)~~
         * ~~Use Strings class~~
+    * Browser
+        * Add class "features-no-..."
+        * Seperate Viewport/Detector/Breakpoints
     * Event_Emitter
         * Deferred trigger (can specify event)
     * Better Match media
@@ -980,10 +977,15 @@ new Burno.Tools.Class();
         * Better gradient (multiple steps)
         * Only one convertissor method (default any => rgb)
         * Use Strings Tool
+        * Darken method
+        * Merge method
     * Registry
         * Persistence (localstorage / cookie fallback)
     * Ticker
         * Throttle by only specifying event like on('tick-250') for 250 ms
+        * Wait method
+    * Abstract
+        * Automatic save to registry
 
 
 
