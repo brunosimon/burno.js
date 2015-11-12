@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Demo - Breakpoints</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../src/css/style.css">
+</head>
+<body>
+
+    <div class="element breakpoints"></div>
+
+    <!-- B.js -->
+    <script src="../../builds/burno-0.2.js"></script>
+
+    <script>
+
+        var breakpoints = new B.Tools.Breakpoints( {
+            breakpoints :
+            [
+                {
+                    name  : 'large',
+                    width :
+                    {
+                        value    : 960,
+                        extreme  : 'min',
+                        included : false
+                    }
+                },
+                {
+                    name  : 'medium',
+                    width :
+                    {
+                        value    : 960,
+                        extreme  : 'max',
+                        included : true
+                    }
+                },
+                {
+                    name  : 'small',
+                    width :
+                    {
+                        value    : 500,
+                        extreme  : 'max',
+                        included : true
+                    },
+                    height :
+                    {
+                        value    : 500,
+                        extreme  : 'max',
+                        included : true
+                    }
+                }
+            ]
+        } );
+
+        breakpoints.on( 'update', function( breakpoints )
+        {
+            console.log('up');
+            var text = [];
+            text.push( '<strong>' );
+            text.push( 'breakpoints' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            for( var name in breakpoints )
+            {
+                text.push( '<tr>' );
+                text.push( '<td class="label">' );
+                text.push( 'name' );
+                text.push( '</td>' );
+                text.push( '<td class="value">' );
+                text.push( name );
+                text.push( '</td>' );
+                text.push( '</tr>' );
+            }
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element.breakpoints' ).innerHTML = text.join( '' );
+        } );
+
+    </script>
+</body>
+</html>

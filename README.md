@@ -19,7 +19,9 @@ Simply include the JS files in your HTML and start using it. B.js is still in de
     * [Abstract class](#abstract-class)
     * [Event Emitter class](#event-emitter-class)
 * [Tools](#tools)
-    * [Browser](#browser)
+    * [Viewport](#viewport)
+    * [Breakpoints](#breakpoints)
+    * [Detector](#detector)
     * [Colors](#colors)
     * [GA tags](#ga-tags)
     * [Keyboard](#keyboard)
@@ -35,13 +37,13 @@ Simply include the JS files in your HTML and start using it. B.js is still in de
 ## Compatibility
 
 B.js has no dependencies (no, you don't need jQuery).
-It's compatible with all modern browsers down to IE8 (included).<br />
+It's compatible with all modern browsers down to IE8 (included).<br>
 Depending on the browsers and classes you are using, you may need polyfills which are included in the [src/polyfills](src/polyfills) folder.
 
 
 ## Usage
 
-There are two ways of using B.js.<br />
+There are two ways of using B.js.<br>
 You can use it as a simple library by instantiating the tools or you can use it as a Framework by extending B.js to create your own tools and components.
 
 #### As a library (the easy way)
@@ -56,9 +58,9 @@ You can use it as a simple library by instantiating the tools or you can use it 
 * Start using them
 
 ```javascript
-var browser = new B.Tools.Browser();
+var viewport = new B.Tools.Viewport();
 
-browser.on( 'resize', function( viewport )
+viewport.on( 'resize', function( viewport )
 {
     console.log( 'viewport height ', viewport.height );
 } );
@@ -68,7 +70,7 @@ browser.on( 'resize', function( viewport )
 #### As a framework (the powerful way)
 
 Create your own tools and components based on B.js classes. You can put your components inside `B.Components` object or you can create your own namespace like `Foo.Bar.My_Class`.<br/>
-Inheritance is based on the [John Resig code](http://ejohn.org/blog/simple-javascript-inheritance/) with some improvements like deep property merging.<br />
+Inheritance is based on the [John Resig code](http://ejohn.org/blog/simple-javascript-inheritance/) with some improvements like deep property merging.<br>
 B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode). Do as you whish and feel free to share your custom tools and components.
 
 * Include the build in your HTML
@@ -331,7 +333,9 @@ B.js comes with some premade tools. Each one is a singleton (static). You can in
 
 You can extend those tools if you want.
 
-* [Browser](#browser)
+* [Viewport](#viewport)
+* [Breakpoints](#breakpoints)
+* [Detector](#detector)
 * [Colors](#colors)
 * [GA tags](#ga-tags)
 * [Keyboard](#keyboard)
@@ -341,43 +345,91 @@ You can extend those tools if you want.
 * [Css](#css)
 * [Resizer](#resizer)
 
-## Browser
+## Viewport
 
-Gives you informations like system, browser, engine, viewport and methods to handle breakpoints and media queries.<br />
-Breakpoints works a little like width and height for media queries. Specify some breakpoints and the class will trigger events when resizing the viewport.
+Gives you informations about viewport like width, height, scroll top, scroll left, scroll delta, etc.<br>
+Trigger events on scroll and resize.<br>
+Can disable hover on scroll for performance improvement
 
-[See code](src/tools/browser.class.js)<br />
-[See example](demos/tools/browser.html)
+[See code](src/tools/viewport.class.js)<br>
+[See example](demos/tools/viewport.html)
 
 **Options**
 ```javascript
 {
-    disable_hover_on_scroll : true,       // Improve performance when scrolling but disable hovers
-    initial_trigger         : true,       // Trigger 'scroll' and 'resize' events on the next frame
-    add_classes_to          : [ 'html' ], // Add detect informations to selectors in array
-    breakpoints             : [           // Breakpoints
+    disable_hover_on_scroll : false,                  // Improve performance when scrolling but disable hovers
+    initial_triggers        : [ 'resize', 'scroll' ], // On the next frame, triggers 'resize' then 'resize' events
+}
+```
+
+**Properties**
+
+
+* **top** | **y** (number) Viewport top
+* **left** | **x** (number) Viewport left
+* **scroll** | **x** (object) Informations about scroll
+    * `delta` (object)
+        * `top` | `y` (number) Scroll delta top
+        * `left` | `x` (number) Scroll delta left
+    * `direction` (object)
+        * `y` (string) Vertical scroll direction
+        * `x` (string) Horizontal scroll direction
+* **pixel_ratio** (number) Pixel ratio
+
+**Methods**
+
+* **match_media**
+    * `condition` (string) Proceed to a classic matchMedia but only return a boolean
+
+**Events**
+
+* **resize**
+    * `viewport` (object)
+* **scroll**
+    * `viewport` (object)
+
+## Breakpoints
+
+Breakpoints works a little like width and height for media queries. Specify some breakpoints and it will trigger events when resizing the viewport.
+
+[See code](src/tools/breakpoints.class.js)<br>
+[See example](demos/tools/breakpoints.html)
+
+**Options**
+```javascript
+{
+    breakpoints : [ // Breakpoints
         {
-            name     : 'large',
-            limits   :
+            name  : 'large',
+            width :
             {
-                width :
-                {
-                    value    : 960,
-                    extreme  : 'min',
-                    included : false
-                }
+                value    : 960,
+                extreme  : 'min',
+                included : false
             }
         },
         {
-            name     : 'medium',
-            limits   :
+            name  : 'medium',
+            width :
             {
-                width :
-                {
-                    value    : 960,
-                    extreme  : 'max',
-                    included : true
-                }
+                value    : 960,
+                extreme  : 'max',
+                included : true
+            }
+        },
+        {
+            name  : 'small',
+            width :
+            {
+                value    : 500,
+                extreme  : 'max',
+                included : true
+            },
+            height :
+            {
+                value    : 500,
+                extreme  : 'max',
+                included : true
             }
         }
     ]
@@ -386,46 +438,83 @@ Breakpoints works a little like width and height for media queries. Specify some
 
 **Properties**
 
-* **viewport** (object) Informations about the viewport
-    * `top` | `y` (number) Scroll top
-    * `left` | `x` (number) Scroll left
-    * `delta` (object)
-        * `top` | `y` (number) Scroll delta top
-        * `left` | `x` (number) Scroll delta left
-    * `direction` (object)
-        * `y` (string) Vertical scroll direction
-        * `x` (string) Horizontal scroll direction
-    * `width` (number) Width
-    * `height` (number) Height
-* **pixel_ratio** (number) Pixel ratio
-* **detect** (object)
-    * `enfine` (object) Liste of engines with boolean true if detected
-    * `browser` (object) Liste of browsers with boolean true if detected
-    * `system` (object) Liste of systems with boolean true if detected
-    * `features` (object) Liste of features with boolean true if detected
-* **breakpoints** (object)
-    * `all` (array) Every current breakpoints
-    * `currents` (array) Every active breakpoints
-    * `currents_names` (array) Names of every active breakpoints
+* **all** (array) Every registered breakpoints
+* **actives** (array) Actives breakpoints
 
 **Methods**
 
+* **add**
+    * `breakpoints` (object|array) Add one are multiple breakpoints
+    * `silent` (optional, boolean, default: true) Should not trigger event
+* **remove**
+    * `breakpoints` (string|array) Remove one are multiple breakpoints by name
+    * `silent` (optional, boolean, default: false) Should not trigger event
+* **is_active**
+    * `breakpoint` (string) Test if breakpoint is curently active
 * **match_media**
     * `condition` (string) Proceed to a classic matchMedia but only return a boolean
-* **add_breakpoint**
-    * `breakpoint` (object) Add a breakpoint
-* **add_breakpoints**
-    * `breakpoints` (array) Add multiple breakpoints
 
 **Events**
 
-* **resize**
-    * `viewport` (object)
-* **scroll**
-    * `viewport` (object)
-* **breakpoint**
-    * `breakpoint` (string) Current breakpoint
-    * `old_breakpoint` (string) Previous breakpoint
+* **update**
+    * `breakpoints` (array) Currently active breakpoints
+
+## Detector
+
+Provide informations like engine, browser, system and features.
+
+[See code](src/tools/detector.class.js)<br>
+[See example](demos/tools/detector.html)
+
+**Options**
+```javascript
+{
+    add_classes_to : [ 'html' ] // Add detected informations to selectors in array
+}
+```
+
+**Properties**
+
+* **engine** (object)
+    * `ie` (number)
+    * `gecko` (number)
+    * `webkit` (number)
+    * `khtml` (number)
+    * `opera` (number)
+    * `version` (number)
+* **browser** (object)
+    * `ie` (number)
+    * `firefox` (number)
+    * `safari` (number)
+    * `konq` (number)
+    * `opera` (number)
+    * `chrome` (number)
+    * `version` (number)
+* **system** (object)
+    * `windows` (boolean)
+    * `mac` (boolean)
+    * `osx` (boolean)
+    * `iphone` (boolean)
+    * `ipod` (boolean)
+    * `ipad` (boolean)
+    * `ios` (boolean)
+    * `blackberry` (boolean)
+    * `android` (boolean)
+    * `opera_mini` (boolean)
+    * `windows_mobile` (boolean)
+    * `wii` (boolean)
+    * `ps` (boolean)
+* **features** (object)
+    * `touch` (boolean)
+    * `media_query` (boolean)
+
+**Methods**
+
+none
+
+**Events**
+
+none
 
 
 ## Colors
@@ -433,7 +522,7 @@ Breakpoints works a little like width and height for media queries. Specify some
 Help you convert strings to well formated colors.<br>
 Create beautifuls rainbows. :rainbow:
 
-[See code](src/tools/colors.class.js)<br />
+[See code](src/tools/colors.class.js)<br>
 [See example](demos/tools/colors.html)
 
 **Options**
@@ -483,7 +572,7 @@ none
 Send informations to Google Analytics using the current instance.
 You must instantiate Google Analytics yourself.
 
-[See code](src/tools/ga_tags.class.js)<br />
+[See code](src/tools/ga_tags.class.js)<br>
 [See example](demos/tools/ga_tags.html)
 
 **Options**
@@ -532,7 +621,7 @@ none
 
 Methods, properties and events relatives to the keyboard
 
-[See code](src/tools/keyboard.class.js)<br />
+[See code](src/tools/keyboard.class.js)<br>
 [See example](demos/tools/keyboard.html)
 
 **Options**
@@ -567,7 +656,7 @@ none
 
 Properties and events relatives to the mouse
 
-[See code](src/tools/mouse.class.js)<br />
+[See code](src/tools/mouse.class.js)<br>
 [See example](demos/tools/mouse.html)
 
 **Options**
@@ -604,7 +693,7 @@ none
 
 Run a ticker that trigger events each frame base on requestAnimationFrame.
 
-[See code](src/tools/ticker.class.js)<br />
+[See code](src/tools/ticker.class.js)<br>
 [See example](demos/tools/ticker.html)
 
 **Options**
@@ -648,7 +737,7 @@ Run a ticker that trigger events each frame base on requestAnimationFrame.
 Key/value registry for when you need to store variable and retrieve it anywhere without using ugly global variables.
 You may use it to cache variables.
 
-[See code](src/tools/registry.class.js)<br />
+[See code](src/tools/registry.class.js)<br>
 [See example](demos/tools/registry.html)
 
 **Options**
@@ -678,7 +767,7 @@ none
 Apply CSS on targeted element and automatically add prefixes.
 Property will automatically be formated.
 
-[See code](src/tools/css.class.js)<br />
+[See code](src/tools/css.class.js)<br>
 [See example](demos/tools/css.html)
 
 **Options**
@@ -722,7 +811,7 @@ Resize elements inside containers according to many possible options.
     * `data-align-y` (optional, string, values: *'top'* | *'center'* | *'bottom'*, default: *'center'*)
     * `data-rounding` (optional, string, values: *'ceil'* | *'floor'* | *'round'* | none, default: *'ceil'*)
 
-[See code](src/tools/resizer.class.js)<br />
+[See code](src/tools/resizer.class.js)<br>
 [See example](demos/tools/resizer.html)
 
 **Options**
@@ -775,7 +864,7 @@ none
 
 Know when your users use the konami code ↑ ↑ ↓ ↓ ← → ← → B A
 
-[See code](src/tools/konami_code.class.js)<br />
+[See code](src/tools/konami_code.class.js)<br>
 [See example](demos/tools/konami_code.html)
 
 **Options**
@@ -820,7 +909,7 @@ none
 
 Method to manage strings
 
-[See code](src/tools/strings.class.js)<br />
+[See code](src/tools/strings.class.js)<br>
 [See example](demos/tools/strings.html)
 
 **Options**
@@ -996,13 +1085,16 @@ new Burno.Tools.Class();
         * ~~Use Strings class~~
     * Browser
         * ~~Add class "features-no-..."~~
-        * Trigger breakpoints at start event if no break point active
-        * `match_breakpoint( name )` method
+        * ~~`match_breakpoint( name )` method~~
         * ~~Seperate Viewport~~
         * ~~Seperate Detector~~
-        * Seperate Breakpoints
+        * ~~Seperate Breakpoints~~
         * Update doc
         * ~~Choose initial triggers order~~
+    * Breakpoints
+        * Trigger breakpoints at start event if no break point active
+    * Detector
+        * Add class to element in addition to selector
     * Event_Emitter
         * Deferred trigger (can specify event)
         * ~~Add `dispatch` method~~

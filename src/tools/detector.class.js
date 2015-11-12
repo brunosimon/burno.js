@@ -1,10 +1,6 @@
 /**
- * @class    Detector
- * @author   Bruno SIMON / http://bruno-simon.com
- * @fires    resize
- * @fires    scroll
- * @fires    breakpoint
- * @requires B.Tools.Ticker
+ * @class  Detector
+ * @author Bruno SIMON / http://bruno-simon.com
  */
 B.Tools.Detector = B.Core.Event_Emitter.extend(
 {

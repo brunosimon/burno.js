@@ -63,7 +63,7 @@ gulp.task( 'js', function()
         options.paths.sources + 'core/abstract.class.js',
         options.paths.sources + 'core/event_emitter.class.js',
 
-        options.paths.sources + 'tools/browser.class.js',
+        options.paths.sources + 'tools/breakpoints.class.js',
         options.paths.sources + 'tools/colors.class.js',
         options.paths.sources + 'tools/css.class.js',
         options.paths.sources + 'tools/detector.class.js',
