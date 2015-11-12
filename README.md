@@ -982,6 +982,8 @@ new Burno.Tools.Class();
         * ~~Trim with characters choice~~
         * ~~Doc~~
         * ~~Add SCREAMING_SNAKE_CASE and Title_Snake_Case~~
+        * To boolean with `undefined` or `null` or empty string
+        * Bug `convert_case` with `dashed`
     * Time / Date
         * Formater (custom formats (sprinf like))
         * Local
@@ -995,6 +997,7 @@ new Burno.Tools.Class();
     * Browser
         * ~~Add class "features-no-..."~~
         * Trigger breakpoints at start event if no break point active
+        * `match_breakpoint( name )` method
         * ~~Seperate Viewport~~
         * ~~Seperate Detector~~
         * Seperate Breakpoints
@@ -1020,6 +1023,8 @@ new Burno.Tools.Class();
         * Merge method
     * Registry
         * Persistence (localstorage / cookie fallback)
+    * Resizer
+        * `get_sizes` return type in parameters ("cartesian", "css" or "both")
     * ~~Ticker~~
         * ~~Throttle by only specifying event like on('tick-250') for 250 ms~~
         * ~~Wait method~~
