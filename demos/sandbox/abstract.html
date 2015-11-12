@@ -6,34 +6,8 @@
 </head>
 <body>
 
-    <!-- POLYFILLS -->
-    <script src="../../src/polyfills/classlist.js"></script>
-    <script src="../../src/polyfills/foreach.js"></script>
-    <script src="../../src/polyfills/getcomputedstyle.js"></script>
-    <script src="../../src/polyfills/htmlelement.js"></script>
-    <script src="../../src/polyfills/indexof.js"></script>
-    <script src="../../src/polyfills/object-keys.js"></script>
-    <script src="../../src/polyfills/object-create.js"></script>
-    <script src="../../src/polyfills/requestanimationframe.js"></script>
-
-    <!-- CORE -->
-    <script src="../../src/core/b.class.js"></script>
-    <script src="../../src/core/abstract.class.js"></script>
-    <script src="../../src/core/event_emitter.class.js"></script>
-
-    <!-- TOOLS -->
-    <script src="../../src/tools/browser.class.js"></script>
-    <script src="../../src/tools/colors.class.js"></script>
-    <script src="../../src/tools/css.class.js"></script>
-    <script src="../../src/tools/ga_tags.class.js"></script>
-    <script src="../../src/tools/keyboard.class.js"></script>
-    <script src="../../src/tools/konami_code.class.js"></script>
-    <script src="../../src/tools/mouse.class.js"></script>
-    <script src="../../src/tools/offline.class.js"></script>
-    <script src="../../src/tools/registry.class.js"></script>
-    <script src="../../src/tools/resizer.class.js"></script>
-    <script src="../../src/tools/strings.class.js"></script>
-    <script src="../../src/tools/ticker.class.js"></script>
+    <!-- B.js -->
+    <script src="../../builds/burno-0.2.js"></script>
 
     <!-- YOUR SCRIPT -->
     <script>
@@ -115,24 +89,16 @@
          * Registry
          */
 
-        B.Components.Test_Class = B.Core.Abstract.extend(
-        {
-            // Chose a registry name
-            register : 'test',
+        // Create any class you'd like
+        B.Components.Test_Class = B.Core.Abstract.extend( {} );
 
-            construct : function( options )
-            {
-                // Pass options to _super
-                this._super( options );
-            }
-        } );
+        // Instantiate and specify the register property in options object
+        // The value is the key you want to retrieve the instance later
+        var test_class = new B.Components.Test_Class( { register : 'my_key' } );
 
-        // Instantiate
-        var test_class   = new B.Components.Test_Class();
-
-        // Instantiate the registry tools and get the test_class using the register name
+        // Instantiate the registry tools and get the test_class using the register key
         var registry     = new B.Tools.Registry(),
-            test_class_2 = registry.get( 'test' );
+            test_class_2 = registry.get( 'my_key' );
 
     </script>
 

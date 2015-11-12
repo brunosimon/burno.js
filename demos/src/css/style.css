@@ -1,4 +1,5 @@
-.element {margin:20px;padding:20px;background:#eee;float:left;clear:both;font-family:Helvetica,Arial;font-size:14px;}
+body {font-family:Helvetica,Arial;font-size:14px;}
+.element {margin:20px;padding:20px;background:#eee;float:left;clear:both;}
 .element td,
 .element th {padding:4px 20px;}
 .element tr:nth-child(odd) {background:#f8f8f8;}

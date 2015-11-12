@@ -2,273 +2,303 @@
  * @class    Resizer
  * @author   Bruno SIMON / http://bruno-simon.com
  */
-( function()
+B.Tools.Ticker = B.Core.Event_Emitter.extend(
 {
-    'use strict';
-
-    B.Tools.Ticker = B.Core.Event_Emitter.extend(
+    static  : 'ticker',
+    options :
     {
-        static  : 'ticker',
-        options :
+        auto_run : true
+    },
+
+    /**
+     * Initialise and merge options
+     * @constructor
+     * @param {object} options Properties to merge with defaults
+     */
+    construct : function( options )
+    {
+        this._super( options );
+
+        this.reseted                = false;
+        this.running                = false;
+        this.time                   = {};
+        this.time.start             = 0;
+        this.time.elapsed           = 0;
+        this.time.delta             = 0;
+        this.time.current           = 0;
+        this.waits                  = {};
+        this.waits.before           = [];
+        this.waits.after            = [];
+        this.intervals              = {};
+
+        if( this.options.auto_run )
+            this.run();
+    },
+
+    /**
+     * Reset the ticker by setting time infos to 0
+     * @param  {boolean} run Start the ticker
+     * @return {object}      Context
+     */
+    reset : function( run )
+    {
+        this.reseted = true;
+
+        this.time.start   = + ( new Date() );
+        this.time.current = this.time.start;
+        this.time.elapsed = 0;
+        this.time.delta   = 0;
+
+        if( run )
+            this.run();
+
+        return this;
+    },
+
+    /**
+     * Run the ticker
+     * @return {object} Context
+     */
+    run : function()
+    {
+        var that = this;
+
+        // Already running
+        if( this.running )
+            return;
+
+        this.running = true;
+
+        var loop = function()
         {
-            auto_run : true
-        },
+            if(that.running)
+                window.requestAnimationFrame( loop );
 
-        /**
-         * Initialise and merge options
-         * @constructor
-         * @param {object} options Properties to merge with defaults
-         */
-        construct : function( options )
+            that.tick();
+        };
+
+        loop();
+
+        return this;
+    },
+
+    /**
+     * Stop ticking
+     * @return {object} Context
+     */
+    stop : function()
+    {
+        this.running = false;
+
+        return this;
+    },
+
+    /**
+     * Tick (or is it tack ?)
+     * @return {object} Context
+     */
+    tick : function()
+    {
+        // Reset if needed
+        if( !this.reseted )
+            this.reset();
+
+        // Set time infos
+        this.time.current = + ( new Date() );
+        this.time.delta   = this.time.current - this.time.start - this.time.elapsed;
+        this.time.elapsed = this.time.current - this.time.start;
+
+        var i    = 0,
+            len  = this.waits.before.length,
+            wait = null;
+
+        // Do next (before trigger)
+        for( ; i < len; i++ )
         {
-            this._super( options );
+            // Set up
+            wait = this.waits.before[ i ];
 
-            this.reseted                = false;
-            this.running                = false;
-            this.time                   = {};
-            this.time.start             = 0;
-            this.time.elapsed           = 0;
-            this.time.delta             = 0;
-            this.time.current           = 0;
-            this.do_next_actions        = {};
-            this.do_next_actions.before = [];
-            this.do_next_actions.after  = [];
-            this.intervals              = {};
-
-            if( this.options.auto_run )
-                this.run();
-        },
-
-        /**
-         * Reset the ticker by setting time infos to 0
-         * @param  {boolean} run Start the ticker
-         * @return {object}      Context
-         */
-        reset : function( run )
-        {
-            this.reseted = true;
-
-            this.time.start   = + ( new Date() );
-            this.time.current = this.time.start;
-            this.time.elapsed = 0;
-            this.time.delta   = 0;
-
-            if( run )
-                this.run();
-
-            return this;
-        },
-
-        /**
-         * Run the ticker
-         * @return {object} Context
-         */
-        run : function()
-        {
-            var that = this;
-
-            // Already running
-            if( this.running )
-                return;
-
-            this.running = true;
-
-            var loop = function()
+            // Frame count down to 0
+            if( --wait.frames_count === 0 )
             {
-                if(that.running)
-                    window.requestAnimationFrame( loop );
+                // Apply action
+                wait.action.apply( this, [ this.time ] );
 
-                that.tick();
-            };
+                // Remove from actions
+                this.waits.before.splice( i, 1 );
 
-            loop();
-
-            return this;
-        },
-
-        /**
-         * Stop ticking
-         * @return {object} Context
-         */
-        stop : function()
-        {
-            this.running = false;
-
-            return this;
-        },
-
-        /**
-         * Tick (or is it tack ?)
-         * @return {object} Context
-         */
-        tick : function()
-        {
-            // Reset if needed
-            if( !this.reseted )
-                this.reset();
-
-            // Set time infos
-            this.time.current = + ( new Date() );
-            this.time.delta   = this.time.current - this.time.start - this.time.elapsed;
-            this.time.elapsed = this.time.current - this.time.start;
-
-            var i   = 0,
-                len = this.do_next_actions.before.length;
-
-            // Do next (before trigger)
-            for( ; i < len; i++ )
-            {
-                this.do_next_actions.before[ i ].apply( this, [ this.time ] );
-                this.do_next_actions.before.splice( i, 1 );
+                // Update loop indexes
                 i--;
                 len--;
             }
+        }
 
-            // Trigger
-            this.trigger( 'tick', [ this.time ] );
+        // Trigger
+        this.trigger( 'tick', [ this.time ] );
 
-            // Trigger intervals
-            this.trigger_intervals();
+        // Trigger intervals
+        this.trigger_intervals();
 
-            // Do next (after trigger)
-            i   = 0;
-            len = this.do_next_actions.after.length;
-            for( ; i < len; i++ )
+        // Do next (after trigger)
+        i   = 0;
+        len = this.waits.after.length;
+        for( ; i < len; i++ )
+        {
+            // Set up
+            wait = this.waits.after[ i ];
+
+            // Frame count down to 0
+            if( --wait.frames_count === 0 )
             {
-                this.do_next_actions.after[ i ].apply( this, [ this.time ] );
-                this.do_next_actions.after.splice( i, 1 );
+                // Apply action
+                wait.action.apply( this, [ this.time ] );
+
+                // Remove from actions
+                this.waits.after.splice( i, 1 );
+
+                // Update loop indexes
                 i--;
                 len--;
             }
+        }
 
-            return this;
-        },
+        return this;
+    },
 
-        /**
-         * Apply function on the next frame
-         * @param  {function} action Function to apply
-         * @param  {boolean}  before Do before the 'tick' event or after
-         * @return {object}          Context
-         */
-        do_next : function( action, before )
+    /**
+     * Apply function on X frames
+     * @param  {number}   frames_count How many frames before applying the function
+     * @param  {function} action       Function to apply
+     * @param  {boolean}  after        Should apply the function after the 'tick' event is triggered
+     * @return {object}                Context
+     */
+    wait : function( frames_count, action, after )
+    {
+        // Errors
+        if( typeof action !== 'function' )
+            return false;
+
+        if( typeof frames_count !== 'number' )
+            return false;
+
+        this.waits[ after ? 'after' : 'before' ].push( {
+            frames_count : frames_count,
+            action       : action
+        } );
+
+        return this;
+    },
+
+    /**
+     * Create interval
+     * @param  {integer} interval Milliseconds between each tick
+     * @return {object}           Context
+     */
+    create_interval : function( interval )
+    {
+        this.intervals[ interval ] = {
+            interval     : interval,
+            next_trigger : interval,
+            start        : this.time.elapsed,
+            last_trigger : this.time.elapsed,
+        };
+
+        return this;
+    },
+
+    /**
+     * Destroy interval
+     * @param  {integer} interval Milliseconds between each tick
+     * @return {object}           Context
+     */
+    destroy_interval : function( interval )
+    {
+        delete this.intervals[ interval ];
+
+        return this;
+    },
+
+    /**
+     * Trigger intervals
+     * @return {object}           Context
+     */
+    trigger_intervals : function()
+    {
+        // Each interval
+        for( var _key in this.intervals )
         {
-            if( typeof action !== 'function' )
-                return false;
+            var interval = this.intervals[ _key ];
 
-            this.do_next_actions[ before ? 'before' : 'after' ].push( action );
-
-            return this;
-        },
-
-        /**
-         * Create interval
-         * @param  {integer} interval Milliseconds between each tick
-         * @return {object}           Context
-         */
-        create_interval : function( interval )
-        {
-            this.intervals[ interval ] = {
-                interval     : interval,
-                next_trigger : interval,
-                start        : this.time.elapsed,
-                last_trigger : this.time.elapsed,
-            };
-
-            return this;
-        },
-
-        /**
-         * Destroy interval
-         * @param  {integer} interval Milliseconds between each tick
-         * @return {object}           Context
-         */
-        destroy_interval : function( interval )
-        {
-            delete this.intervals[ interval ];
-
-            return this;
-        },
-
-        /**
-         * Trigger intervals
-         * @return {object}           Context
-         */
-        trigger_intervals : function()
-        {
-            // Each interval
-            for( var _key in this.intervals )
+            // Test if interval should trigger
+            if( this.time.elapsed - interval.last_trigger > interval.next_trigger  )
             {
-                var interval = this.intervals[ _key ];
+                // Update next trigger to stay as close as possible to the interval
+                interval.next_trigger = interval.interval - ( this.time.elapsed - interval.start ) % interval.interval;
 
-                // Test if interval should trigger
-                if( this.time.elapsed - interval.last_trigger > interval.next_trigger  )
-                {
-                    // Update next trigger to stay as close as possible to the interval
-                    interval.next_trigger = interval.interval - ( this.time.elapsed - interval.start ) % interval.interval;
-
-                    interval.last_trigger = this.time.elapsed;
-                    this.trigger( 'tick-' + interval.interval, [ this.time, interval ] );
-                }
+                interval.last_trigger = this.time.elapsed;
+                this.trigger( 'tick-' + interval.interval, [ this.time, interval ] );
             }
+        }
 
-            return this;
-        },
+        return this;
+    },
 
-        /**
-         * Start listening specified events
-         * @param  {string}   names    Events names (can contain namespace)
-         * @param  {function} callback Function to apply if events are triggered
-         * @return {object}            Context
-         */
-        on : function( names, callback )
+    /**
+     * Start listening specified events
+     * @param  {string}   names    Events names (can contain namespace)
+     * @param  {function} callback Function to apply if events are triggered
+     * @return {object}            Context
+     */
+    on : function( names, callback )
+    {
+        // Set up
+        var that           = this,
+            resolved_names = this.resolve_names( names );
+
+        // Each resolved name
+        resolved_names.forEach( function( name )
         {
-            var that           = this,
-                resolved_names = this.resolve_names( names );
-
-            // Each resolved name
-            resolved_names.forEach( function( name )
+            // Has interval interval
+            if( name.match( /^tick([0-9]+)$/) )
             {
-                // Has interval interval
-                if( name.match( /^tick([0-9]+)$/) )
-                {
-                    // Extract interval interval
-                    var interval = parseInt( name.replace( /^tick([0-9]+)$/, '$1' ) );
+                // Extract interval interval
+                var interval = parseInt( name.replace( /^tick([0-9]+)$/, '$1' ) );
 
-                    // Create interval
-                    if( interval )
-                        that.create_interval( interval );
-                }
-            } );
+                // Create interval
+                if( interval )
+                    that.create_interval( interval );
+            }
+        } );
 
-            return this._super( names, callback );
-        },
+        return this._super( names, callback );
+    },
 
-        /**
-         * Stop listening specified events
-         * @param  {string}   names Events names (can contain namespace or be the namespace only)
-         * @return {object}         Context
-         */
-        off : function( names )
+    /**
+     * Stop listening specified events
+     * @param  {string}   names Events names (can contain namespace or be the namespace only)
+     * @return {object}         Context
+     */
+    off : function( names )
+    {
+        // Set up
+        var that           = this,
+            resolved_names = this.resolve_names( names );
+
+        // Each resolved name
+        resolved_names.forEach( function( name )
         {
-            var that           = this,
-                resolved_names = this.resolve_names( names );
-
-            // Each resolved name
-            resolved_names.forEach( function( name )
+            // Has interval interval
+            if( name.match( /^tick([0-9]+)$/) )
             {
-                // Has interval interval
-                if( name.match( /^tick([0-9]+)$/) )
-                {
-                    // Extract interval interval
-                    var interval = parseInt( name.replace( /^tick([0-9]+)$/, '$1' ) );
+                // Extract interval interval
+                var interval = parseInt( name.replace( /^tick([0-9]+)$/, '$1' ) );
 
-                    // Create interval
-                    if( interval )
-                        that.destroy_interval( interval );
-                }
-            } );
+                // Create interval
+                if( interval )
+                    that.destroy_interval( interval );
+            }
+        } );
 
-            return this._super( names );
-        },
-    } );
-} )();
+        return this._super( names );
+    },
+} );

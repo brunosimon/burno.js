@@ -220,24 +220,16 @@ var custom_class       = new B.Tools.Custom_Class(),
 ###### Registry
 
 ```javascript
-B.Components.Test_Class = B.Core.Abstract.extend(
-{
-    // Chose a registry name
-    register : 'test',
+// Create any class you'd like
+B.Components.Test_Class = B.Core.Abstract.extend( {} );
 
-    construct : function( options )
-    {
-        // Pass options to _super
-        this._super( options );
-    }
-} );
+// Instantiate and specify the register property in options object
+// The value is the key you want to retrieve the instance later
+var test_class = new B.Components.Test_Class( { register : 'my_key' } );
 
-// Instantiate
-var test_class   = new B.Components.Test_Class();
-
-// Instantiate the registry tools and get the test_class using the register name
+// Instantiate the registry tools and get the test_class using the register key
 var registry     = new B.Tools.Registry(),
-    test_class_2 = registry.get( 'test' );
+    test_class_2 = registry.get( 'my_key' );
 ```
 
 
@@ -638,13 +630,16 @@ Run a ticker that trigger events each frame base on requestAnimationFrame.
 * **run** : Run the ticker
 * **stop** : Stop the ticker
 * **tick** : Trigger tick (If you need to trigger it manually)
-* **do_next** : Apply function on the next frame
+* **wait** : Apply function after X frames
+    * `frames_count` (number)
     * `action` (function)
-    * `before` (optional, boolean) Should call the function before the `tick` event
+    * `after` (optional, boolean, values: *true* | *false*, default: *true*) Should apply the function after the `tick` event is triggered
 
 **Events**
 
 * **tick**
+    * `time` (object) Time informations
+* **tick-X**
     * `time` (object) Time informations
 
 
@@ -965,16 +960,19 @@ new Burno.Tools.Class();
 * ~~Option null bug~~
 * Loop error bug
 * Unit testing
-* License
+* ~~License~~
+* ~~No polyfills version~~
+* ~~Information on top of builds~~
+* ~~Global 'use strict'~~
 * Classes (create)
     * Storyline
     * Navigation
     * Scroll
-    * Page
     * Images
         * Update images on pixel_ratio
         * Load and show image
     * Loader
+    * Unveiler
     * ~~Konami Code~~
         * ~~Doc~~
     * ~~Strings~~
@@ -990,14 +988,21 @@ new Burno.Tools.Class();
 * Classes (update)
     * ~~Abstract~~
         * ~~Auto save in registry~~
+        * ~~Register in options~~
     * ~~CSS~~
         * ~~IE translateZ and translate3d prevent (in options)~~
         * ~~Use Strings class~~
     * Browser
-        * Add class "features-no-..."
-        * Seperate Viewport/Detector/Breakpoints
+        * ~~Add class "features-no-..."~~
+        * Trigger breakpoints at start event if no break point active
+        * ~~Seperate Viewport~~
+        * ~~Seperate Detector~~
+        * Seperate Breakpoints
+        * Update doc
+        * ~~Choose initial triggers order~~
     * Event_Emitter
         * Deferred trigger (can specify event)
+        * ~~Add `dispatch` method~~
     * Better Match media
         * Multiple matches
         * Fallback for width and height
@@ -1015,11 +1020,9 @@ new Burno.Tools.Class();
         * Merge method
     * Registry
         * Persistence (localstorage / cookie fallback)
-    * Ticker
+    * ~~Ticker~~
         * ~~Throttle by only specifying event like on('tick-250') for 250 ms~~
-        * Wait method
-    * Abstract
-        * Automatic save to registry
+        * ~~Wait method~~
 
 
 

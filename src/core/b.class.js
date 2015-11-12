@@ -12,187 +12,182 @@ var B =
  * MIT Licensed.
  * Inspired by base2 and Prototype
  */
-( function()
+B.copy = function( object )
 {
-    'use strict';
+    var c = null;
 
-    B.copy = function( object )
+    // Simple object (exclude jQuery object, HTML Element, THREE js, ...)
+    if(
+        typeof object === 'undefined' ||
+        ( object && object.constructor === Object )
+    )
     {
-        var c = null;
+        c = {};
 
-        // Simple object (exclude jQuery object, HTML Element, THREE js, ...)
-        if(
-            typeof object === 'undefined' ||
-            ( object && object.constructor === Object )
-        )
+        for( var key in object )
+            c[ key ] = B.copy( object[ key ] );
+
+        return c;
+    }
+
+    // Array
+    else if( object instanceof Array )
+    {
+        c = [];
+
+        for( var i = 0, l = object.length; i < l; i++ )
+            c[ i ] = B.copy( object[ i ] );
+
+        return c;
+    }
+
+    // Other
+    else
+    {
+        return object;
+    }
+};
+
+B.merge = function( original, extended )
+{
+    for( var key in extended )
+    {
+        var ext = extended[ key ];
+
+        if( ext.constructor === Object )
         {
-            c = {};
+            if( !original[ key ] )
+                original[ key ] = {};
 
-            for( var key in object )
-                c[ key ] = B.copy( object[ key ] );
+            // ext = Object.create( ext );
 
-            return c;
+            original[ key ] = B.merge( original[ key ], ext );
         }
-
-        // Array
-        else if( object instanceof Array )
-        {
-            c = [];
-
-            for( var i = 0, l = object.length; i < l; i++ )
-                c[ i ] = B.copy( object[ i ] );
-
-            return c;
-        }
-
-        // Other
         else
         {
-            return object;
+            original[ key ] = ext;
         }
-    };
+    }
 
-    B.merge = function( original, extended )
+    return original;
+};
+
+var initializing = false,
+    fnTest       = /xyz/.test( function()
     {
-        for( var key in extended )
+        xyz;
+    } ) ? /\b_super\b/ : /.*/;
+
+B.Class = function(){};
+
+var inject = function( prop )
+{
+    var proto  = this.prototype,
+        _super = {};
+
+    for( var name in prop )
+    {
+        if( typeof prop[ name ] === 'function' && typeof proto[ name ] === 'function' && fnTest.test( prop[ name ] ) )
         {
-            var ext = extended[ key ];
-
-            if( ext.constructor === Object )
+            _super[ name ] = proto[ name ];
+            proto[ name ]  = ( function( name, fn )
             {
-                if( !original[ key ] )
-                    original[ key ] = {};
+                return function()
+                {
+                    var tmp     = this._super;
+                    this._super = _super[ name ];
+                    var ret     = fn.apply( this, arguments );
+                    this._super = tmp;
+                    return ret;
+                };
+            } )( name, prop[ name ] );
+        }
 
-                // ext = Object.create( ext );
+        else
+        {
+            proto[ name ] = prop[ name ];
+        }
+    }
+};
 
-                original[ key ] = B.merge( original[ key ], ext );
+B.Class.extend = function( prop )
+{
+    var _super    = this.prototype;
+    initializing  = true;
+    var prototype = new this();
+    initializing  = false;
+
+    for( var name in prop )
+    {
+        if( typeof prop[ name ] === 'function' && typeof _super[ name ] === 'function' && fnTest.test( prop[ name ] ) )
+        {
+            prototype[ name ] = ( function( name, fn )
+            {
+                return function()
+                {
+                    var tmp     = this._super;
+                    this._super = _super[ name ];
+                    var ret     = fn.apply( this, arguments );
+                    this._super = tmp;
+
+                    return ret;
+                };
+            } )( name, prop[ name ] );
+        }
+        else
+        {
+            if( name === 'options' )
+            {
+                if( typeof prototype[ name ] === 'undefined' )
+                    prototype[ name ] = {};
+
+                var prototype_copy = B.copy( prototype[ name ] ),
+                    prop_copy      = B.copy( prop[ name ] );
+
+                prototype[ name ] = B.merge( prototype_copy, prop_copy );
             }
             else
             {
-                original[ key ] = ext;
+                prototype[ name ] = prop[ name ];
             }
         }
+    }
 
-        return original;
-    };
-
-    var initializing = false,
-        fnTest       = /xyz/.test( function()
-        {
-            xyz;
-        } ) ? /\b_super\b/ : /.*/;
-
-    B.Class = function(){};
-
-    var inject = function( prop )
+    function Class()
     {
-        var proto  = this.prototype,
-            _super = {};
-
-        for( var name in prop )
+        if( !initializing )
         {
-            if( typeof prop[ name ] === 'function' && typeof proto[ name ] === 'function' && fnTest.test( prop[ name ] ) )
+            if( this.static_instantiate )
             {
-                _super[ name ] = proto[ name ];
-                proto[ name ]  = ( function( name, fn )
-                {
-                    return function()
-                    {
-                        var tmp     = this._super;
-                        this._super = _super[ name ];
-                        var ret     = fn.apply( this, arguments );
-                        this._super = tmp;
-                        return ret;
-                    };
-                } )( name, prop[ name ] );
+                var obj = this.static_instantiate.apply( this, arguments );
+                if( obj )
+                    return obj;
             }
 
-            else
+            for( var p in this )
             {
-                proto[ name ] = prop[ name ];
+                if( typeof this[ p ] === 'object' )
+                {
+                    this[ p ] = B.copy( this[ p ] );
+                }
+            }
+
+            if( this.construct )
+            {
+                this.construct.apply( this, arguments );
+            }
+            else if( this.init )
+            {
+                this.init.apply( this, arguments );
             }
         }
-    };
+        return this;
+    }
 
-    B.Class.extend = function( prop )
-    {
-        var _super    = this.prototype;
-        initializing  = true;
-        var prototype = new this();
-        initializing  = false;
+    Class.prototype             = prototype;
+    Class.prototype.constructor = Class;
+    Class.extend                = B.Class.extend;
+    Class.inject                = inject;
 
-        for( var name in prop )
-        {
-            if( typeof prop[ name ] === 'function' && typeof _super[ name ] === 'function' && fnTest.test( prop[ name ] ) )
-            {
-                prototype[ name ] = ( function( name, fn )
-                {
-                    return function()
-                    {
-                        var tmp     = this._super;
-                        this._super = _super[ name ];
-                        var ret     = fn.apply( this, arguments );
-                        this._super = tmp;
-
-                        return ret;
-                    };
-                } )( name, prop[ name ] );
-            }
-            else
-            {
-                if( name === 'options' )
-                {
-                    if( typeof prototype[ name ] === 'undefined' )
-                        prototype[ name ] = {};
-
-                    var prototype_copy = B.copy( prototype[ name ] ),
-                        prop_copy      = B.copy( prop[ name ] );
-
-                    prototype[ name ] = B.merge( prototype_copy, prop_copy );
-                }
-                else
-                {
-                    prototype[ name ] = prop[ name ];
-                }
-            }
-        }
-
-        function Class()
-        {
-            if( !initializing )
-            {
-                if( this.static_instantiate )
-                {
-                    var obj = this.static_instantiate.apply( this, arguments );
-                    if( obj )
-                        return obj;
-                }
-
-                for( var p in this )
-                {
-                    if( typeof this[ p ] === 'object' )
-                    {
-                        this[ p ] = B.copy( this[ p ] );
-                    }
-                }
-
-                if( this.construct )
-                {
-                    this.construct.apply( this, arguments );
-                }
-                else if( this.init )
-                {
-                    this.init.apply( this, arguments );
-                }
-            }
-            return this;
-        }
-
-        Class.prototype             = prototype;
-        Class.prototype.constructor = Class;
-        Class.extend                = B.Class.extend;
-        Class.inject                = inject;
-
-        return Class;
-    };
-} )();
+    return Class;
+};

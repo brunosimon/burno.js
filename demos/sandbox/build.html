@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Sandbox - As Framework</title>
+</head>
+<body>
+
+    <!-- BUILDS -->
+    <!-- <script src="../../builds/burno-0.2-no-compatibility.js"></script> -->
+    <!-- <script src="../../builds/burno-0.2-no-compatibility.min.js"></script> -->
+    <script src="../../builds/burno-0.2.js"></script>
+    <!-- <script src="../../builds/burno-0.2.min.js"></script> -->
+
+    <!-- Your classes -->
+    <script>
+
+        B.Components.My_App = B.Core.Abstract.extend(
+        {
+            construct : function()
+            {
+                console.log('all good');
+            }
+        } );
+
+        var my_app = new B.Components.My_App();
+
+    </script>
+
+</body>
+</html>

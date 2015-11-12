@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Demo - Detector</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../src/css/style.css">
+</head>
+<body>
+
+    <div class="element detector"></div>
+
+    <!-- B.js -->
+    <script src="../../builds/burno-0.2.js"></script>
+
+    <script>
+
+        var detector = new B.Tools.Detector();
+
+        console.log(detector);
+
+        var text = [];
+        text.push( '<strong>' );
+        text.push( 'user agent' );
+        text.push( '</strong>' );
+        text.push( '<br>' );
+        text.push( detector.user_agent );
+        text.push( '<br>' );
+        text.push( '<br>' );
+        text.push( '<strong>' );
+        text.push( 'plateform' );
+        text.push( '</strong>' );
+        text.push( '<br>' );
+        text.push( detector.plateform );
+        text.push( '<br>' );
+        text.push( '<br>' );
+        for( var category in detector )
+        {
+            if( detector.categories.indexOf( category ) !== -1 )
+            {
+                text.push( '<strong>' );
+                text.push( category );
+                text.push( '</strong>' );
+                text.push( '<table>' );
+                // Each property in category
+                for( var property in detector[ category ] )
+                {
+                    var value = detector[ category ][ property ];
+
+                    text.push( '<tr>' );
+                    text.push( '<td class="label">' );
+                    text.push( property );
+                    text.push( '</td>' );
+                    text.push( '<td class="value ' );
+                    text.push( value ? 'active' : 'inactive' );
+                    text.push( '">' );
+                    text.push( value );
+                    text.push( '</td>' );
+                    text.push( '</tr>' );
+                }
+                text.push( '</table><br>' );
+            }
+        }
+
+        // Classes
+        text.push( '<strong>' );
+        text.push( 'classes' );
+        text.push( '</strong>' );
+        for( var _class in detector.classes )
+        {
+            text.push( '<br>' );
+            if( typeof detector.classes[ _class ] === 'string' )
+                text.push( detector.classes[ _class ] );
+            text.push( ' ' );
+        }
+
+        // Add to DOM
+        document.querySelector( '.element.detector' ).innerHTML = text.join('');
+
+    </script>
+</body>
+</html>

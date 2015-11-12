@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Burno.js - Demo - Viewport</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="../src/css/style.css">
+    <style>
+        .break {
+            clear:both;
+        }
+    </style>
+</head>
+<body>
+
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <div class="break"></div>
+    <div class="element scroll"></div>
+    <div class="element resize"></div>
+    <div class="break"></div>
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+    <br>scroll me
+
+    <!-- B.js -->
+    <script src="../../builds/burno-0.2.js"></script>
+
+    <script>
+
+        var viewport = new B.Tools.Viewport();
+
+        viewport.on( 'scroll', function( y, x, scroll )
+        {
+            var text = [];
+            text.push( '<strong>' );
+            text.push( 'scroll' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'x' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( x );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'y' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( y );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'delta x' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( scroll.delta.x );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'delta y' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( scroll.delta.y );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'direction y' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( scroll.direction.y );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'direction x' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( scroll.direction.x );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element.scroll' ).innerHTML = text.join('');
+        } );
+
+        viewport.on( 'resize', function( width, height )
+        {
+            var text = [];
+            text.push( '<strong>' );
+            text.push( 'resize' );
+            text.push( '</strong>' );
+
+            text.push( '<table>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'width' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( width );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '<tr>' );
+            text.push( '<td class="label">' );
+            text.push( 'height' );
+            text.push( '</td>' );
+            text.push( '<td class="value">' );
+            text.push( height );
+            text.push( '</td>' );
+            text.push( '</tr>' );
+
+            text.push( '</table>' );
+
+            // Add to DOM
+            document.querySelector( '.element.resize' ).innerHTML = text.join('');
+        } );
+
+    </script>
+</body>
+</html>
