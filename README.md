@@ -1023,6 +1023,7 @@ new Burno.Tools.Class();
         * Merge method
     * Registry
         * Persistence (localstorage / cookie fallback)
+        * Events
     * Resizer
         * `get_sizes` return type in parameters ("cartesian", "css" or "both")
     * ~~Ticker~~
