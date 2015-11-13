@@ -1077,7 +1077,7 @@ new Burno.Tools.Class();
         * ~~Trim with characters choice~~
         * ~~Doc~~
         * ~~Add SCREAMING_SNAKE_CASE and Title_Snake_Case~~
-        * To boolean with `undefined` or `null` or empty string
+        * :warning: To boolean with `undefined` or `null` or empty string
         * Bug `convert_case` with `dashed`
     * Time / Date
         * Formater (custom formats (sprinf like))
@@ -1124,7 +1124,7 @@ new Burno.Tools.Class();
         * Persistence (localstorage / cookie fallback)
         * ~~Events~~
     * Resizer
-        * `get_sizes` return type in parameters ("cartesian", "css" or "both")
+        * :warning: `get_sizes` return type in parameters ("cartesian", "css" or "both")
     * ~~Ticker~~
         * ~~Throttle by only specifying event like on('tick-250') for 250 ms~~
         * ~~Wait method~~
