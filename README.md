@@ -19,17 +19,19 @@ Simply include the JS files in your HTML and start using it. B.js is still in de
     * [Abstract class](#abstract-class)
     * [Event Emitter class](#event-emitter-class)
 * [Tools](#tools)
-    * [Viewport](#viewport)
     * [Breakpoints](#breakpoints)
-    * [Detector](#detector)
     * [Colors](#colors)
+    * [Css](#css)
+    * [Detector](#detector)
     * [GA tags](#ga-tags)
     * [Keyboard](#keyboard)
+    * [Konami Code](#konami-code)
     * [Mouse](#mouse)
-    * [Ticker](#ticker)
     * [Registry](#registry)
-    * [Css](#css)
     * [Resizer](#resizer)
+    * [Strings](#strings)
+    * [Ticker](#ticker)
+    * [Viewport](#viewport)
 * [Todo](#todo)
 * [Changelog](#changelog)
 
@@ -333,17 +335,19 @@ B.js comes with some premade tools. Each one is a singleton (static). You can in
 
 You can extend those tools if you want.
 
-* [Viewport](#viewport)
 * [Breakpoints](#breakpoints)
-* [Detector](#detector)
 * [Colors](#colors)
+* [Css](#css)
+* [Detector](#detector)
 * [GA tags](#ga-tags)
 * [Keyboard](#keyboard)
+* [Konami Code](#konami-code)
 * [Mouse](#mouse)
-* [Ticker](#ticker)
 * [Registry](#registry)
-* [Css](#css)
 * [Resizer](#resizer)
+* [Strings](#strings)
+* [Ticker](#ticker)
+* [Viewport](#viewport)
 
 ## Viewport
 
@@ -1095,8 +1099,8 @@ new Burno.Tools.Class();
         * ~~Choose initial triggers order~~
     * ~~Breakpoints~~
         * ~~Trigger breakpoints at start event if no break point active~~
-    * Detector
-        * Add class to element in addition to selector
+    * ~~Detector~~
+        * ~~Add class to element in addition to selector~~
     * Event_Emitter
         * Deferred trigger (can specify event)
         * ~~Add `dispatch` method~~
