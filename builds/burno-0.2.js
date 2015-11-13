@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Fri Nov 13 2015 01:00:19 GMT+0100 (CET)
+ * Date: Fri Nov 13 2015 01:05:22 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -1044,9 +1044,10 @@ B.Tools.Breakpoints = B.Core.Event_Emitter.extend(
         this._super( options );
 
         // Set up
-        this.viewport = new B.Tools.Viewport();
-        this.all      = {};
-        this.actives  = {};
+        this.viewport   = new B.Tools.Viewport();
+        this.all        = {};
+        this.actives    = {};
+        this.first_test = true;
 
         // Initial breakpoints
         this.add( this.options.breakpoints );
@@ -1268,9 +1269,14 @@ B.Tools.Breakpoints = B.Core.Event_Emitter.extend(
             old_names     = Object.keys( this.actives ),
             difference    = this.get_arrays_differences( current_names, old_names );
 
-        if( difference.length )
+        if( difference.length || this.first_test )
         {
+            // Set actives
             this.actives = current_breakpoints;
+
+            this.first_test = false;
+
+            // Trigger
             this.trigger( 'update change', [ this.actives ] );
         }
 

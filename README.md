@@ -1093,8 +1093,8 @@ new Burno.Tools.Class();
         * ~~Seperate Breakpoints~~
         * ~~Update doc~~
         * ~~Choose initial triggers order~~
-    * Breakpoints
-        * Trigger breakpoints at start event if no break point active
+    * ~~Breakpoints~~
+        * ~~Trigger breakpoints at start event if no break point active~~
     * Detector
         * Add class to element in addition to selector
     * Event_Emitter
@@ -1115,6 +1115,7 @@ new Burno.Tools.Class();
         * Use Strings Tool
         * Darken method
         * Merge method
+        * Color as component
     * Registry
         * Persistence (localstorage / cookie fallback)
         * ~~Events~~
