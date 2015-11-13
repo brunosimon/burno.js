@@ -469,7 +469,7 @@ Provide informations like engine, browser, system and features.
 **Options**
 ```javascript
 {
-    add_classes_to : [ 'html' ] // Add detected informations to selectors in array
+    classes_targets : [ 'html' ] // Add detected informations to targets in array (selector or DOM Elements)
 }
 ```
 

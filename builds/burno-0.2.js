@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Fri Nov 13 2015 01:05:22 GMT+0100 (CET)
+ * Date: Fri Nov 13 2015 01:16:33 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -1951,7 +1951,7 @@ B.Tools.Detector = B.Core.Event_Emitter.extend(
     static  : 'detector',
     options :
     {
-        add_classes_to : [ 'html' ]
+        classes_targets : [ 'html' ]
     },
 
     /**
@@ -2175,34 +2175,49 @@ B.Tools.Detector = B.Core.Event_Emitter.extend(
     init_classes : function()
     {
         // Don't add
-        if( !this.options.add_classes_to || this.options.add_classes_to.length === 0 )
+        if( !this.options.classes_targets || this.options.classes_targets.length === 0 )
             return false;
 
         // Set up
-        var targets  = null,
-            selector = null;
+        var targets = [],
+            target  = null;
 
         // Each element that need to add classes
-        for( var i = 0, len = this.options.add_classes_to.length; i < len; i++ )
+        for( var i = 0, len = this.options.classes_targets.length; i < len; i++ )
         {
-            // Selector
-            selector = this.options.add_classes_to[ i ];
-
             // Target
-            switch( selector )
+            target = this.options.classes_targets[ i ];
+
+            // String
+            if( typeof target === 'string' )
             {
-                case 'html' :
-                    targets = [ document.documentElement ];
-                    break;
+                // Target
+                switch( target )
+                {
+                    case 'html' :
+                        targets.push( document.documentElement );
+                        break;
 
-                case 'body' :
-                    targets = [ document.body ];
-                    break;
+                    case 'body' :
+                        targets.push( document.body );
+                        break;
 
-                default :
-                    targets = document.querySelectorAll( selector );
-                    break;
+                    default :
+                        var temp_targets = document.querySelectorAll( target );
+
+                        for( var j = 0; j < temp_targets.length; j++ )
+                            targets.push( temp_targets[ j ] );
+
+                        break;
+                }
             }
+            // DOM Element
+            else if( target instanceof Element )
+            {
+                targets.push( target );
+            }
+
+            console.log(targets);
 
             // Targets found
             if( targets.length )
