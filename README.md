@@ -851,7 +851,7 @@ none
     * `force_style` (optional, boolean, default: true) Add 'position' and 'overflow' style properties if not set yet
 * **resize_all** : Resize every content inside their containers
 * **get_sizes** : Calculate and send back sizes needed to center the content inside the container
-    * `parameters` (Object)
+    * `parameters` (object)
         * `content_width` (number)
         * `content_height` (number)
         * `container_width` (number)
@@ -860,6 +860,7 @@ none
         * `align_x` (optional, string, default: *center*, value: *left* | *center* | *right*)
         * `align_y` (optional, string, default: *center*, value: *top* | *center* | *bottom*)
         * `rounding` (optional, string, default: *ceil*, value: *ceil* | *floor* | *round* | none)
+    * `format` (optional, string, default: *both*, value: *both* | *cartesian* | *css*)
 
 **Events**
 
@@ -1123,8 +1124,8 @@ new Burno.Tools.Class();
     * Registry
         * Persistence (localstorage / cookie fallback)
         * ~~Events~~
-    * Resizer
-        * :warning: `get_sizes` return type in parameters ("cartesian", "css" or "both")
+    * ~~Resizer~~
+        * ~~`get_sizes` return type in parameters ("cartesian", "css" or "both")~~
     * ~~Ticker~~
         * ~~Throttle by only specifying event like on('tick-250') for 250 ms~~
         * ~~Wait method~~

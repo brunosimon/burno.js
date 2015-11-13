@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Fri Nov 13 2015 01:45:35 GMT+0100 (CET)
+ * Date: Fri Nov 13 2015 01:51:23 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -3247,12 +3247,11 @@ B.Tools.Resizer = B.Core.Abstract.extend(
      *         fit_type         : 'fit',
      *         alignment_x      : 'center',
      *         alignment_y      : 'center',
-     *         rounding         : 'floor',
-     *         coordinates      : 'cartesian'
+     *         rounding         : 'floor'
      *     } )
      *
      */
-    get_sizes : function( parameters )
+    get_sizes : function( parameters, format )
     {
         // Errors
         var errors = [];
@@ -3272,7 +3271,11 @@ B.Tools.Resizer = B.Core.Abstract.extend(
         if( errors.length )
             return false;
 
-        // Defaults
+        // Default format
+        if( typeof format === 'undefined' )
+            format = 'both';
+
+        // Defaults parameters
         parameters.fit_type = parameters.fit_type || 'fill';
         parameters.align_x  = parameters.align_x  || 'center';
         parameters.align_y  = parameters.align_y  || 'center';
@@ -3393,7 +3396,12 @@ B.Tools.Resizer = B.Core.Abstract.extend(
         // Fit in
         sizes.fit_in = fit_in;
 
-        return sizes;
+        if( format === 'both' )
+            return sizes;
+        else if( format === 'cartesian' )
+            return sizes.cartesian;
+        else if( format === 'css' )
+            return sizes.css;
     }
 } );
 
