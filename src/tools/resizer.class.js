@@ -28,11 +28,14 @@ B.Tools.Resizer = B.Core.Abstract.extend(
     {
         this._super( options );
 
+        // Set up
         this.elements = [];
 
+        // Parse
         if( this.options.parse )
             this.parse();
 
+        // Auto resize
         if( this.options.auto_resize )
             this.init_auto_resize();
     },
@@ -45,9 +48,11 @@ B.Tools.Resizer = B.Core.Abstract.extend(
     {
         var that = this;
 
-        this.browser = new B.Tools.Browser();
+        // Set up
+        this.viewport = new B.Tools.Viewport();
 
-        this.browser.on( 'resize', function()
+        // Viewport resize event
+        this.viewport.on( 'resize', function()
         {
             that.resize_all();
         } );

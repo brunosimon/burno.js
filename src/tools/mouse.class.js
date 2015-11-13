@@ -5,7 +5,7 @@
  * @fires    up
  * @fires    move
  * @fires    wheel
- * @requires B.Tools.Browser
+ * @requires B.Tools.Viewport
  */
 B.Tools.Mouse = B.Core.Event_Emitter.extend(
 {
@@ -21,7 +21,7 @@ B.Tools.Mouse = B.Core.Event_Emitter.extend(
     {
         this._super( options );
 
-        this.browser          = new B.Tools.Browser();
+        this.viewport         = new B.Tools.Viewport();
         this.down             = false;
         this.position         = {};
         this.position.x       = 0;
@@ -68,8 +68,8 @@ B.Tools.Mouse = B.Core.Event_Emitter.extend(
             that.position.x = e.clientX;
             that.position.y = e.clientY;
 
-            that.position.ratio.x = that.position.x / that.browser.viewport.width;
-            that.position.ratio.y = that.position.y / that.browser.viewport.height;
+            that.position.ratio.x = that.position.x / that.viewport.width;
+            that.position.ratio.y = that.position.y / that.viewport.height;
 
             that.trigger( 'move', [ that.position, e.target ] );
         }

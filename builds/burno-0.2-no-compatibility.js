@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Fri Nov 13 2015 01:40:46 GMT+0100 (CET)
+ * Date: Fri Nov 13 2015 01:45:35 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -1018,6 +1018,7 @@ B.Tools.Colors = B.Core.Abstract.extend(
 /**
  * @class    Css
  * @author   Bruno SIMON / http://bruno-simon.com
+ * @requires B.Tools.Detector
  */
 B.Tools.Css = B.Core.Abstract.extend(
 {
@@ -1036,8 +1037,8 @@ B.Tools.Css = B.Core.Abstract.extend(
     {
         this._super( options );
 
-        this.browser = new B.Tools.Browser();
-        this.strings = new B.Tools.Strings();
+        this.detector = new B.Tools.Detector();
+        this.strings  = new B.Tools.Strings();
     },
 
     /**
@@ -1149,7 +1150,7 @@ B.Tools.Css = B.Core.Abstract.extend(
     clean_value : function( value )
     {
         // IE 9
-        if( this.browser.detect.browser.ie === 9 )
+        if( this.detector.browser.ie === 9 )
         {
             // Remove translateZ
             if( /translateZ/.test( value ) )
@@ -1414,11 +1415,10 @@ B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
 } );
 
 /**
- * @class    Keyboard
- * @author   Bruno SIMON / http://bruno-simon.com
- * @fires    down
- * @fires    up
- * @requires B.Tools.Browser
+ * @class  Keyboard
+ * @author Bruno SIMON / http://bruno-simon.com
+ * @fires  down
+ * @fires  up
  */
 B.Tools.Keyboard = B.Core.Event_Emitter.extend(
 {
@@ -1451,7 +1451,6 @@ B.Tools.Keyboard = B.Core.Event_Emitter.extend(
     {
         this._super( options );
 
-        this.browser = new B.Tools.Browser();
         this.downs   = [];
 
         this.listen_to_events();
@@ -1666,7 +1665,7 @@ B.Tools.Konami_Code = B.Core.Event_Emitter.extend(
  * @fires    up
  * @fires    move
  * @fires    wheel
- * @requires B.Tools.Browser
+ * @requires B.Tools.Viewport
  */
 B.Tools.Mouse = B.Core.Event_Emitter.extend(
 {
@@ -1682,7 +1681,7 @@ B.Tools.Mouse = B.Core.Event_Emitter.extend(
     {
         this._super( options );
 
-        this.browser          = new B.Tools.Browser();
+        this.viewport         = new B.Tools.Viewport();
         this.down             = false;
         this.position         = {};
         this.position.x       = 0;
@@ -1729,8 +1728,8 @@ B.Tools.Mouse = B.Core.Event_Emitter.extend(
             that.position.x = e.clientX;
             that.position.y = e.clientY;
 
-            that.position.ratio.x = that.position.x / that.browser.viewport.width;
-            that.position.ratio.y = that.position.y / that.browser.viewport.height;
+            that.position.ratio.x = that.position.x / that.viewport.width;
+            that.position.ratio.y = that.position.y / that.viewport.height;
 
             that.trigger( 'move', [ that.position, e.target ] );
         }
@@ -1955,11 +1954,14 @@ B.Tools.Resizer = B.Core.Abstract.extend(
     {
         this._super( options );
 
+        // Set up
         this.elements = [];
 
+        // Parse
         if( this.options.parse )
             this.parse();
 
+        // Auto resize
         if( this.options.auto_resize )
             this.init_auto_resize();
     },
@@ -1972,9 +1974,11 @@ B.Tools.Resizer = B.Core.Abstract.extend(
     {
         var that = this;
 
-        this.browser = new B.Tools.Browser();
+        // Set up
+        this.viewport = new B.Tools.Viewport();
 
-        this.browser.on( 'resize', function()
+        // Viewport resize event
+        this.viewport.on( 'resize', function()
         {
             that.resize_all();
         } );

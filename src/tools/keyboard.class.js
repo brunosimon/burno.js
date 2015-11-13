@@ -1,9 +1,8 @@
 /**
- * @class    Keyboard
- * @author   Bruno SIMON / http://bruno-simon.com
- * @fires    down
- * @fires    up
- * @requires B.Tools.Browser
+ * @class  Keyboard
+ * @author Bruno SIMON / http://bruno-simon.com
+ * @fires  down
+ * @fires  up
  */
 B.Tools.Keyboard = B.Core.Event_Emitter.extend(
 {
@@ -36,7 +35,6 @@ B.Tools.Keyboard = B.Core.Event_Emitter.extend(
     {
         this._super( options );
 
-        this.browser = new B.Tools.Browser();
         this.downs   = [];
 
         this.listen_to_events();

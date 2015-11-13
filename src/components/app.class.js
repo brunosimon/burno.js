@@ -19,7 +19,7 @@ B.Components.App = B.Core.Abstract.extend(
         this._super( options );
 
         this.ticker   = new B.Tools.Ticker();
-        this.browser  = new B.Tools.Browser();
+        this.viewport = new B.Tools.Viewport();
         this.css      = new B.Tools.Css();
         this.keyboard = new B.Tools.Keyboard();
         this.mouse    = new B.Tools.Mouse();

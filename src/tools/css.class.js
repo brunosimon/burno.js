@@ -1,6 +1,7 @@
 /**
  * @class    Css
  * @author   Bruno SIMON / http://bruno-simon.com
+ * @requires B.Tools.Detector
  */
 B.Tools.Css = B.Core.Abstract.extend(
 {
@@ -19,8 +20,8 @@ B.Tools.Css = B.Core.Abstract.extend(
     {
         this._super( options );
 
-        this.browser = new B.Tools.Browser();
-        this.strings = new B.Tools.Strings();
+        this.detector = new B.Tools.Detector();
+        this.strings  = new B.Tools.Strings();
     },
 
     /**
@@ -132,7 +133,7 @@ B.Tools.Css = B.Core.Abstract.extend(
     clean_value : function( value )
     {
         // IE 9
-        if( this.browser.detect.browser.ie === 9 )
+        if( this.detector.browser.ie === 9 )
         {
             // Remove translateZ
             if( /translateZ/.test( value ) )
