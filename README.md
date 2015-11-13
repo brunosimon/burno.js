@@ -1049,88 +1049,86 @@ new Burno.Tools.Class();
 
 ## Todo
 
-* ~~$ property on abstract~~
-* ~~Replace `init` by `construct`~~
-* ~~Replace `init` by `construct` in Sublime snippets~~
-* ~~Parsing classes prefix "b-"~~
-* ~~Option null bug~~
-* Loop error bug
-* Unit testing
-* ~~License~~
-* ~~No polyfills version~~
-* ~~Information on top of builds~~
-* ~~Global 'use strict'~~
-* Classes (create)
-    * Storyline
-    * Navigation
-    * Scroll
-    * Images
-        * Update images on pixel_ratio
-        * Load and show image
-    * Loader
-    * Unveiler
-    * ~~Konami Code~~
-        * ~~Doc~~
-    * ~~Strings~~
-        * ~~Case convertor~~
-        * ~~Slugify~~
-        * ~~To boolean (0, nop, no, false, nein, non, ...)~~
-        * ~~Trim with characters choice~~
-        * ~~Doc~~
-        * ~~Add SCREAMING_SNAKE_CASE and Title_Snake_Case~~
-        * ~~To boolean with `undefined` or `null` or empty string~~
-        * Bug `convert_case` with `dashed`
-    * Time / Date
-        * Formater (custom formats (sprinf like))
-        * Local
-* Classes (update)
-    * ~~Abstract~~
-        * ~~Auto save in registry~~
-        * ~~Register in options~~
-    * ~~CSS~~
-        * ~~IE translateZ and translate3d prevent (in options)~~
-        * ~~Use Strings class~~
-    * ~~Browser~~
-        * ~~Add class "features-no-..."~~
-        * ~~`match_breakpoint( name )` method~~
-        * ~~Seperate Viewport~~
-        * ~~Seperate Detector~~
-        * ~~Seperate Breakpoints~~
-        * ~~Update doc~~
-        * ~~Choose initial triggers order~~
-    * ~~Breakpoints~~
-        * ~~Trigger breakpoints at start event if no break point active~~
-    * ~~Detector~~
-        * ~~Add class to element in addition to selector~~
-    * Event_Emitter
-        * Deferred trigger (can specify event)
-        * ~~Add `dispatch` method~~
-    * Better Match media
-        * Multiple matches
-        * Fallback for width and height
-    * GA Tags
-        * Dynamically add GA script with method "init( ua_code )"
-            * Trigger event
-    * Mouse
-        * Wheel type detection
-    * Colors
-        * Better param names (input/output)
-        * Better gradient (multiple steps)
-        * Only one convertissor method (default any => rgb)
-        * Use Strings Tool
-        * Darken method
-        * Merge method
-        * Color as component
-    * Registry
-        * Persistence (localstorage / cookie fallback)
-        * ~~Events~~
-    * ~~Resizer~~
-        * ~~`get_sizes` return type in parameters ("cartesian", "css" or "both")~~
-    * ~~Ticker~~
-        * ~~Throttle by only specifying event like on('tick-250') for 250 ms~~
-        * ~~Wait method~~
-
-
+- [x] $ property on abstract
+- [x] Replace `init` by `construct`
+- [x] Replace `init` by `construct` in Sublime snippets
+- [x] Parsing classes prefix "b-"
+- [x] Option null bug
+- [ ] Loop error bug
+- [ ] Unit testing
+- [x] License
+- [x] No polyfills version
+- [x] Information on top of builds
+- [x] Global 'use strict'
+- [ ] Classes (create)
+    - [ ] Storyline
+    - [ ] Navigation
+    - [ ] Scroll
+    - [ ] Images
+        - [ ] Update images on pixel_ratio
+        - [ ] Load and show image
+    - [ ] Loader
+    - [ ] Unveiler
+    - [x] Konami Code
+        - [x] Doc
+    - [x] Strings
+        - [x] Case convertor
+        - [x] Slugify
+        - [x] To boolean (0, nop, no, false, nein, non, ...)
+        - [x] Trim with characters choice
+        - [x] Doc
+        - [x] Add SCREAMING_SNAKE_CASE and Title_Snake_Case
+        - [x] To boolean with `undefined` or `null` or empty string
+        - [ ] Bug `convert_case` with `dashed`
+    - [ ] Time / Date
+        - [ ] Formater (custom formats (sprinf like))
+        - [ ] Local
+- [ ] Classes (update)
+    - [x] Abstract
+        - [x] Auto save in registry
+        - [x] Register in options
+    - [x] CSS
+        - [x] IE translateZ and translate3d prevent (in options)
+        - [x] Use Strings class
+    - [x] Browser
+        - [x] Add class "features-no-..."
+        - [x] `match_breakpoint( name )` method
+        - [x] Seperate Viewport
+        - [x] Seperate Detector
+        - [x] Seperate Breakpoints
+        - [x] Update doc
+        - [x] Choose initial triggers order
+    - [x] Breakpoints
+        - [x] Trigger breakpoints at start event if no break point active
+    - [x] Detector
+        - [x] Add class to element in addition to selector
+    - [ ] Event_Emitter
+        - [ ] Deferred trigger (can specify event)
+        - [x] Add `dispatch` method
+    - [ ] Better Match media
+        - [ ] Multiple matches
+        - [ ] Fallback for width and height
+    - [ ] GA Tags
+        - [ ] Dynamically add GA script with method "init( ua_code )"
+            - [ ] Trigger event
+    - [ ] Mouse
+        - [ ] Wheel type detection
+    - [ ] Colors
+        - [ ] Better param names (input/output)
+        - [ ] Better gradient (multiple steps)
+        - [ ] Only one convertissor method (default any => rgb)
+        - [ ] Use Strings Tool
+        - [ ] Darken method
+        - [ ] Merge method
+        - [ ] Color as component
+    - [ ] Registry
+        - [ ] Persistence (localstorage / cookie fallback)
+        - [x] Events
+    - [x] Resizer
+        - [x] `get_sizes` return type in parameters ("cartesian", "css" or "both")
+    - [x] Ticker
+        - [x] Throttle by only specifying event like on('tick-250') for 250 ms
+        - [x] Wait method
 
 ## Changelog
 
