@@ -734,7 +734,7 @@ Run a ticker that trigger events each frame base on requestAnimationFrame.
 
 ## Registry
 
-Key/value registry for when you need to store variable and retrieve it anywhere without using ugly global variables.
+Key/value registry for when you need to store variable and retrieve it anywhere without using ugly global variables.<br>
 You may use it to cache variables.
 
 [See code](src/tools/registry.class.js)<br>
@@ -759,7 +759,9 @@ none
 
 **Events**
 
-none
+* **update**
+    * `key` (string)
+    * `value` (any)
 
 
 ## CSS
@@ -1083,13 +1085,13 @@ new Burno.Tools.Class();
     * ~~CSS~~
         * ~~IE translateZ and translate3d prevent (in options)~~
         * ~~Use Strings class~~
-    * Browser
+    * ~~Browser~~
         * ~~Add class "features-no-..."~~
         * ~~`match_breakpoint( name )` method~~
         * ~~Seperate Viewport~~
         * ~~Seperate Detector~~
         * ~~Seperate Breakpoints~~
-        * Update doc
+        * ~~Update doc~~
         * ~~Choose initial triggers order~~
     * Breakpoints
         * Trigger breakpoints at start event if no break point active
@@ -1115,7 +1117,7 @@ new Burno.Tools.Class();
         * Merge method
     * Registry
         * Persistence (localstorage / cookie fallback)
-        * Events
+        * ~~Events~~
     * Resizer
         * `get_sizes` return type in parameters ("cartesian", "css" or "both")
     * ~~Ticker~~

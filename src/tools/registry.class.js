@@ -2,7 +2,7 @@
  * @class    Registry
  * @author   Bruno SIMON / http://bruno-simon.com
  */
-B.Tools.Registry = B.Core.Abstract.extend(
+B.Tools.Registry = B.Core.Event_Emitter.extend(
 {
     static  : 'registry',
     options : {},
@@ -45,7 +45,11 @@ B.Tools.Registry = B.Core.Abstract.extend(
      */
     set : function( key, value )
     {
+        // Set
         this.items[ key ] = value;
+
+        // Trigger
+        this.trigger( 'update', [ key, value ] );
 
         return value;
     }

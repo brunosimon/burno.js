@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Fri Nov 13 2015 00:43:23 GMT+0100 (CET)
+ * Date: Fri Nov 13 2015 01:00:19 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -2969,7 +2969,7 @@ B.Tools.Offline = B.Core.Event_Emitter.extend(
  * @class    Registry
  * @author   Bruno SIMON / http://bruno-simon.com
  */
-B.Tools.Registry = B.Core.Abstract.extend(
+B.Tools.Registry = B.Core.Event_Emitter.extend(
 {
     static  : 'registry',
     options : {},
@@ -3012,7 +3012,11 @@ B.Tools.Registry = B.Core.Abstract.extend(
      */
     set : function( key, value )
     {
+        // Set
         this.items[ key ] = value;
+
+        // Trigger
+        this.trigger( 'update', [ key, value ] );
 
         return value;
     }
