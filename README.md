@@ -221,7 +221,7 @@ var custom_class       = new B.Tools.Custom_Class(),
     custom_class_again = new B.Tools.Custom_Class();
 ```
 
-###### Registry
+###### Registring (with Registry tool)
 
 ```javascript
 // Create any class you'd like
