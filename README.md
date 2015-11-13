@@ -1077,7 +1077,7 @@ new Burno.Tools.Class();
         * ~~Trim with characters choice~~
         * ~~Doc~~
         * ~~Add SCREAMING_SNAKE_CASE and Title_Snake_Case~~
-        * :warning: To boolean with `undefined` or `null` or empty string
+        * ~~To boolean with `undefined` or `null` or empty string~~
         * Bug `convert_case` with `dashed`
     * Time / Date
         * Formater (custom formats (sprinf like))

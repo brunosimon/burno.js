@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Fri Nov 13 2015 01:18:17 GMT+0100 (CET)
+ * Date: Fri Nov 13 2015 01:40:46 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -2518,6 +2518,10 @@ B.Tools.Strings = B.Core.Abstract.extend(
      */
     to_boolean : function( value )
     {
+        // Undefined or null
+        if( typeof value === 'undefined' || value === null )
+            return false;
+
         // Clean
         value = '' + value;          // To string
         value = this.trim( value );  // Trim

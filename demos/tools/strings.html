@@ -75,20 +75,23 @@
                 '-_',
             ],
             example_booleans = [
-                0,
-                '0',
-                false,
-                'false',
-                'nop',
-                'no',
-                'nein',
-                ':(',
-                1,
-                '1',
-                true,
-                'true',
-                'yes',
-                'foo'
+                { label : 'undefined', value : undefined },
+                { label : 'null', value : null },
+                { label : '0', value : 0 },
+                { label : '"0"', value : '0' },
+                { label : 'false', value : false },
+                { label : '"false"', value : 'false' },
+                { label : '"nop"', value : 'nop' },
+                { label : '"no"', value : 'no' },
+                { label : '"nein"', value : 'nein' },
+                { label : '":("', value : ':(' },
+                { label : '1', value : 1 },
+                { label : '"1"', value : '1' },
+                { label : 'true', value : true },
+                { label : '"true"', value : 'true' },
+                { label : '"yes"', value : 'yes' },
+                { label : '"foo"', value : 'foo' },
+                { label : '":)"', value : ':)' },
             ],
             example_to_slugs = [
                 'Lorem Ipsum Dolores',
@@ -166,10 +169,10 @@
 
         for( i = 0, i_len = example_booleans.length; i < i_len; i++ )
         {
-            text.push( '<tr><td>"' );
-            text.push( example_booleans[ i ] );
-            text.push( '"</td><td>' );
-            text.push( strings.to_boolean( example_booleans[ i ] ) );
+            text.push( '<tr><td>' );
+            text.push( example_booleans[ i ].label );
+            text.push( '</td><td>' );
+            text.push( strings.to_boolean( example_booleans[ i ].value ) );
             text.push( '</td></tr>' );
         }
         text.push( '</table>' );

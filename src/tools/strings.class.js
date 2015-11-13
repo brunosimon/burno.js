@@ -241,6 +241,10 @@ B.Tools.Strings = B.Core.Abstract.extend(
      */
     to_boolean : function( value )
     {
+        // Undefined or null
+        if( typeof value === 'undefined' || value === null )
+            return false;
+
         // Clean
         value = '' + value;          // To string
         value = this.trim( value );  // Trim
