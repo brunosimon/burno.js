@@ -1061,6 +1061,7 @@ new Burno.Tools.Class();
 - [x] Information on top of builds
 - [x] Global 'use strict'
 - [ ] Classes (create)
+    - [ ] Touch
     - [ ] Storyline
     - [ ] Navigation
     - [ ] Scroll
@@ -1098,8 +1099,11 @@ new Burno.Tools.Class();
         - [x] Seperate Breakpoints
         - [x] Update doc
         - [x] Choose initial triggers order
-    - [x] Breakpoints
+    - [ ] Breakpoints
         - [x] Trigger breakpoints at start event if no break point active
+        - [ ] Add classes to elements/selectors in options
+    - [ ] Keyboard
+        - [ ] Event listening for specified key
     - [x] Detector
         - [x] Add class to element in addition to selector
     - [ ] Event_Emitter
