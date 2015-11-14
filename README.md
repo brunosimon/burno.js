@@ -4,9 +4,8 @@ Burno.js
 #### Yet another JS framework ####
 
 Burno.js (or **B.js**) is a light (< 40ko) and simple **JS framework** made to help you develop well structured web applications quickly.
-Because Internet is a place of love and sharing, here it is.
 
-You can organize your web application into **Components** and **Tools**. It comes with some useful premade [tools](#tools).
+You can organize your web application into **Components** and **Tools**. It comes with some useful premade stuff.
 Simply include the JS files in your HTML and start using it. B.js is still in development, don't hesitate if you have any advice.
 
 **Table of contents**
@@ -39,8 +38,9 @@ Simply include the JS files in your HTML and start using it. B.js is still in de
 ## Compatibility
 
 B.js has no dependencies (no, you don't need jQuery).
-It's compatible with all modern browsers down to IE8 (included).<br>
-Depending on the browsers and classes you are using, you may need polyfills which are included in the [src/polyfills](src/polyfills) folder.
+It's compatible with all modern browsers down to IE8.<br>
+Depending on the browsers and classes you are using, you may need polyfills which are included in the [src/polyfills](src/polyfills) folder.<br>
+The default build includes all needed polyfills but you can use the `no-compatibility` version.
 
 
 ## Usage
@@ -53,7 +53,7 @@ You can use it as a simple library by instantiating the tools or you can use it 
 * Include the build in your HTML
 
 ```html
-<script src="../../build/burno-0.1.min.js"></script>
+<script src="../../builds/burno-0.2.min.js"></script>
 ```
 
 * Instantiate the tools you need
@@ -62,9 +62,9 @@ You can use it as a simple library by instantiating the tools or you can use it 
 ```javascript
 var viewport = new B.Tools.Viewport();
 
-viewport.on( 'resize', function( viewport )
+viewport.on( 'resize', function( width, height )
 {
-    console.log( 'viewport height ', viewport.height );
+    console.log( width, height );
 } );
 ```
 
@@ -72,13 +72,13 @@ viewport.on( 'resize', function( viewport )
 #### As a framework (the powerful way)
 
 Create your own tools and components based on B.js classes. You can put your components inside `B.Components` object or you can create your own namespace like `Foo.Bar.My_Class`.<br/>
-Inheritance is based on the [John Resig code](http://ejohn.org/blog/simple-javascript-inheritance/) with some improvements like deep property merging.<br>
+Inheritance is based on the [John Resig code](http://ejohn.org/blog/simple-javascript-inheritance/) with some improvements like deep property merging, singleton, defualt options, etc.<br>
 B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode). Do as you whish and feel free to share your custom tools and components.
 
 * Include the build in your HTML
 
 ```html
-<script src="../../build/burno-0.1.min.js"></script>
+<script src="../../builds/burno-0.2.min.js"></script>
 ```
 
 * Create your own tools and components based on B.js **Abstract** or **Event Emitter** classes (you may want to put each class in a different file)
@@ -134,18 +134,19 @@ var my_app = new B.Components.My_App();
 
 # Core classes
 
-Core classes are base classes you want to extend if your building custom components and tools.
+Core classes are the foundations of B.js.<br>
+Every tool or component inherit from one of those classes and your custom classes should too.
 
 ## Abstract Class
 
 `B.Core.Abstract` is the default class.
 
-* `extend` : Extend from any class
-* `construct` : Method called when instantiated
-* `options` : Property that will be merged with construct parameter
-* `static` : Class can be instantiate only one time. Each other `new` will return the first one (also called singleton)
-* `registry` : Automatically add to the Registry tool
-
+* Can be extended
+* `construct` method will be called when instantiated
+* `static` property set the class as a Singleton. That mean that the first instiantiation with `new` will act normally but every next instiantiation with `new` will return the first one.
+* `options` property is an object that will be merge with the options when instantiated
+* `register` property inside the `options` property will automatically add the instantiation to the [Registry](#registry) tool with the `register` value as key
+* calling `_super( parameters )` inside a method will call the parent overrided method
 
 ###### Extend / Construct
 
@@ -349,48 +350,6 @@ You can extend those tools if you want.
 * [Ticker](#ticker)
 * [Viewport](#viewport)
 
-## Viewport
-
-Gives you informations about viewport like width, height, scroll top, scroll left, scroll delta, etc.<br>
-Trigger events on scroll and resize.<br>
-Can disable hover on scroll for performance improvement
-
-[See code](src/tools/viewport.class.js)<br>
-[See example](demos/tools/viewport.html)
-
-**Options**
-```javascript
-{
-    disable_hover_on_scroll : false,                  // Improve performance when scrolling but disable hovers
-    initial_triggers        : [ 'resize', 'scroll' ], // On the next frame, triggers 'resize' then 'resize' events
-}
-```
-
-**Properties**
-
-
-* **top** | **y** (number) Viewport top
-* **left** | **x** (number) Viewport left
-* **scroll** | **x** (object) Informations about scroll
-    * `delta` (object)
-        * `top` | `y` (number) Scroll delta top
-        * `left` | `x` (number) Scroll delta left
-    * `direction` (object)
-        * `y` (string) Vertical scroll direction
-        * `x` (string) Horizontal scroll direction
-* **pixel_ratio** (number) Pixel ratio
-
-**Methods**
-
-* **match_media**
-    * `condition` (string) Proceed to a classic matchMedia but only return a boolean
-
-**Events**
-
-* **resize**
-    * `viewport` (object)
-* **scroll**
-    * `viewport` (object)
 
 ## Breakpoints
 
@@ -463,6 +422,89 @@ Breakpoints works a little like width and height for media queries. Specify some
 * **update**
     * `breakpoints` (array) Currently active breakpoints
 
+
+## Colors
+
+Help you convert strings to well formated colors.<br>
+Create beautifuls rainbows. :rainbow:
+
+[See code](src/tools/colors.class.js)<br>
+[See example](demos/tools/colors.html)
+
+**Options**
+```javascript
+{
+    gradients :
+    {
+        parse   : true,          // Automatically parse, looking for text to convert to gradient
+        target  : document.body, // Default target when parsing
+        classes :
+        {
+            to_convert : 'gradient-text',          // Searched class
+            converted  : 'gradient-text-converted' // Converted class
+        }
+    }
+}
+```
+
+**Properties**
+
+* **names** (object) Normalized colors (name to hexa)
+
+**Methods**
+
+* **any_to_rgb** : Try to convert anything to an RGB object
+    `input` (string) Anything that looks like a color (#ff0000,#f00,red,{r:1,g:0,b:1},{h:1,s:1,l:0.5})
+* **parse** : Parse the target looking for DOM elements to resize.
+    * `target` (optional, DOM element, default: document.body)
+    * `selector` (string, default: 'to-resize')
+* **get_steps_colors** : Return every step colors from a specified one to another
+    * `start` (any)
+    * `end` (and)
+    * `count` (number)
+    * `format` (optional, string, values: *'rgb'* | *'hsl'*, default: *'hsl'*)
+* **rgb_to_hsl** : Convert from RGB to HSL
+    `input` (object) RGB object
+* **hsl_to_rgb** : Convert from HSL to RGB
+    `input` (object) HSL object
+
+**Events**
+
+none
+
+
+## CSS
+
+Apply CSS on targeted element and automatically add prefixes.
+Property will automatically be formated.
+
+[See code](src/tools/css.class.js)<br>
+[See example](demos/tools/css.html)
+
+**Options**
+
+```javascript
+{
+    prefixes : [ 'webkit', 'moz', 'o', 'ms', '' ] // Default prefixes
+}
+```
+
+**Properties**
+
+none
+
+**Methods**
+
+* **apply** : Apply CSS on target and add prefixes
+    * `target` (DOM element|jQuery) Element retrieved with classic fetcher like querySelector or jQuery
+    * `values` (object) Value to apply
+    * `prefixes` (optional, boolean|array) True for default prefixes or prefixes array
+
+**Events**
+
+none
+
+
 ## Detector
 
 Provide informations like engine, browser, system and features.
@@ -473,7 +515,7 @@ Provide informations like engine, browser, system and features.
 **Options**
 ```javascript
 {
-    classes_targets : [ 'html' ] // Add detected informations to targets in array (selector or DOM Elements)
+    targets : [ 'html' ] // Add detected informations to targets in array (selector or DOM Elements)
 }
 ```
 
@@ -515,56 +557,6 @@ Provide informations like engine, browser, system and features.
 **Methods**
 
 none
-
-**Events**
-
-none
-
-
-## Colors
-
-Help you convert strings to well formated colors.<br>
-Create beautifuls rainbows. :rainbow:
-
-[See code](src/tools/colors.class.js)<br>
-[See example](demos/tools/colors.html)
-
-**Options**
-```javascript
-{
-    gradients :
-    {
-        parse   : true,          // Automatically parse, looking for text to convert to gradient
-        target  : document.body, // Default target when parsing
-        classes :
-        {
-            to_convert : 'gradient-text',           // Searched class
-            converted  : 'gradient-text-converted', // Converted class
-        }
-    }
-}
-```
-
-**Properties**
-
-* **names** (object) Normalized colors (name to hexa)
-
-**Methods**
-
-* **any_to_rgb** : Try to convert anything to an RGB object
-    `input` (string) Anything that looks like a color (#ff0000,#f00,red,{r:1,g:0,b:1},{h:1,s:1,l:0.5})
-* **parse** : Parse the target looking for DOM elements to resize.
-    * `target` (optional, DOM element, default: document.body)
-    * `selector` (string, default: 'to-resize')
-* **get_steps_colors** : Return every step colors from a specified one to another
-    * `start` (any)
-    * `end` (and)
-    * `count` (number)
-    * `format` (optional, string, values: *'rgb'* | *'hsl'*, default: *'hsl'*)
-* **rgb_to_hsl** : Convert from RGB to HSL
-    `input` (object) RGB object
-* **hsl_to_rgb** : Convert from HSL to RGB
-    `input` (object) HSL object
 
 **Events**
 
@@ -656,6 +648,51 @@ none
     * `character` (string)
 
 
+## Konami Code
+
+Know when your users use the konami code ↑ ↑ ↓ ↓ ← → ← → B A
+
+[See code](src/tools/konami_code.class.js)<br>
+[See example](demos/tools/konami_code.html)
+
+**Options**
+
+```javascript
+{
+    reset_duration : 1000, // Time in before reseting
+    sequence :             // Sequence to enter
+    [
+        'up',
+        'up',
+        'down',
+        'down',
+        'left',
+        'right',
+        'left',
+        'right',
+        'b',
+        'a'
+    ]
+}
+```
+
+**Properties**
+
+none
+
+**Methods**
+
+none
+
+**Events**
+
+* **used**
+* **timeout**
+    * `index` (int) Progress before timeout
+* **wrong**
+    * `index` (int) Progress before failing
+
+
 ## Mouse
 
 Properties and events relatives to the mouse
@@ -693,48 +730,6 @@ none
     * `wheel` (object) Mouse wheel informations
     * If you wan't to prevent the default event, just return `false` in the callback
 
-## Ticker
-
-Run a ticker that trigger events each frame base on requestAnimationFrame.
-
-[See code](src/tools/ticker.class.js)<br>
-[See example](demos/tools/ticker.html)
-
-**Options**
-```javascript
-{
-    auto_run : true
-}
-```
-
-**Properties**
-
-* **running** (boolean) Is the ticker running now
-* **time** (object) Informations about the time (ms)
-    * `start` When did the ticker start last
-    * `elapsed` Time spent
-    * `delta` Time spent since last tick
-    * `current` Current time
-
-**Methods**
-
-* **reset** : Reset the ticker
-    * `run` (boolean) Should start running the timer
-* **run** : Run the ticker
-* **stop** : Stop the ticker
-* **tick** : Trigger tick (If you need to trigger it manually)
-* **wait** : Apply function after X frames
-    * `frames_count` (number)
-    * `action` (function)
-    * `after` (optional, boolean, values: *true* | *false*, default: *true*) Should apply the function after the `tick` event is triggered
-
-**Events**
-
-* **tick**
-    * `time` (object) Time informations
-* **tick-X**
-    * `time` (object) Time informations
-
 
 ## Registry
 
@@ -766,38 +761,6 @@ none
 * **update**
     * `key` (string)
     * `value` (any)
-
-
-## CSS
-
-Apply CSS on targeted element and automatically add prefixes.
-Property will automatically be formated.
-
-[See code](src/tools/css.class.js)<br>
-[See example](demos/tools/css.html)
-
-**Options**
-
-```javascript
-{
-    prefixes : [ 'webkit', 'moz', 'o', 'ms', '' ] // Default prefixes
-}
-```
-
-**Properties**
-
-none
-
-**Methods**
-
-* **apply** : Apply CSS on target and add prefixes
-    * `target` (DOM element|jQuery) Element retrieved with classic fetcher like querySelector or jQuery
-    * `values` (object) Value to apply
-    * `prefixes` (optional, boolean|array) True for default prefixes or prefixes array
-
-**Events**
-
-none
 
 
 ## Resizer
@@ -867,51 +830,6 @@ none
 none
 
 
-## Konami Code
-
-Know when your users use the konami code ↑ ↑ ↓ ↓ ← → ← → B A
-
-[See code](src/tools/konami_code.class.js)<br>
-[See example](demos/tools/konami_code.html)
-
-**Options**
-
-```javascript
-{
-    reset_duration : 1000, // Time in before reseting
-    sequence :             // Sequence to enter
-    [
-        'up',
-        'up',
-        'down',
-        'down',
-        'left',
-        'right',
-        'left',
-        'right',
-        'b',
-        'a',
-    ]
-}
-```
-
-**Properties**
-
-none
-
-**Methods**
-
-none
-
-**Events**
-
-* **used**
-* **timeout**
-    * `index` (int) Progress before timeout
-* **wrong**
-    * `index` (int) Progress before failing
-
-
 ## Strings
 
 Method to manage strings
@@ -963,6 +881,93 @@ none
 **Events**
 
 none
+
+
+## Ticker
+
+Run a ticker that trigger events each frame base on requestAnimationFrame.
+
+[See code](src/tools/ticker.class.js)<br>
+[See example](demos/tools/ticker.html)
+
+**Options**
+```javascript
+{
+    auto_run : true
+}
+```
+
+**Properties**
+
+* **running** (boolean) Is the ticker running now
+* **time** (object) Informations about the time (ms)
+    * `start` When did the ticker start last
+    * `elapsed` Time spent
+    * `delta` Time spent since last tick
+    * `current` Current time
+
+**Methods**
+
+* **reset** : Reset the ticker
+    * `run` (boolean) Should start running the timer
+* **run** : Run the ticker
+* **stop** : Stop the ticker
+* **tick** : Trigger tick (If you need to trigger it manually)
+* **wait** : Apply function after X frames
+    * `frames_count` (number)
+    * `action` (function)
+    * `after` (optional, boolean, values: *true* | *false*, default: *true*) Should apply the function after the `tick` event is triggered
+
+**Events**
+
+* **tick**
+    * `time` (object) Time informations
+* **tick-X**
+    * `time` (object) Time informations
+
+
+## Viewport
+
+Gives you informations about viewport like width, height, scroll top, scroll left, scroll delta, etc.<br>
+Trigger events on scroll and resize.<br>
+Can disable hover on scroll for performance improvement
+
+[See code](src/tools/viewport.class.js)<br>
+[See example](demos/tools/viewport.html)
+
+**Options**
+```javascript
+{
+    disable_hover_on_scroll : false,                 // Improve performance when scrolling but disable hovers
+    initial_triggers        : [ 'resize', 'scroll' ] // On the next frame, triggers 'resize' then 'resize' events
+}
+```
+
+**Properties**
+
+
+* **top** | **y** (number) Viewport top
+* **left** | **x** (number) Viewport left
+* **scroll** | **x** (object) Informations about scroll
+    * `delta` (object)
+        * `top` | `y` (number) Scroll delta top
+        * `left` | `x` (number) Scroll delta left
+    * `direction` (object)
+        * `y` (string) Vertical scroll direction
+        * `x` (string) Horizontal scroll direction
+* **pixel_ratio** (number) Pixel ratio
+
+**Methods**
+
+* **match_media**
+    * `condition` (string) Proceed to a classic matchMedia but only return a boolean
+
+**Events**
+
+* **resize**
+    * `viewport` (object)
+* **scroll**
+    * `viewport` (object)
 
 
 ## Utils
@@ -1049,17 +1054,8 @@ new Burno.Tools.Class();
 
 ## Todo
 
-- [x] $ property on abstract
-- [x] Replace `init` by `construct`
-- [x] Replace `init` by `construct` in Sublime snippets
-- [x] Parsing classes prefix "b-"
-- [x] Option null bug
 - [ ] Loop error bug
 - [ ] Unit testing
-- [x] License
-- [x] No polyfills version
-- [x] Information on top of builds
-- [x] Global 'use strict'
 - [ ] Classes (create)
     - [ ] Touch
     - [ ] Storyline
@@ -1070,45 +1066,18 @@ new Burno.Tools.Class();
         - [ ] Load and show image
     - [ ] Loader
     - [ ] Unveiler
-    - [x] Konami Code
-        - [x] Doc
-    - [x] Strings
-        - [x] Case convertor
-        - [x] Slugify
-        - [x] To boolean (0, nop, no, false, nein, non, ...)
-        - [x] Trim with characters choice
-        - [x] Doc
-        - [x] Add SCREAMING_SNAKE_CASE and Title_Snake_Case
-        - [x] To boolean with `undefined` or `null` or empty string
+    - [ ] Strings
         - [ ] Bug `convert_case` with `dashed`
     - [ ] Time / Date
         - [ ] Formater (custom formats (sprinf like))
         - [ ] Local
 - [ ] Classes (update)
-    - [x] Abstract
-        - [x] Auto save in registry
-        - [x] Register in options
-    - [x] CSS
-        - [x] IE translateZ and translate3d prevent (in options)
-        - [x] Use Strings class
-    - [x] Browser
-        - [x] Add class "features-no-..."
-        - [x] `match_breakpoint( name )` method
-        - [x] Seperate Viewport
-        - [x] Seperate Detector
-        - [x] Seperate Breakpoints
-        - [x] Update doc
-        - [x] Choose initial triggers order
     - [ ] Breakpoints
-        - [x] Trigger breakpoints at start event if no break point active
         - [ ] Add classes to elements/selectors in options
     - [ ] Keyboard
         - [ ] Event listening for specified key
-    - [x] Detector
-        - [x] Add class to element in addition to selector
     - [ ] Event_Emitter
         - [ ] Deferred trigger (can specify event)
-        - [x] Add `dispatch` method
     - [ ] Better Match media
         - [ ] Multiple matches
         - [ ] Fallback for width and height
@@ -1127,14 +1096,34 @@ new Burno.Tools.Class();
         - [ ] Color as component
     - [ ] Registry
         - [ ] Persistence (localstorage / cookie fallback)
-        - [x] Events
-    - [x] Resizer
-        - [x] `get_sizes` return type in parameters ("cartesian", "css" or "both")
-    - [x] Ticker
-        - [x] Throttle by only specifying event like on('tick-250') for 250 ms
-        - [x] Wait method
+
 
 ## Changelog
+
+#### 0.2.0 (2015-11-14)
+
+- Replace `init` by `construct`
+- Add `$` property on Abstract
+- Add `b-` to default classes
+- Fix `null` option bug
+- Add license
+- Add no polyfills builds
+- Add information on top of builds
+- Update structure with better scope and general `'use strict'`
+- Add Konami Code class
+- Add Strings class
+- Add autosave in registry on Abstract
+- Split Browser class into Viewport, Breakpoints and Detector classes
+- Add trigger order to Viewport
+- Add `match_breakpoint` to Viewport
+- Fix `no-features` classes not working on Detector
+- Fix initial trigger on Breakpoints when no breakpoint active
+- Add DOM Element support for Detector css classes targets
+- Add events on Registry
+- Add `format` parameter on  `get_sizes` method (support "cartesian", "css" or "both")
+- Add throttle by only specifying event like on('tick-250') for 250 ms
+- Add `wait` method
+
 
 #### 0.1.0 (2015-03-10)
 

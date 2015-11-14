@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Sat Nov 14 2015 03:04:24 GMT+0100 (CET)
+ * Date: Sat Nov 14 2015 12:50:15 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -1955,7 +1955,7 @@ B.Tools.Detector = B.Core.Event_Emitter.extend(
     static  : 'detector',
     options :
     {
-        classes_targets : [ 'html' ]
+        targets : [ 'html' ]
     },
 
     /**
