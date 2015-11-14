@@ -54,9 +54,10 @@ gulp.task( 'js', function()
         options.paths.sources + 'polyfills/classlist.js',
         options.paths.sources + 'polyfills/foreach.js',
         options.paths.sources + 'polyfills/getcomputedstyle.js',
+        options.paths.sources + 'polyfills/htmlelement.js',
         options.paths.sources + 'polyfills/indexof.js',
-        options.paths.sources + 'polyfills/object-keys.js',
         options.paths.sources + 'polyfills/object-create.js',
+        options.paths.sources + 'polyfills/object-keys.js',
         options.paths.sources + 'polyfills/requestanimationframe.js',
 
         options.paths.sources + 'core/b.class.js',

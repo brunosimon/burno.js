@@ -14,7 +14,7 @@ B.Tools.Colors = B.Core.Abstract.extend(
             classes :
             {
                 to_convert : 'b-gradient-text',
-                converted  : 'b-gradient-text-converted',
+                converted  : 'b-gradient-text-converted'
             }
         }
     },
@@ -266,7 +266,7 @@ B.Tools.Colors = B.Core.Abstract.extend(
             if( !element.classList.contains( this.options.gradients.classes.converted ) )
             {
                 var beautified = '',
-                    text       = element.innerText,
+                    text       = element.textContent,
                     start      = element.getAttribute( 'data-gradient-start' ),
                     end        = element.getAttribute( 'data-gradient-end' ),
                     steps      = null;

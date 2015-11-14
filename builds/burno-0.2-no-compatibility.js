@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Fri Nov 13 2015 01:51:23 GMT+0100 (CET)
+ * Date: Sat Nov 14 2015 03:04:24 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -564,7 +564,7 @@ B.Tools.Colors = B.Core.Abstract.extend(
             classes :
             {
                 to_convert : 'b-gradient-text',
-                converted  : 'b-gradient-text-converted',
+                converted  : 'b-gradient-text-converted'
             }
         }
     },
@@ -816,7 +816,7 @@ B.Tools.Colors = B.Core.Abstract.extend(
             if( !element.classList.contains( this.options.gradients.classes.converted ) )
             {
                 var beautified = '',
-                    text       = element.innerText,
+                    text       = element.textContent,
                     start      = element.getAttribute( 'data-gradient-start' ),
                     end        = element.getAttribute( 'data-gradient-end' ),
                     steps      = null;
@@ -1581,7 +1581,7 @@ B.Tools.Konami_Code = B.Core.Event_Emitter.extend(
             'left',
             'right',
             'b',
-            'a',
+            'a'
         ]
     },
 
@@ -2312,7 +2312,7 @@ B.Tools.Strings = B.Core.Abstract.extend(
         lower          : [ 'lower' ],
         upper          : [ 'upper' ],
         studlycaps     : [ 'studlycaps' ],
-        burno          : [ 'burno', 'lol', 'yolo' ],
+        burno          : [ 'burno', 'lol', 'yolo' ]
     },
     negatives :
     [

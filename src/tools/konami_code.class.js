@@ -19,7 +19,7 @@ B.Tools.Konami_Code = B.Core.Event_Emitter.extend(
             'left',
             'right',
             'b',
-            'a',
+            'a'
         ]
     },
 

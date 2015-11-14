@@ -23,7 +23,7 @@ B.Tools.Strings = B.Core.Abstract.extend(
         lower          : [ 'lower' ],
         upper          : [ 'upper' ],
         studlycaps     : [ 'studlycaps' ],
-        burno          : [ 'burno', 'lol', 'yolo' ],
+        burno          : [ 'burno', 'lol', 'yolo' ]
     },
     negatives :
     [

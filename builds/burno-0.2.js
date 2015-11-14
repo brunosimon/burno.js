@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Fri Nov 13 2015 01:51:23 GMT+0100 (CET)
+ * Date: Sat Nov 14 2015 03:04:24 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -328,6 +328,9 @@ if (!window.getComputedStyle) {
         return this;
     }
 }
+if( !window.HTMLElement )
+    window.HTMLElement = window.Element;
+
 // Production steps of ECMA-262, Edition 5, 15.4.4.14
 // Reference: http://es5.github.io/#x15.4.4.14
 if (!Array.prototype.indexOf) {
@@ -393,6 +396,24 @@ if (!Array.prototype.indexOf) {
     return -1;
   };
 }
+// From MDN - https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Object/create
+if (typeof Object.create != 'function') {
+  Object.create = (function() {
+    var Temp = function() {};
+    return function (prototype) {
+      if (arguments.length > 1) {
+        throw Error('Cette prothèse ne supporte pas le second argument');
+      }
+      if (typeof prototype != 'object') {
+        throw TypeError('L\'argument doit être un objet');
+      }
+      Temp.prototype = prototype;
+      var result = new Temp();
+      Temp.prototype = null;
+      return result;
+    };
+  })();
+}
 // From MDN - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
 if (!Object.keys) {
   Object.keys = (function () {
@@ -435,24 +456,6 @@ if (!Object.keys) {
   }());
 }
 
-// From MDN - https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Object/create
-if (typeof Object.create != 'function') {
-  Object.create = (function() {
-    var Temp = function() {};
-    return function (prototype) {
-      if (arguments.length > 1) {
-        throw Error('Cette prothèse ne supporte pas le second argument');
-      }
-      if (typeof prototype != 'object') {
-        throw TypeError('L\'argument doit être un objet');
-      }
-      Temp.prototype = prototype;
-      var result = new Temp();
-      Temp.prototype = null;
-      return result;
-    };
-  })();
-}
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
 // requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
@@ -1342,7 +1345,7 @@ B.Tools.Colors = B.Core.Abstract.extend(
             classes :
             {
                 to_convert : 'b-gradient-text',
-                converted  : 'b-gradient-text-converted',
+                converted  : 'b-gradient-text-converted'
             }
         }
     },
@@ -1594,7 +1597,7 @@ B.Tools.Colors = B.Core.Abstract.extend(
             if( !element.classList.contains( this.options.gradients.classes.converted ) )
             {
                 var beautified = '',
-                    text       = element.innerText,
+                    text       = element.textContent,
                     start      = element.getAttribute( 'data-gradient-start' ),
                     end        = element.getAttribute( 'data-gradient-end' ),
                     steps      = null;
@@ -2699,7 +2702,7 @@ B.Tools.Konami_Code = B.Core.Event_Emitter.extend(
             'left',
             'right',
             'b',
-            'a',
+            'a'
         ]
     },
 
@@ -3430,7 +3433,7 @@ B.Tools.Strings = B.Core.Abstract.extend(
         lower          : [ 'lower' ],
         upper          : [ 'upper' ],
         studlycaps     : [ 'studlycaps' ],
-        burno          : [ 'burno', 'lol', 'yolo' ],
+        burno          : [ 'burno', 'lol', 'yolo' ]
     },
     negatives :
     [
