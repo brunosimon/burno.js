@@ -7,7 +7,7 @@ B.Tools.Detector = B.Core.Event_Emitter.extend(
     static  : 'detector',
     options :
     {
-        classes_targets : [ 'html' ]
+        targets : [ 'html' ]
     },
 
     /**
