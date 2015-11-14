@@ -1,11 +1,11 @@
 /**
- * Burno.js v0.2
+ * Burno.js v0.3
  * https://github.com/brunosimon/burno.js
  *
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Sat Nov 14 2015 12:50:15 GMT+0100 (CET)
+ * Date: Sat Nov 14 2015 12:57:50 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )

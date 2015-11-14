@@ -9,7 +9,7 @@ var gulp   = require( 'gulp' ),
 // Options
 var options =
 {
-    version : '0.2',
+    version : '0.3',
     paths   :
     {
         sources     : '../src/',

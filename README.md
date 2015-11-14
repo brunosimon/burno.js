@@ -10,7 +10,7 @@ Simply include the JS files in your HTML and start using it. B.js is still in de
 
 **Table of contents**
 
-* [Compatibility](#compatibility)
+* [Compatibility](#compatibility
 * [Usage](#usage)
     * [As a library](#as-a-library-the-easy-way)
     * [As a framework](#as-a-framework-the-powerful-way)
@@ -53,7 +53,7 @@ You can use it as a simple library by instantiating the tools or you can use it 
 * Include the build in your HTML
 
 ```html
-<script src="../../builds/burno-0.2.min.js"></script>
+<script src="../../builds/burno-0.3.min.js"></script>
 ```
 
 * Instantiate the tools you need
@@ -78,7 +78,7 @@ B.js is developed in [strict mode](https://developer.mozilla.org/en-US/docs/Web/
 * Include the build in your HTML
 
 ```html
-<script src="../../builds/burno-0.2.min.js"></script>
+<script src="../../builds/burno-0.3.min.js"></script>
 ```
 
 * Create your own tools and components based on B.js **Abstract** or **Event Emitter** classes (you may want to put each class in a different file)
