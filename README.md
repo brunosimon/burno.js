@@ -1054,8 +1054,10 @@ new Burno.Tools.Class();
 
 ## Todo
 
+- [ ] NPM
 - [ ] Loop error bug
 - [ ] Unit testing
+- [ ] camelCase / PascalCase aliases
 - [ ] Classes (create)
     - [ ] Touch
     - [ ] Storyline
