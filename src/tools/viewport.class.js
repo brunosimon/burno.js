@@ -25,6 +25,7 @@ B.Tools.Viewport = B.Core.Event_Emitter.extend(
 
         // Set up
         this.ticker             = new B.Tools.Ticker();
+        this.detector           = new B.Tools.Detector();
         this.top                = 0;
         this.left               = 0;
         this.y                  = 0;
@@ -195,7 +196,7 @@ B.Tools.Viewport = B.Core.Event_Emitter.extend(
      */
     match_media : function( condition )
     {
-        if( this.detect.features.media_query || typeof condition !== 'string' || condition === '' )
+        if( !this.detector.features.media_query || typeof condition !== 'string' || condition === '' )
             return false;
 
         return !!window.matchMedia( condition ).matches;

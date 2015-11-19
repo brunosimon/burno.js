@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Sat Nov 14 2015 12:57:50 GMT+0100 (CET)
+ * Date: Mon Nov 16 2015 23:11:59 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
