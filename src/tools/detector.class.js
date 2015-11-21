@@ -273,8 +273,6 @@ B.Tools.Detector = B.Core.Event_Emitter.extend(
                 targets.push( target );
             }
 
-            console.log(targets);
-
             // Targets found
             if( targets.length )
             {
@@ -322,18 +320,5 @@ B.Tools.Detector = B.Core.Event_Emitter.extend(
         }
 
         return this;
-    },
-
-    /**
-     * Test media and return false if not compatible
-     * @param  {string} condition Condition to test
-     * @return {boolean}          Match
-     */
-    match_media : function( condition )
-    {
-        if( this.features.media_query || typeof condition !== 'string' || condition === '' )
-            return false;
-
-        return !!window.matchMedia( condition ).matches;
     }
 } );
