@@ -141,7 +141,8 @@ B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
      */
     send : function( datas )
     {
-        var send = [];
+        var send = [],
+            sent = false;
 
         // Error
         if( typeof datas !== 'object' )
@@ -166,8 +167,6 @@ B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
         // Send
         if( this.options.send )
         {
-            var sent = false;
-
             // Category
             if( typeof datas.category !== 'undefined' )
             {
