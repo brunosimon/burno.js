@@ -8,6 +8,7 @@ B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
     static  : 'ga_tags',
     options :
     {
+        testing            : false,
         send               : true,
         parse              : true,
         true_link_duration : 300,
@@ -203,6 +204,12 @@ B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
                     {
                         ga.apply( ga, [ 'send', 'event' ].concat( send ) );
 
+                        sent = true;
+                    }
+
+                    // Testing
+                    else if( this.options.testing )
+                    {
                         sent = true;
                     }
 

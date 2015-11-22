@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Mon Nov 16 2015 23:11:59 GMT+0100 (CET)
+ * Date: Sun Nov 22 2015 02:12:53 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -1175,6 +1175,7 @@ B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
     static  : 'ga_tags',
     options :
     {
+        testing            : false,
         send               : true,
         parse              : true,
         true_link_duration : 300,
@@ -1308,7 +1309,8 @@ B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
      */
     send : function( datas )
     {
-        var send = [];
+        var send = [],
+            sent = false;
 
         // Error
         if( typeof datas !== 'object' )
@@ -1333,8 +1335,6 @@ B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
         // Send
         if( this.options.send )
         {
-            var sent = false;
-
             // Category
             if( typeof datas.category !== 'undefined' )
             {
@@ -1371,6 +1371,12 @@ B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
                     {
                         ga.apply( ga, [ 'send', 'event' ].concat( send ) );
 
+                        sent = true;
+                    }
+
+                    // Testing
+                    else if( this.options.testing )
+                    {
                         sent = true;
                     }
 
@@ -1451,8 +1457,10 @@ B.Tools.Keyboard = B.Core.Event_Emitter.extend(
     {
         this._super( options );
 
-        this.downs   = [];
+        // Set up
+        this.downs = [];
 
+        // Init
         this.listen_to_events();
     },
 
@@ -1465,7 +1473,7 @@ B.Tools.Keyboard = B.Core.Event_Emitter.extend(
         var that = this;
 
         // Down
-        function keydown_handle(e)
+        function keydown_handle( e )
         {
             var character = that.keycode_to_character( e.keyCode );
 
@@ -1594,10 +1602,12 @@ B.Tools.Konami_Code = B.Core.Event_Emitter.extend(
     {
         this._super( options );
 
+        // Set up
         this.index    = 0;
         this.timeout  = null;
         this.keyboard = new B.Tools.Keyboard();
 
+        // Init
         this.listen_to_events();
     },
 
@@ -2005,7 +2015,6 @@ B.Tools.Resizer = B.Core.Abstract.extend(
         // Each element
         for( var i = 0, len = containers.length; i < len; i++ )
         {
-
             var container = containers[ i ],
                 content   = container.querySelector( '.' + this.options.classes.content );
 

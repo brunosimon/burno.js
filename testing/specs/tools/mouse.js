@@ -11,16 +11,21 @@ describe( 'Mouse', function()
     {
         // Set up
         B.Statics = {};
-        mouse   = new B.Tools.Mouse( {} );
+        mouse     = new B.Tools.Mouse( {} );
 
-        // // Wait
-        // window.setTimeout( function()
-        // {
-        //     done();
-        // }, 50 );
+        // Wait mouse move
+        function mouse_move_handle()
+        {
+            done();
+        }
 
-        // // Spies
-        // spyOn( mouse, 'method' ).and.callThrough();
+        if (document.addEventListener)
+            document.addEventListener( 'mousemove', mouse_move_handle, false );
+        else
+            document.attachEvent( 'onmousemove', mouse_move_handle, false );
+
+        // Spies
+        spyOn( mouse, 'trigger' ).and.callThrough();
     } );
 
     // After all
@@ -29,9 +34,19 @@ describe( 'Mouse', function()
 
     } );
 
-    // // Expectations
-    // it( 'method() called', function()
-    // {
-    //     expect( mouse.method ).toHaveBeenCalled();
-    // } );
+    // Expectations
+    it( 'position.x != 0', function()
+    {
+        expect( mouse.position.x ).not.toEqual( 0 );
+    } );
+
+    it( 'position.ratio.x != 0', function()
+    {
+        expect( mouse.position.ratio.x ).not.toEqual( 0 );
+    } );
+
+    it( 'trigger() called', function()
+    {
+        expect( mouse.trigger ).toHaveBeenCalled();
+    } );
 } );

@@ -1055,9 +1055,24 @@ new Burno.Tools.Class();
 ## Todo
 
 - [ ] NPM
-- [ ] Loop error bug
-- [ ] Unit testing
-- [ ] camelCase / PascalCase aliases
+- [ ] :warning:Loop error bug
+- [ ] :warning:Unit testing
+    - [ ] Core
+    - [x] Breakpoints
+    - [x] Colors
+    - [x] Css
+    - [x] Detector
+    - [x] GA Tags
+    - [x] Keyboard
+    - [x] Konami Code
+    - [x] Mouse
+    - [x] Registry
+    - [x] Resizer
+    - [x] Strings
+    - [x] Ticker
+    - [x] Viewport
+- [ ] :warning:options merging bug when extending (update test)
+- [ ] :warning:camelCase / PascalCase aliases
 - [ ] Classes (create)
     - [ ] Touch
     - [ ] Storyline
@@ -1075,11 +1090,14 @@ new Burno.Tools.Class();
         - [ ] Local
 - [ ] Classes (update)
     - [ ] Detector
-        - [ ] `add_detector` method
+        - [ ] :warning:`add_detector` method
     - [ ] Breakpoints
-        - [ ] Add classes to elements/selectors in options
+        - [ ] :warning:Add classes to elements/selectors in options
+    - [ ] Resizer
+        - [ ] :warning:Add `none` in rounding
     - [ ] Keyboard
-        - [ ] Event listening for specified key
+        - [ ] :warning:Event listening for specified key
+        - [ ] :warning:Character to keycode
     - [ ] Event_Emitter
         - [ ] Deferred trigger (can specify event)
     - [ ] Better Match media

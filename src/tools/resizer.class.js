@@ -79,7 +79,6 @@ B.Tools.Resizer = B.Core.Abstract.extend(
         // Each element
         for( var i = 0, len = containers.length; i < len; i++ )
         {
-
             var container = containers[ i ],
                 content   = container.querySelector( '.' + this.options.classes.content );
 

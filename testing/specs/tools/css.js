@@ -12,7 +12,7 @@ describe( 'Css', function()
     {
         // Set up
         B.Statics = {};
-        css   = new B.Tools.Css( {} );
+        css       = new B.Tools.Css( {} );
 
         // Wait
         window.setTimeout( function()

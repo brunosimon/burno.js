@@ -35,8 +35,10 @@ B.Tools.Keyboard = B.Core.Event_Emitter.extend(
     {
         this._super( options );
 
-        this.downs   = [];
+        // Set up
+        this.downs = [];
 
+        // Init
         this.listen_to_events();
     },
 
@@ -49,7 +51,7 @@ B.Tools.Keyboard = B.Core.Event_Emitter.extend(
         var that = this;
 
         // Down
-        function keydown_handle(e)
+        function keydown_handle( e )
         {
             var character = that.keycode_to_character( e.keyCode );
 

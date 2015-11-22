@@ -49,6 +49,11 @@ describe( 'Breakpoints', function()
             ]
         } );
 
+        // Spies
+        spyOn( breakpoints, 'test' ).and.callThrough();
+        spyOn( breakpoints, 'trigger' ).and.callThrough();
+
+        // Use class
         breakpoints.remove( 'large' );
 
         // Wait
@@ -56,9 +61,6 @@ describe( 'Breakpoints', function()
         {
             done();
         }, 50 );
-
-        // Spies
-        spyOn( breakpoints, 'test' ).and.callThrough();
     } );
 
     // After all
@@ -71,6 +73,11 @@ describe( 'Breakpoints', function()
     it( 'test() called', function()
     {
         expect( breakpoints.test ).toHaveBeenCalled();
+    } );
+
+    it( 'trigger() called', function()
+    {
+        expect( breakpoints.trigger ).toHaveBeenCalled();
     } );
 
     it( 'first_test false', function()

@@ -231,7 +231,7 @@ B.Tools.Detector = B.Core.Event_Emitter.extend(
     init_classes : function()
     {
         // Don't add
-        if( !this.options.classes_targets || this.options.classes_targets.length === 0 )
+        if( !this.options.targets || this.options.targets.length === 0 )
             return false;
 
         // Set up
@@ -239,10 +239,10 @@ B.Tools.Detector = B.Core.Event_Emitter.extend(
             target  = null;
 
         // Each element that need to add classes
-        for( var i = 0, len = this.options.classes_targets.length; i < len; i++ )
+        for( var i = 0, len = this.options.targets.length; i < len; i++ )
         {
             // Target
-            target = this.options.classes_targets[ i ];
+            target = this.options.targets[ i ];
 
             // String
             if( typeof target === 'string' )

@@ -11,16 +11,19 @@ describe( 'Registry', function()
     {
         // Set up
         B.Statics = {};
-        registry   = new B.Tools.Registry( {} );
+        registry  = new B.Tools.Registry( {} );
 
-        // // Wait
-        // window.setTimeout( function()
-        // {
-        //     done();
-        // }, 50 );
+        // Wait
+        window.setTimeout( function()
+        {
+            done();
+        }, 50 );
 
-        // // Spies
-        // spyOn( registry, 'method' ).and.callThrough();
+        // Spies
+        spyOn( registry, 'trigger' ).and.callThrough();
+
+        // Use class
+        registry.set( 'key', 'value' );
     } );
 
     // After all
@@ -29,9 +32,13 @@ describe( 'Registry', function()
 
     } );
 
-    // // Expectations
-    // it( 'method() called', function()
-    // {
-    //     expect( registry.method ).toHaveBeenCalled();
-    // } );
+    it( 'trigger() called', function()
+    {
+        expect( registry.trigger ).toHaveBeenCalled();
+    } );
+
+    it( 'get( \'key\' ) = \'value\'', function()
+    {
+        expect( registry.get( 'key' ) ).toEqual( 'value' );
+    } );
 } );

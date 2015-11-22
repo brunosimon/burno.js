@@ -32,10 +32,12 @@ B.Tools.Konami_Code = B.Core.Event_Emitter.extend(
     {
         this._super( options );
 
+        // Set up
         this.index    = 0;
         this.timeout  = null;
         this.keyboard = new B.Tools.Keyboard();
 
+        // Init
         this.listen_to_events();
     },
 
