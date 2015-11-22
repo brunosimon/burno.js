@@ -5,8 +5,8 @@ describe( 'Core', function()
 {
     // Init
     var ticker           = null,
-        FirstClass       = null,
-        SecondClass      = null,
+        ParentClass      = null,
+        ChildClass      = null,
         first            = null,
         second           = null,
         construct_called = false;
@@ -17,7 +17,7 @@ describe( 'Core', function()
         // Set up
         B.Statics = {};
 
-        FirstClass = B.Core.Abstract.extend( {
+        ParentClass = B.Core.Abstract.extend( {
             static  : 'static_name',
             options :
             {
@@ -41,7 +41,7 @@ describe( 'Core', function()
             }
         } );
 
-        SecondClass = FirstClass.extend( {
+        ChildClass = ParentClass.extend( {
             options :
             {
                 foo   : 'beer',
@@ -57,9 +57,7 @@ describe( 'Core', function()
             }
         } );
 
-        second = new SecondClass();
-
-        console.log(second.options);
+        second = new ChildClass();
     } );
 
     // After all
@@ -74,7 +72,7 @@ describe( 'Core', function()
         expect( second.test ).toEqual( jasmine.any( Function ) );
     } );
 
-    xit( 'Options deep merging', function()
+    it( 'Options deep merging', function()
     {
         expect( second.options.foo ).toEqual( 'beer' );
         expect( second.options.lorem.ipsum ).toEqual( 'tutu' );

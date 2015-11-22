@@ -12,11 +12,18 @@
     <!-- YOUR SCRIPT -->
     <script>
 
-        var browser = new B.Tools.Browser();
+        var viewport = new B.Tools.Viewport();
 
-        browser.on( 'resize', function( viewport )
+        viewport.on( 'resize', function( width )
         {
             console.log( dsdf );
+        } );
+
+        var mouse = new B.Tools.Mouse();
+
+        mouse.on( 'move', function()
+        {
+            console.log( sqdqsd );
         } );
 
 

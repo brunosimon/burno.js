@@ -2,7 +2,7 @@
  * @class    Strings
  * @author   Bruno SIMON / http://bruno-simon.com
  */
-B.Tools.Konami_Code = B.Core.Event_Emitter.extend(
+B.Tools.KonamiCode = B.Tools.Konami_Code = B.Core.Event_Emitter.extend(
 {
     static  : 'konami_code',
     options :

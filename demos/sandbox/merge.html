@@ -51,7 +51,7 @@
          * Extend
          */
 
-        B.Components.Custom_Class = B.Core.Abstract.extend(
+        B.Components.Parent_Class = B.Core.Abstract.extend(
         {
             // Options with random deep properties
             options :
@@ -68,12 +68,10 @@
             {
                 // Pass options to _super
                 this._super( options );
-
-                console.log( 'Options', this.options );
             }
         } );
 
-        B.Components.Custom_Class_2 = B.Components.Custom_Class.extend(
+        B.Components.Child_Class = B.Components.Parent_Class.extend(
         {
             options :
             {
@@ -85,14 +83,17 @@
             },
 
             // Add options argument
-            construct : function()
+            construct : function( options )
             {
+                // Pass options to _super
+                this._super( options );
+
                 console.log( 'Options', this.options );
             }
         } );
 
-        var text = new B.Components.Custom_Class();
-        var text = new B.Components.Custom_Class_2();
+        var text = new B.Components.Parent_Class();
+        var text = new B.Components.Child_Class();
 
     </script>
 

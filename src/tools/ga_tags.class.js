@@ -3,7 +3,7 @@
  * @author   Bruno SIMON / http://bruno-simon.com
  * @fires    send
  */
-B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
+B.Tools.GATags = B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
 {
     static  : 'ga_tags',
     options :

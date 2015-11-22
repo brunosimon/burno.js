@@ -10,7 +10,7 @@ Simply include the JS files in your HTML and start using it. B.js is still in de
 
 **Table of contents**
 
-* [Compatibility](#compatibility
+* [Compatibility](#compatibility)
 * [Usage](#usage)
     * [As a library](#as-a-library-the-easy-way)
     * [As a framework](#as-a-framework-the-powerful-way)
@@ -1055,9 +1055,9 @@ new Burno.Tools.Class();
 ## Todo
 
 - [ ] NPM
-- [ ] :warning:Loop error bug
-- [ ] :warning:Unit testing
-    - [ ] Core
+- [ ] :warning: Loop error bug
+- [x] Unit testing
+    - [x] Core
     - [x] Breakpoints
     - [x] Colors
     - [x] Css
@@ -1071,8 +1071,7 @@ new Burno.Tools.Class();
     - [x] Strings
     - [x] Ticker
     - [x] Viewport
-- [ ] :warning:options merging bug when extending (update test)
-- [ ] :warning:camelCase / PascalCase aliases
+- [x] camelCase / PascalCase aliases
 - [ ] Classes (create)
     - [ ] Touch
     - [ ] Storyline
@@ -1090,14 +1089,14 @@ new Burno.Tools.Class();
         - [ ] Local
 - [ ] Classes (update)
     - [ ] Detector
-        - [ ] :warning:`add_detector` method
+        - [ ] :warning: `add_detector` method
     - [ ] Breakpoints
-        - [ ] :warning:Add classes to elements/selectors in options
+        - [ ] :warning: Add classes to elements/selectors in options
     - [ ] Resizer
-        - [ ] :warning:Add `none` in rounding
+        - [ ] :warning: Add `none` in rounding
     - [ ] Keyboard
-        - [ ] :warning:Event listening for specified key
-        - [ ] :warning:Character to keycode
+        - [ ] :warning: Event listening for specified key
+        - [ ] :warning: Character to keycode
     - [ ] Event_Emitter
         - [ ] Deferred trigger (can specify event)
     - [ ] Better Match media

@@ -2,7 +2,7 @@
  * @class  Resizer
  * @author Bruno SIMON / http://bruno-simon.com
  */
-B.Core.Event_Emitter = B.Core.Abstract.extend(
+B.Core.EventEmitter = B.Core.Event_Emitter = B.Core.Abstract.extend(
 {
     static  : false,
     options : {},
