@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Sun Nov 22 2015 02:12:53 GMT+0100 (CET)
+ * Date: Fri Nov 27 2015 00:49:32 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -746,7 +746,7 @@ B.Core.Abstract = B.Class.extend(
  * @class  Resizer
  * @author Bruno SIMON / http://bruno-simon.com
  */
-B.Core.Event_Emitter = B.Core.Abstract.extend(
+B.Core.EventEmitter = B.Core.Event_Emitter = B.Core.Abstract.extend(
 {
     static  : false,
     options : {},
@@ -2276,7 +2276,7 @@ B.Tools.Detector = B.Core.Event_Emitter.extend(
  * @author   Bruno SIMON / http://bruno-simon.com
  * @fires    send
  */
-B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
+B.Tools.GATags = B.Tools.GA_Tags = B.Core.Event_Emitter.extend(
 {
     static  : 'ga_tags',
     options :
@@ -2678,7 +2678,7 @@ B.Tools.Keyboard = B.Core.Event_Emitter.extend(
  * @class    Strings
  * @author   Bruno SIMON / http://bruno-simon.com
  */
-B.Tools.Konami_Code = B.Core.Event_Emitter.extend(
+B.Tools.KonamiCode = B.Tools.Konami_Code = B.Core.Event_Emitter.extend(
 {
     static  : 'konami_code',
     options :
