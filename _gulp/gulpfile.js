@@ -95,9 +95,10 @@ gulp.task( 'js', function()
         options.paths.sources + 'core/abstract.class.js',
         options.paths.sources + 'core/event_emitter.class.js',
 
-        options.paths.sources + 'tools/browser.class.js',
+        options.paths.sources + 'tools/breakpoints.class.js',
         options.paths.sources + 'tools/colors.class.js',
         options.paths.sources + 'tools/css.class.js',
+        options.paths.sources + 'tools/detector.class.js',
         options.paths.sources + 'tools/ga_tags.class.js',
         options.paths.sources + 'tools/keyboard.class.js',
         options.paths.sources + 'tools/konami_code.class.js',
@@ -107,6 +108,7 @@ gulp.task( 'js', function()
         options.paths.sources + 'tools/resizer.class.js',
         options.paths.sources + 'tools/strings.class.js',
         options.paths.sources + 'tools/ticker.class.js',
+        options.paths.sources + 'tools/viewport.class.js',
     ] )
     .pipe( concat( 'burno-' + options.version + '-no-compatibility.js' ) )
     .pipe( concat.header( before ) )

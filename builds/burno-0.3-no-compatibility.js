@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
  *
- * Date: Fri Nov 27 2015 00:49:32 GMT+0100 (CET)
+ * Date: Fri Nov 27 2015 12:10:20 GMT+0100 (CET)
  */
 
 var Burno = B = ( function( window, document, undefined )
@@ -545,6 +545,313 @@ B.Core.EventEmitter = B.Core.Event_Emitter = B.Core.Abstract.extend(
             new_name.namespace = parts[ 1 ];
 
         return new_name;
+    }
+} );
+
+/**
+ * @class    Breakpoints
+ * @author   Bruno SIMON / http://bruno-simon.com
+ * @fires    update
+ * @fires    change
+ * @requires B.Tools.Viewport
+ */
+B.Tools.Breakpoints = B.Core.Event_Emitter.extend(
+{
+    static  : 'breakpoints',
+    options :
+    {
+        breakpoints : []
+    },
+
+    /**
+     * Initialise and merge options
+     * @constructor
+     * @param {object} options Properties to merge with defaults
+     */
+    construct : function( options )
+    {
+        this._super( options );
+
+        // Set up
+        this.viewport   = new B.Tools.Viewport();
+        this.all        = {};
+        this.actives    = {};
+        this.first_test = true;
+
+        // Initial breakpoints
+        this.add( this.options.breakpoints );
+
+        // Init
+        this.init_events();
+    },
+
+    /**
+     * Listen to events
+     * @return {object} Context
+     */
+    init_events : function()
+    {
+        var that = this;
+
+        // Viewport resize event
+        this.viewport.on( 'resize', function()
+        {
+            // Test breakpoints
+            that.test();
+        } );
+
+        return this;
+    },
+
+    /**
+     * Add one breakpoint
+     * @param {object} breakpoint Breakpoint informations
+     * @return {object}           Context
+     * @example
+     *     add( {
+     *         name  : 'large',
+     *         width :
+     *         {
+     *             value    : 960,
+     *             extreme  : 'min',
+     *             included : false
+     *         }
+     *     } )
+     * @example
+     *     add_breakpoints( [
+     *          {
+     *              name  : 'large',
+     *              width :
+     *              {
+     *                  value    : 960,
+     *                  extreme  : 'min',
+     *                  included : false
+     *              }
+     *          },
+     *          {
+     *              name  : 'medium',
+     *              width :
+     *              {
+     *                  value    : 960,
+     *                  extreme  : 'max',
+     *                  included : true
+     *              }
+     *          },
+     *          {
+     *              name  : 'small',
+     *              width :
+     *              {
+     *                  value    : 500,
+     *                  extreme  : 'max',
+     *                  included : true
+     *              },
+     *              height :
+     *              {
+     *                  value    : 500,
+     *                  extreme  : 'max',
+     *                  included : true
+     *              }
+     *          }
+     *     ] )
+     *
+     */
+    add : function( breakpoints, silent )
+    {
+        // Default
+        silent = typeof silent === 'undefined' ? true : false;
+
+        // Force array
+        if( !( breakpoints instanceof Array ) )
+            breakpoints = [ breakpoints ];
+
+        // Add each one to breakpoints
+        for( var i = 0; i < breakpoints.length; i++ )
+        {
+            var breakpoint = breakpoints[ i ];
+            this.all[ breakpoint.name ] = breakpoint;
+        }
+
+        // Test breakpoints
+        if( !silent )
+            this.test();
+
+        return this;
+    },
+
+    /**
+     * Remove one breakpoint
+     * @param  {string} breakpoint Breakpoint name (can be the breakpoint object itself)
+     * @return {object}            Context
+     */
+    remove : function( breakpoints, silent )
+    {
+        // Force array
+        if( !( breakpoints instanceof Array ) )
+            breakpoints = [ breakpoints ];
+
+        // Object breakpoint
+        if( typeof breakpoint === 'object' && typeof breakpoint.name === 'string' )
+            breakpoint = breakpoint.name;
+
+        // Default
+        silent = typeof silent === 'undefined' ? false : true;
+
+        // Add each one to breakpoints
+        for( var i = 0; i < breakpoints.length; i++ )
+        {
+            delete this.all[ breakpoints[ i ] ];
+        }
+
+        // Test breakpoints
+        if( !silent )
+            this.test();
+
+        return this;
+    },
+
+    /**
+     * Test every breakpoint and trigger 'update' event if current breakpoint changed
+     * @return {object} Context
+     */
+    test : function()
+    {
+        // Set up
+        var current_breakpoints = {},
+            all_names           = Object.keys( this.all );
+
+        // Each breakpoint
+        for( var i = 0, len = all_names.length; i < len; i++ )
+        {
+            // Set up
+            var breakpoint = this.all[ all_names[ i ] ],
+                width      = !breakpoint.width,
+                height     = !breakpoint.height;
+
+            // Width must be tested
+            if( !width )
+            {
+                // Min
+                if( breakpoint.width.extreme === 'min' )
+                {
+                    if(
+                        // Included
+                        ( breakpoint.width.included && this.viewport.width >= breakpoint.width.value ) ||
+
+                        // Not included
+                        ( !breakpoint.width.included && this.viewport.width > breakpoint.width.value )
+                    )
+                        width = true;
+                }
+
+                // Max
+                else
+                {
+                    if(
+                        // Included
+                        ( breakpoint.width.included && this.viewport.width <= breakpoint.width.value ) ||
+
+                        // Not included
+                        ( !breakpoint.width.included && this.viewport.width < breakpoint.width.value )
+                    )
+                        width = true;
+                }
+            }
+
+            // Height must be tested
+            if( !height )
+            {
+                // Min
+                if( breakpoint.height.extreme === 'min' )
+                {
+                    if(
+                        // Included
+                        ( breakpoint.height.included && this.viewport.height >= breakpoint.height.value ) ||
+
+                        // Not included
+                        ( !breakpoint.height.included && this.viewport.height > breakpoint.height.value )
+                    )
+                        height = true;
+                }
+
+                // Max
+                else
+                {
+                    if(
+                        // Included
+                        ( breakpoint.height.included && this.viewport.height <= breakpoint.height.value ) ||
+
+                        // Not included
+                        ( !breakpoint.height.included && this.viewport.height < breakpoint.height.value )
+                    )
+                        height = true;
+                }
+            }
+
+            if( width && height )
+            {
+                current_breakpoints[ breakpoint.name ] = breakpoint;
+            }
+        }
+
+        // Set up
+        var current_names = Object.keys( current_breakpoints ),
+            old_names     = Object.keys( this.actives ),
+            difference    = this.get_arrays_differences( current_names, old_names );
+
+        if( difference.length || this.first_test )
+        {
+            // Set actives
+            this.actives = current_breakpoints;
+
+            this.first_test = false;
+
+            // Trigger
+            this.trigger( 'update change', [ this.actives ] );
+        }
+
+        return this;
+    },
+
+    /**
+     * Test if breakpoint is active
+     * @param  {string}  breakpoint Breakpoint name (can be the breakpoint object itself)
+     * @return {boolean}            True or false depending on if the breakpoint is active
+     */
+    is_active : function( breakpoint )
+    {
+        // Object breakpoint
+        if( typeof breakpoint === 'object' && typeof breakpoint.name === 'string' )
+            breakpoint = breakpoint.name;
+
+        return typeof this.actives[ breakpoint ] !== 'undefined';
+    },
+
+    /**
+     * Get differences between two arrays
+     * @param  {array} a First array
+     * @param  {array} b Second array
+     * @return {array}   Items in one but not in the other
+     */
+    get_arrays_differences : function( a, b )
+    {
+        var a_new = [],
+            diff  = [];
+
+        for( var i = 0; i < a.length; i++ )
+            a_new[ a[ i ] ] = true;
+
+        for( i = 0; i < b.length; i++ )
+        {
+            if( a_new[ b[ i ] ] )
+                delete a_new[ b[ i ] ];
+            else
+                a_new[ b[ i ] ] = true;
+        }
+
+        for( var k in a_new )
+            diff.push( k );
+
+        return diff;
     }
 } );
 
@@ -1162,6 +1469,331 @@ B.Tools.Css = B.Core.Abstract.extend(
         }
 
         return value;
+    }
+} );
+
+/**
+ * @class  Detector
+ * @author Bruno SIMON / http://bruno-simon.com
+ */
+B.Tools.Detector = B.Core.Event_Emitter.extend(
+{
+    static  : 'detector',
+    options :
+    {
+        targets : [ 'html' ]
+    },
+
+    /**
+     * Initialise and merge options
+     * @constructor
+     * @param {object} options Properties to merge with defaults
+     */
+    construct : function( options )
+    {
+        this._super( options );
+
+        // Init
+        this.init_detection();
+        this.init_classes();
+    },
+
+    /**
+     * Detect engine, browser, system and feature in a specified list and store in 'detect' property
+     * @return {object} Context
+     */
+    init_detection : function()
+    {
+        // Prepare
+        var engine = {
+            ie      : 0,
+            gecko   : 0,
+            webkit  : 0,
+            khtml   : 0,
+            opera   : 0,
+            version : 0,
+        };
+
+        var browser = {
+            ie      : 0,
+            firefox : 0,
+            safari  : 0,
+            konq    : 0,
+            opera   : 0,
+            chrome  : 0,
+            version : 0,
+        };
+
+        var system = {
+            windows        : false,
+            mac            : false,
+            osx            : false,
+            iphone         : false,
+            ipod           : false,
+            ipad           : false,
+            ios            : false,
+            blackberry     : false,
+            android        : false,
+            opera_mini     : false,
+            windows_mobile : false,
+            wii            : false,
+            ps             : false,
+        };
+
+        var features = {
+            touch       : false,
+            media_query : false
+        };
+
+        // Detect
+        var user_agent = navigator.userAgent;
+        if( window.opera )
+        {
+            engine.version = browser.version = window.opera.version();
+            engine.opera   = browser.opera   = parseInt( engine.version );
+        }
+        else if( /AppleWebKit\/(\S+)/.test( user_agent ) || /AppleWebkit\/(\S+)/.test( user_agent ) )
+        {
+            engine.version = RegExp.$1;
+            engine.webkit  = parseInt( engine.version );
+
+            // figure out if it's Chrome or Safari
+            if( /Chrome\/(\S+)/.test( user_agent ) )
+            {
+                browser.version = RegExp.$1;
+                browser.chrome  = parseInt( browser.version );
+            }
+            else if( /Version\/(\S+)/.test( user_agent ) )
+            {
+                browser.version = RegExp.$1;
+                browser.safari  = parseInt( browser.version );
+            }
+            else
+            {
+                // Approximate version
+                var safariVersion = 1;
+
+                if( engine.webkit < 100 )
+                    safariVersion = 1;
+                else if( engine.webkit < 312 )
+                    safariVersion = 1.2;
+                else if( engine.webkit < 412 )
+                    safariVersion = 1.3;
+                else
+                    safariVersion = 2;
+
+                browser.safari = browser.version = safariVersion;
+            }
+        }
+        else if( /KHTML\/(\S+)/.test( user_agent ) || /Konqueror\/([^;]+)/.test( user_agent ) )
+        {
+            engine.version = browser.version = RegExp.$1;
+            engine.khtml   = browser.konq    = parseInt( engine.version );
+        }
+        else if( /rv:([^\)]+)\) Gecko\/\d{8}/.test( user_agent ) )
+        {
+            engine.version = RegExp.$1;
+            engine.gecko   = parseInt( engine.version );
+
+            // Determine if it's Firefox
+            if ( /Firefox\/(\S+)/.test( user_agent ) )
+            {
+                browser.version = RegExp.$1;
+                browser.firefox = parseInt( browser.version );
+            }
+        }
+        else if( /MSIE ([^;]+)/.test( user_agent ) )
+        {
+            engine.version = browser.version = RegExp.$1;
+            engine.ie      = browser.ie      = parseInt( engine.version );
+        }
+        else if( /Trident.*rv[ :]*(11[\.\d]+)/.test( user_agent ) )
+        {
+            engine.version = browser.version = RegExp.$1;
+            engine.ie      = browser.ie      = parseInt( engine.version );
+        }
+
+        // Detect browsers
+        browser.ie    = engine.ie;
+        browser.opera = engine.opera;
+
+        // Detect platform (using navigator.plateform)
+        var plateform  = navigator.platform;
+        // system.windows = plateform.indexOf( 'Win' ) === 0;
+        // system.mac     = plateform.indexOf( 'Mac' ) === 0;
+        // system.x11     = ( plateform === 'X11' ) || ( plateform.indexOf( 'Linux' ) === 0);
+
+        // Detect platform (using navigator.userAgent)
+        system.windows = !!user_agent.match( /Win/ );
+        system.mac     = !!user_agent.match( /Mac/ );
+        // system.x11     = ( plateform === 'X11' ) || ( plateform.indexOf( 'Linux' ) === 0);
+
+        // Detect windows operating systems
+        if( system.windows )
+        {
+            if( /Win(?:dows )?([^do]{2})\s?(\d+\.\d+)?/.test( user_agent ) )
+            {
+                if( RegExp.$1 === 'NT' )
+                {
+                    switch( RegExp.$2 )
+                    {
+                        case '5.0':
+                            system.windows = '2000';
+                            break;
+
+                        case '5.1':
+                            system.windows = 'XP';
+                            break;
+
+                        case '6.0':
+                            system.windows = 'Vista';
+                            break;
+
+                        default:
+                            system.windows = 'NT';
+                            break;
+                    }
+                }
+                else if( RegExp.$1 === '9x' )
+                {
+                    system.windows = 'ME';
+                }
+                else
+                {
+                    system.windows = RegExp.$1;
+                }
+            }
+        }
+
+        // Detect mobile (mix between OS and device)
+        system.nokia          = !!user_agent.match( /Nokia/i );
+        system.kindle_fire    = !!user_agent.match( /Silk/ );
+        system.iphone         = !!user_agent.match( /iPhone/ );
+        system.ipod           = !!user_agent.match( /iPod/ );
+        system.ipad           = !!user_agent.match( /iPad/ );
+        system.blackberry     = !!user_agent.match( /BlackBerry/ ) || !!user_agent.match( /BB[0-9]+/ ) || !!user_agent.match( /PlayBook/ );
+        system.android        = !!user_agent.match( /Android/ );
+        system.opera_mini     = !!user_agent.match( /Opera Mini/i );
+        system.windows_mobile = !!user_agent.match( /IEMobile/i );
+
+        // iOS / OS X exception
+        system.ios = system.iphone || system.ipod || system.ipad;
+        system.osx = !system.ios && !!user_agent.match( /OS X/ );
+
+        // Detect gaming systems
+        system.wii         = user_agent.indexOf( 'Wii' ) > -1;
+        system.playstation = /playstation/i.test( user_agent );
+
+        //Detect features (Not as reliable as Modernizr)
+        features.touch       = !!( ( 'ontouchstart' in window ) || window.DocumentTouch && document instanceof DocumentTouch );
+        features.media_query = !!( window.matchMedia || window.msMatchMedia );
+
+        // Set up
+        this.user_agent = user_agent;
+        this.plateform  = plateform;
+        this.browser    = browser;
+        this.engine     = engine;
+        this.system     = system;
+        this.features   = features;
+        this.categories = [ 'engine', 'browser', 'system', 'features' ];
+    },
+
+    /**
+     * Add detected informations to the DOM (on <html> by default)
+     * @return {object} Context
+     */
+    init_classes : function()
+    {
+        // Don't add
+        if( !this.options.targets || this.options.targets.length === 0 )
+            return false;
+
+        // Set up
+        var targets = [],
+            target  = null;
+
+        // Each element that need to add classes
+        for( var i = 0, len = this.options.targets.length; i < len; i++ )
+        {
+            // Target
+            target = this.options.targets[ i ];
+
+            // String
+            if( typeof target === 'string' )
+            {
+                // Target
+                switch( target )
+                {
+                    case 'html' :
+                        targets.push( document.documentElement );
+                        break;
+
+                    case 'body' :
+                        targets.push( document.body );
+                        break;
+
+                    default :
+                        var temp_targets = document.querySelectorAll( target );
+
+                        for( var j = 0; j < temp_targets.length; j++ )
+                            targets.push( temp_targets[ j ] );
+
+                        break;
+                }
+            }
+            // DOM Element
+            else if( target instanceof Element )
+            {
+                targets.push( target );
+            }
+
+            // Targets found
+            if( targets.length )
+            {
+                this.classes = [];
+
+                // Each category
+                for( var category in this )
+                {
+                    // Allowed
+                    if( this.categories.indexOf( category ) !== -1 )
+                    {
+                        // Each property in category
+                        for( var property in this[ category ] )
+                        {
+                            var value = this[ category ][ property ];
+
+                            // Ignore version
+                            if( property !== 'version' )
+                            {
+                                // Feature
+                                if( category === 'features' )
+                                {
+                                    this.classes.push( category + '-' + ( value ? '' : 'no-' ) + property );
+                                }
+
+                                // Not feature
+                                else
+                                {
+                                    if( value )
+                                    {
+                                        this.classes.push( category + '-' + property );
+                                        if( category === 'browser'  )
+                                            this.classes.push( category + '-' + property + '-' + value );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Add classes
+                for( var j = 0; j < targets.length; j++ )
+                    targets[ j ].classList.add.apply( targets[ j ].classList, this.classes );
+            }
+        }
+
+        return this;
     }
 } );
 
@@ -2911,6 +3543,211 @@ B.Tools.Ticker = B.Core.Event_Emitter.extend(
 
         return this._super( names );
     },
+} );
+
+/**
+ * @class    Viewport
+ * @author   Bruno SIMON / http://bruno-simon.com
+ * @fires    resize
+ * @fires    scroll
+ * @requires B.Tools.Ticker
+ */
+B.Tools.Viewport = B.Core.Event_Emitter.extend(
+{
+    static  : 'viewport',
+    options :
+    {
+        disable_hover_on_scroll : false,
+        initial_triggers        : [ 'resize', 'scroll' ]
+    },
+
+    /**
+     * Initialise and merge options
+     * @constructor
+     * @param {object} options Properties to merge with defaults
+     */
+    construct : function( options )
+    {
+        this._super( options );
+
+        // Set up
+        this.ticker             = new B.Tools.Ticker();
+        this.detector           = new B.Tools.Detector();
+        this.top                = 0;
+        this.left               = 0;
+        this.y                  = 0;
+        this.x                  = 0;
+        this.scroll             = {};
+        this.scroll.delta       = {};
+        this.scroll.delta.top   = 0;
+        this.scroll.delta.left  = 0;
+        this.scroll.delta.y     = 0;
+        this.scroll.delta.x     = 0;
+        this.scroll.direction   = {};
+        this.scroll.direction.x = null;
+        this.scroll.direction.y = null;
+        this.width              = window.innerWidth  || document.documentElement.clientWidth  || document.body.clientWidth;
+        this.height             = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        this.pixel_ratio        = window.devicePixelRatio || 1;
+
+        // Init
+        this.init_disabling_hover_on_scroll();
+        this.init_events();
+    },
+
+    /**
+     * Init events
+     * @return {object} Context
+     */
+    init_events : function()
+    {
+        var that = this;
+
+        // Callbacks
+        function resize_callback()
+        {
+            that.resize_handler();
+        }
+        function scroll_callback()
+        {
+            that.scroll_handler();
+        }
+
+        // Listeing to events
+        if( window.addEventListener )
+        {
+            window.addEventListener( 'resize', resize_callback );
+            window.addEventListener( 'scroll', scroll_callback );
+        }
+        else
+        {
+            window.attachEvent( 'onresize', resize_callback );
+            window.attachEvent( 'onscroll', scroll_callback );
+        }
+
+        // Initial trigger
+        if( this.options.initial_triggers.length )
+        {
+            // Do next frame
+            this.ticker.wait( 1, function()
+            {
+                // Each initial trigger
+                for( var i = 0; i < that.options.initial_triggers.length; i++ )
+                {
+                    // Set up
+                    var action = that.options.initial_triggers[ i ],
+                        method = that[ action + '_handler' ];
+
+                    // Method exist
+                    if( typeof method === 'function' )
+                    {
+                        // Trigger
+                        method.apply( that );
+                    }
+                }
+            } );
+        }
+
+        return this;
+    },
+
+    /**
+     * Handle the resize event
+     * @return {object} Context
+     */
+    resize_handler : function()
+    {
+        // Set up
+        this.width  = window.innerWidth  || document.documentElement.clientWidth  || document.body.clientWidth;
+        this.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+        // Trigger
+        this.trigger( 'resize', [ this.width, this.height ] );
+
+        return this;
+    },
+
+    /**
+     * Handle the scroll event
+     * @return {object} Context
+     */
+    scroll_handler : function()
+    {
+        // Set up
+        var top  = typeof window.pageYOffset !== 'undefined' ? window.pageYOffset : window.document.documentElement.scrollTop,
+            left = typeof window.pageXOffset !== 'undefined' ? window.pageXOffset : window.document.documentElement.scrollLeft;
+
+        this.scroll.direction.y = top  > this.top  ? 'down'  : 'up';
+        this.scroll.direction.x = left > this.left ? 'right' : 'left';
+        this.scroll.delta.top   = top  - this.top;
+        this.scroll.delta.left  = left - this.left;
+        this.top                = top;
+        this.left               = left;
+
+        // Alias
+        this.y              = this.top;
+        this.x              = this.left;
+        this.scroll.delta.y = this.scroll.delta.top;
+        this.scroll.delta.x = this.scroll.delta.left;
+
+        // Trigger
+        this.trigger( 'scroll', [ this.top, this.left, this.scroll ] );
+
+        return this;
+    },
+
+    /**
+     * Disable pointer events on body when scrolling for performance
+     * @return {object} Context
+     */
+    init_disabling_hover_on_scroll : function()
+    {
+        // Set up
+        var that    = this,
+            timeout = null,
+            active  = false;
+
+        // Scroll event
+        this.on( 'scroll', function()
+        {
+            if( !that.options.disable_hover_on_scroll )
+                return;
+
+            // Clear timeout if exist
+            if( timeout )
+                window.clearTimeout( timeout );
+
+            // Not active
+            if( !active )
+            {
+                // Activate
+                active = true;
+                document.body.style.pointerEvents = 'none';
+            }
+
+            timeout = window.setTimeout( function()
+            {
+                // Deactivate
+                active = false;
+                document.body.style.pointerEvents = 'auto';
+            }, 60 );
+        } );
+
+        return this;
+    },
+
+    /**
+     * Test media and return false if not compatible
+     * @param  {string} condition Condition to test
+     * @return {boolean}          Match
+     */
+    match_media : function( condition )
+    {
+        if( !this.detector.features.media_query || typeof condition !== 'string' || condition === '' )
+            return false;
+
+        return !!window.matchMedia( condition ).matches;
+    }
 } );
 
 return B;
