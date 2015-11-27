@@ -1054,7 +1054,7 @@ new Burno.Tools.Class();
 
 ## Todo
 
-- [ ] NPM
+- [ ] NPM / Browserify
 - [ ] :warning: Loop error bug
 - [x] Unit testing
     - [x] Core
@@ -1082,6 +1082,8 @@ new Burno.Tools.Class();
         - [ ] Load and show image
     - [ ] Loader
     - [ ] Unveiler
+        - [ ] DOM declaration
+        - [ ] unveiled class
     - [ ] Strings
         - [ ] Bug `convert_case` with `dashed`
     - [ ] Time / Date
@@ -1095,7 +1097,7 @@ new Burno.Tools.Class();
     - [ ] Resizer
         - [ ] :warning: Add `none` in rounding
     - [ ] Keyboard
-        - [ ] :warning: Event listening for specified key
+        - [ ] :warning: Event listening for specified key (ex: `on('cmd+c')`)
         - [ ] :warning: Character to keycode
     - [ ] Event_Emitter
         - [ ] Deferred trigger (can specify event)
