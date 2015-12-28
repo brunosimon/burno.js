@@ -1055,6 +1055,7 @@ new Burno.Tools.Class();
 ## Todo
 
 - [x] UMD support
+- [ ] NPM package
 - [ ] :warning: Loop error bug
 - [x] Unit testing
     - [x] Core
