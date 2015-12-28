@@ -28,7 +28,7 @@ gulp.task( 'js', function()
         '\n * https://github.com/brunosimon/burno.js',
         '\n *',
         '\n * Released under the MIT license',
-        '\n * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt',
+        '\n * https://github.com/brunosimon/burno.js/blob/master/LICENSE.txt',
         '\n *',
         '\n * Date: ', new Date(),
         '\n */',
@@ -36,15 +36,22 @@ gulp.task( 'js', function()
     ].join( '' );
 
     var before = [
-        //'\nvar B = { Core : {}, Tools : {}, Components : {} };',
-        '\nvar Burno = B = ( function( window, document, undefined )',
+        '\n( function( window, document, undefined )',
         '\n{',
         '\n    \'use strict\';',
         '\n',
     ].join( '' );
 
     var after = [
-        '\nreturn B;',
+
+        '\n// UMD support',
+        '\nif( typeof define === \'function\' && define.amd )',
+        '\n    define( function() { return B; } );',
+        '\nelse if( typeof module === \'object\' && module.exports )',
+        '\n    module.exports = B;',
+        '\nelse',
+        '\n    window.Burno = window.B = B;',
+        '\n',
         '\n} )( window, document );',
         '\n'
     ].join( '' );

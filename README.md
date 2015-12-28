@@ -1054,7 +1054,7 @@ new Burno.Tools.Class();
 
 ## Todo
 
-- [ ] NPM / Browserify
+- [x] UMD support
 - [ ] :warning: Loop error bug
 - [x] Unit testing
     - [x] Core
@@ -1090,6 +1090,8 @@ new Burno.Tools.Class();
         - [ ] Formater (custom formats (sprinf like))
         - [ ] Local
 - [ ] Classes (update)
+    - [ ] Ticker
+        - [ ] :warning: Stop ticker if window blur
     - [ ] Detector
         - [ ] :warning: `add_detector` method
     - [ ] Breakpoints

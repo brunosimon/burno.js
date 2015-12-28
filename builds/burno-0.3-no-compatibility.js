@@ -3,12 +3,12 @@
  * https://github.com/brunosimon/burno.js
  *
  * Released under the MIT license
- * https://github.com/brunosimon/burno.js/blob/dev/LICENSE.txt
+ * https://github.com/brunosimon/burno.js/blob/master/LICENSE.txt
  *
- * Date: Fri Nov 27 2015 12:10:20 GMT+0100 (CET)
+ * Date: Mon Dec 28 2015 12:14:26 GMT+0100 (CET)
  */
 
-var Burno = B = ( function( window, document, undefined )
+( function( window, document, undefined )
 {
     'use strict';
 // Simple structure
@@ -3750,5 +3750,12 @@ B.Tools.Viewport = B.Core.Event_Emitter.extend(
     }
 } );
 
-return B;
+// UMD support
+if( typeof define === 'function' && define.amd )
+    define( function() { return B; } );
+else if( typeof module === 'object' && module.exports )
+    module.exports = B;
+else
+    window.Burno = window.B = B;
+
 } )( window, document );
