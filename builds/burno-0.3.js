@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/brunosimon/burno.js/blob/master/LICENSE.txt
  *
- * Date: Mon Dec 28 2015 12:14:26 GMT+0100 (CET)
+ * Date: Wed Feb 17 2016 02:07:32 GMT+0100 (CET)
  */
 
 ( function( window, document, undefined )
@@ -768,6 +768,7 @@ B.Core.EventEmitter = B.Core.Event_Emitter = B.Core.Abstract.extend(
      * Start listening specified events
      * @param  {string}   names    Events names (can contain namespace)
      * @param  {function} callback Function to apply if events are triggered
+     * @param  {object}   context  The wanted context (avoid function binding or that = this hack)
      * @return {object}            Context
      * @example
      *
@@ -776,7 +777,7 @@ B.Core.EventEmitter = B.Core.Event_Emitter = B.Core.Abstract.extend(
      *         console.log( 'fire !', value );
      *     } );
      */
-    on : function( names, callback )
+    on : function( names, callback, context )
     {
         var that  = this;
 
@@ -796,6 +797,11 @@ B.Core.EventEmitter = B.Core.Event_Emitter = B.Core.Abstract.extend(
         // Resolve names
         names = this.resolve_names( names );
 
+        // Listener
+        var listener = {};
+        listener.callback = callback;
+        listener.context  = context || this;
+
         // Each name
         names.forEach( function( name )
         {
@@ -811,7 +817,7 @@ B.Core.EventEmitter = B.Core.Event_Emitter = B.Core.Abstract.extend(
                 that.callbacks[ name.namespace ][ name.value ] = [];
 
             // Add callback
-            that.callbacks[ name.namespace ][ name.value ].push( callback );
+            that.callbacks[ name.namespace ][ name.value ].push( listener );
         });
 
         return this;
@@ -906,7 +912,7 @@ B.Core.EventEmitter = B.Core.Event_Emitter = B.Core.Abstract.extend(
             return false;
         }
 
-        var that         = this,
+        var that = this,
             final_result,
             result;
 
@@ -928,9 +934,9 @@ B.Core.EventEmitter = B.Core.Event_Emitter = B.Core.Abstract.extend(
             {
                 if( that.callbacks[ namespace ] instanceof Object && that.callbacks[ namespace ][ name.value ] instanceof Array )
                 {
-                    that.callbacks[ namespace ][ name.value ].forEach( function( callback )
+                    that.callbacks[ namespace ][ name.value ].forEach( function( listener )
                     {
-                        result = callback.apply( that,args );
+                        result = listener.callback.apply( listener.context, args );
 
                         if( typeof final_result === 'undefined' )
                             final_result = result;
@@ -948,9 +954,9 @@ B.Core.EventEmitter = B.Core.Event_Emitter = B.Core.Abstract.extend(
                 return this;
             }
 
-            that.callbacks[ name.namespace ][ name.value ].forEach( function( callback )
+            that.callbacks[ name.namespace ][ name.value ].forEach( function( listener )
             {
-                result = callback.apply( that, args );
+                result = listener.callback.apply( listener.context, args );
 
                 if( typeof final_result === 'undefined' )
                     final_result = result;
@@ -3963,9 +3969,10 @@ B.Tools.Ticker = B.Core.Event_Emitter.extend(
      * Start listening specified events
      * @param  {string}   names    Events names (can contain namespace)
      * @param  {function} callback Function to apply if events are triggered
+     * @param  {object}   context  The wanted context (avoid function binding or that = this hack)
      * @return {object}            Context
      */
-    on : function( names, callback )
+    on : function( names, callback, context )
     {
         // Set up
         var that           = this,
@@ -3986,7 +3993,7 @@ B.Tools.Ticker = B.Core.Event_Emitter.extend(
             }
         } );
 
-        return this._super( names, callback );
+        return this._super( names, callback, context );
     },
 
     /**

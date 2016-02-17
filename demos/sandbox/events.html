@@ -73,7 +73,7 @@
         // Listen two events
         custom_component.on( 'event-1 event-2', function( value )
         {
-            console.log( value );
+            console.log( this );
         } );
 
         // Stop listening to 'event-1' event

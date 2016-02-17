@@ -247,9 +247,10 @@ B.Tools.Ticker = B.Core.Event_Emitter.extend(
      * Start listening specified events
      * @param  {string}   names    Events names (can contain namespace)
      * @param  {function} callback Function to apply if events are triggered
+     * @param  {object}   context  The wanted context (avoid function binding or that = this hack)
      * @return {object}            Context
      */
-    on : function( names, callback )
+    on : function( names, callback, context )
     {
         // Set up
         var that           = this,
@@ -270,7 +271,7 @@ B.Tools.Ticker = B.Core.Event_Emitter.extend(
             }
         } );
 
-        return this._super( names, callback );
+        return this._super( names, callback, context );
     },
 
     /**
